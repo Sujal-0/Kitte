@@ -158,7 +158,7 @@ export function StudioModal({ isOpen, onClose, studioInfo, onEnterStudio }) {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="w-full lg:w-1/2 lg:h-full p-3 sm:p-5 lg:p-8 xl:p-10 pr-5 sm:pr-6 lg:pr-10 xl:pr-12 flex flex-col justify-between bg-deskSurface overflow-hidden"
+              className="w-full lg:w-1/2 lg:h-full p-3 sm:p-5 lg:p-8 xl:p-10 pr-6 sm:pr-7 lg:pr-10 xl:pr-12 flex flex-col justify-between bg-deskSurface overflow-hidden"
             >
               <motion.div variants={itemVariants} className="flex-1">
                 <h3 className="font-marker text-xl sm:text-2xl lg:text-5xl text-[#2D2D2D] mb-0.5 sm:mb-1 lg:mb-2 handwritten-text">
@@ -178,7 +178,7 @@ export function StudioModal({ isOpen, onClose, studioInfo, onEnterStudio }) {
               </motion.div>
 
               {/* Bottom Row: Capabilities & Enter Button - Always completely visible with clean right gap */}
-              <motion.div variants={itemVariants} className="mt-2 sm:mt-4 lg:mt-6 flex flex-row items-end justify-between gap-3 sm:gap-4 w-full pr-1 sm:pr-2 lg:pr-3">
+              <motion.div variants={itemVariants} className="mt-2 sm:mt-4 lg:mt-6 flex flex-row items-end justify-between gap-2 sm:gap-4 w-full pr-1 sm:pr-2 lg:pr-3">
                 <div className="flex-1">
                   <h4 className="font-marker font-bold text-xs sm:text-base lg:text-xl mb-1 lg:mb-2 uppercase border-b-2 border-[#2D2D2D] inline-block handwritten-text">Capabilities</h4>
                   <ul className="list-none space-y-0.5 sm:space-y-1 lg:space-y-2 font-mono text-[9px] sm:text-xs lg:text-sm">
@@ -191,16 +191,16 @@ export function StudioModal({ isOpen, onClose, studioInfo, onEnterStudio }) {
                   </ul>
                 </div>
 
-                <div className="shrink-0 pb-1 mr-2 sm:mr-3 lg:mr-4">
+                <div className="shrink-0 pb-1.5 mr-3 sm:mr-3 lg:mr-4 mb-1 lg:mb-0">
                   <NeuButton 
                     onClick={handleEnter}
-                    className="px-3 sm:px-4 lg:px-6 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base flex items-center gap-1.5 sm:gap-2 lg:gap-3 group cursor-pointer"
+                    className="px-2.5 sm:px-4 lg:px-6 py-1 sm:py-1.5 lg:py-2 text-[10px] sm:text-xs lg:text-base flex items-center gap-1 sm:gap-2 lg:gap-3 group cursor-pointer tracking-normal sm:tracking-wider shadow-[3px_3px_0px_#2D2D2D] lg:shadow-[4px_4px_0px_#2D2D2D]"
                   >
-                    <span className="font-mono font-bold tracking-wider">ENTER STUDIO</span>
+                    <span className="font-mono font-bold whitespace-nowrap">ENTER STUDIO</span>
                     <img 
                       src="/assets/dottedUpArrow.svg" 
                       alt="Arrow" 
-                      className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 object-contain handwritten-text transition-transform duration-300 group-hover:translate-x-2"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-6 lg:h-6 object-contain handwritten-text transition-transform duration-300 group-hover:translate-x-1 lg:group-hover:translate-x-2"
                     />
                   </NeuButton>
                 </div>

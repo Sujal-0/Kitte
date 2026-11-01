@@ -56,7 +56,7 @@ function futureMeSchedulerPlugin() {
     name: 'futureme-scheduler-backend',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        if (!req.url?.startsWith('/api/futureme')) {
+        if (!req.url?.startsWith('/api/futureme') && !req.url?.startsWith('/api/contact')) {
           return next();
         }
 
@@ -249,6 +249,48 @@ function futureMeSchedulerPlugin() {
             res.setHeader('Content-Type', 'application/json');
             return res.end(JSON.stringify({ success: false, error: err.message }));
           }
+        }
+
+        // 5. POST /api/contact (Direct Resend email dispatch from Contact Phone)
+        if (req.method === 'POST' && req.url === '/api/contact') {
+          const { from, message } = await getBody();
+          const apiKey = readEnvKey();
+
+          if (apiKey) {
+            try {
+              const resendRes = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${apiKey}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  from: 'Kitte Contact <onboarding@resend.dev>',
+                  to: ['sujalsingh2204@gmail.com'],
+                  reply_to: from || undefined,
+                  subject: `New Project Inquiry from ${from || 'Visitor'} [KITTE]`,
+                  html: `
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 2px solid #2D2D2D; background-color: #FBF7F5; border-radius: 8px;">
+                      <h2 style="color: #2D2D2D; border-bottom: 2px solid #EAEAEA; padding-bottom: 12px; margin-top: 0;">New Inquiry Received via Contact Phone</h2>
+                      <p style="font-size: 14px; color: #555;"><strong>From:</strong> ${from || 'Not provided'}</p>
+                      <div style="background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 6px; padding: 16px; margin: 18px 0; font-size: 15px; line-height: 1.6; color: #1A1A1A; white-space: pre-wrap;">${message}</div>
+                      <p style="font-size: 12px; color: #888; margin-bottom: 0;">Sent directly from Kitte Analog Memory Lab Contact Phone.</p>
+                    </div>
+                  `
+                })
+              });
+
+              const data = await resendRes.json();
+              res.setHeader('Content-Type', 'application/json');
+              return res.end(JSON.stringify({ success: resendRes.ok, data }));
+            } catch (err) {
+              res.setHeader('Content-Type', 'application/json');
+              return res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+          }
+
+          res.setHeader('Content-Type', 'application/json');
+          return res.end(JSON.stringify({ success: false, error: 'No RESEND_API_KEY configured' }));
         }
 
         next();

@@ -27,11 +27,11 @@ const STUDIOS = [
       className: 'w-20 sm:w-28 md:w-32 lg:w-40'
     },
     allInOne: {
-      baseX: '36%',
-      baseY: '34%',
+      baseX: '33%',
+      baseY: '30%',
       baseRotate: -2,
       config: { a: 0.8, b: 1.1, A: 4, B: 4, delta: Math.PI },
-      className: 'w-18 sm:w-22'
+      className: 'w-[86px] sm:w-[106px]'
     }
   },
   {
@@ -54,11 +54,11 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      baseX: '8%',
-      baseY: '10%',
+      baseX: '7%',
+      baseY: '8%',
       baseRotate: -4,
       config: { a: 1.1, b: 1.5, A: 4, B: 4, delta: 0 },
-      className: 'w-20 sm:w-24'
+      className: 'w-[96px] sm:w-[115px]'
     }
   },
   {
@@ -81,11 +81,11 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-44 lg:w-52'
     },
     allInOne: {
-      baseX: '62%',
-      baseY: '8%',
+      baseX: '59%',
+      baseY: '6%',
       baseRotate: 3,
       config: { a: 1.2, b: 1.4, A: 4, B: 4, delta: Math.PI / 3 },
-      className: 'w-20 sm:w-24'
+      className: 'w-[96px] sm:w-[115px]'
     }
   },
   {
@@ -108,11 +108,11 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      baseX: '10%',
-      baseY: '56%',
+      baseX: '8%',
+      baseY: '52%',
       baseRotate: 4,
       config: { a: 1.4, b: 1.1, A: 4, B: 4, delta: Math.PI / 4 },
-      className: 'w-20 sm:w-24'
+      className: 'w-[96px] sm:w-[115px]'
     }
   },
   {
@@ -135,11 +135,11 @@ const STUDIOS = [
       className: 'w-12 sm:w-16 md:w-20 lg:w-24'
     },
     allInOne: {
-      baseX: '68%',
-      baseY: '54%',
+      baseX: '69%',
+      baseY: '50%',
       baseRotate: -5,
       config: { a: 1.3, b: 1.6, A: 2, B: 3, delta: Math.PI / 2 },
-      className: 'w-7 sm:w-8'
+      className: 'w-[34px] sm:w-[38px]'
     }
   }
 ];
@@ -363,7 +363,7 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
               <div
                 onClick={handlePrev}
                 className={`absolute left-[-4%] sm:left-[-1%] top-1/2 -translate-y-1/2 z-10 -rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity ${
-                  STUDIOS[prevIndex].id === 'ticket' ? 'w-10 sm:w-12' : 'w-24 sm:w-32'
+                  STUDIOS[prevIndex].id === 'ticket' ? 'w-[44px] sm:w-[53px]' : 'w-[106px] sm:w-[141px]'
                 }`}
               >
                 <img 
@@ -429,8 +429,8 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
                     onClick={(e) => handleOpenStudio(STUDIOS[currentIndex], e)}
                     className={`relative cursor-pointer filter drop-shadow-[6px_6px_0px_#2D2D2D] select-none ${
                       STUDIOS[currentIndex].id === 'ticket' 
-                        ? 'w-16 sm:w-20 max-h-[44vh]' 
-                        : 'w-36 sm:w-44 max-w-[55%]'
+                        ? 'w-[71px] sm:w-[88px] max-h-[48vh]' 
+                        : 'w-[158px] sm:w-[194px] max-w-[60%]'
                     }`}
                   >
                     <img 
@@ -453,7 +453,7 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
               <div
                 onClick={handleNext}
                 className={`absolute right-[-4%] sm:right-[-1%] top-1/2 -translate-y-1/2 z-10 rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity ${
-                  STUDIOS[nextIndex].id === 'ticket' ? 'w-10 sm:w-12' : 'w-24 sm:w-32'
+                  STUDIOS[nextIndex].id === 'ticket' ? 'w-[44px] sm:w-[53px]' : 'w-[106px] sm:w-[141px]'
                 }`}
               >
                 <img 

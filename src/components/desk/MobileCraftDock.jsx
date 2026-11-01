@@ -14,11 +14,6 @@ export function MobileCraftDock() {
         {/* 1. LEFT ITEM: Crafter's Notes */}
         <div className="relative z-10 -rotate-3 hover:rotate-0 transition-transform origin-bottom-left">
           <CrafterNotes className="w-28 sm:w-32" />
-          
-          {/* Pinned washi tape at bottom without text */}
-          <div className="absolute -bottom-1 -left-2 z-20 pointer-events-none">
-            <WashiTape className="w-16 h-3.5 -rotate-6" />
-          </div>
         </div>
 
         {/* 2. MIDDLE ITEM: Torn Receipt with Japanese 切手 stamps */}

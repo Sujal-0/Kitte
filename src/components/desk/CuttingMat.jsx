@@ -451,20 +451,6 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
                   onOpenStudio={onOpenStudio}
                 />
               ))}
-
-              {/* Bottom Indicator with zigzagHeart */}
-              <div className="absolute bottom-2.5 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
-                <div className="flex items-center gap-1.5 bg-[#2D2D2D] border-2 border-[#FFFCE8] px-3 py-1 shadow-[2px_2px_0px_#1A1A1A] rounded-sm">
-                  <img 
-                    src="/assets/zigzagHeart.webp" 
-                    alt="Active" 
-                    className="w-3.5 h-3.5 object-contain inline-block filter drop-shadow-[0px_0px_2px_rgba(255,255,255,0.7)]" 
-                  />
-                  <span className="text-[10px] font-mono font-bold text-[#FFFCE8] tracking-widest uppercase">
-                    ALL-IN-ONE STUDIO OVERVIEW
-                  </span>
-                </div>
-              </div>
             </motion.div>
           )}
 

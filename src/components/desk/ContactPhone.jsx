@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
 import { useUrlStateBool } from '../../hooks/useUrlState';
 import { triggerBurst } from '../ui/ClickBurstEngine';
+
+const DEFAULT_MESSAGE = "Let's work together! What kind of website are we making? :)";
 
 export function ContactPhone({ className = "w-24 md:w-28" }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -11,9 +13,31 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
   const [isOpen, setIsOpen] = useUrlStateBool('phone', false);
 
   const [sender, setSender] = useState('');
-  const [budget, setBudget] = useState('Pick a range');
-  const [deadline, setDeadline] = useState('When by?');
-  const [message, setMessage] = useState("Let's work together! What kind of website are we making? :)");
+  const [message, setMessage] = useState(DEFAULT_MESSAGE);
+  const messageRef = useRef(null);
+
+  const selectDefaultMessage = () => {
+    if (messageRef.current && message === DEFAULT_MESSAGE) {
+      messageRef.current.select();
+      try {
+        messageRef.current.setSelectionRange(0, messageRef.current.value.length);
+      } catch (_) {}
+    }
+  };
+
+  const handleMessageFocus = () => {
+    if (message === DEFAULT_MESSAGE) {
+      selectDefaultMessage();
+      setTimeout(selectDefaultMessage, 20);
+    }
+  };
+
+  const handleMessageClick = () => {
+    if (message === DEFAULT_MESSAGE) {
+      selectDefaultMessage();
+      setTimeout(selectDefaultMessage, 20);
+    }
+  };
 
   const [time, setTime] = useState('');
   
@@ -32,7 +56,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     soundFX.playSnap();
-    const mailto = `mailto:sujalsingh2204@gmail.com?subject=${encodeURIComponent("New Project Inquiry [KITTE]")}&body=${encodeURIComponent(`From: ${sender}\nBudget: ${budget}\nDeadline: ${deadline}\n\nMessage:\n${message}`)}`;
+    const mailto = `mailto:sujalsingh2204@gmail.com?subject=${encodeURIComponent("New Project Inquiry [KITTE]")}&body=${encodeURIComponent(`From: ${sender}\n\nMessage:\n${message}`)}`;
     window.location.href = mailto;
     setIsOpen(false);
   };
@@ -116,30 +140,13 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                     className="w-full bg-transparent focus:outline-none placeholder:text-zinc-400/70 text-zinc-900 text-[10px] sm:text-xs"
                   />
                 </div>
-                <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
-                  <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">Budget:</span>
-                  <input
-                    type="text"
-                    placeholder="Pick a range"
-                    value={budget}
-                    onChange={(e) => setBudget(e.target.value)}
-                    className="w-full bg-transparent focus:outline-none placeholder:text-zinc-400/70 text-zinc-900 text-[10px] sm:text-xs"
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
-                  <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">Deadline:</span>
-                  <input
-                    type="text"
-                    placeholder="When by?"
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full bg-transparent focus:outline-none placeholder:text-zinc-400/70 text-zinc-900 text-[10px] sm:text-xs"
-                  />
-                </div>
-                
                 <textarea
+                  ref={messageRef}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
+                  onFocus={handleMessageFocus}
+                  onClick={handleMessageClick}
+                  placeholder="What kind of website are we making? :)"
                   className="w-full flex-1 bg-transparent focus:outline-none resize-none mt-1 p-2 text-[11px] sm:text-[13px] leading-relaxed text-zinc-900"
                 />
               </form>

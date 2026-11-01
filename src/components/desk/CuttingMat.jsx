@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FloatingArtifact } from './FloatingArtifact';
 import { WashiTape } from './WashiTape';
 import { useIsMobile } from '../../hooks/useIsMobile';
-import { useSessionState } from '../../hooks/useSessionState';
 import { soundFX } from '../../utils/audio';
 import { triggerBurst } from '../ui/ClickBurstEngine';
 
@@ -20,7 +19,6 @@ const STUDIOS = [
       'Custom Image Filtering Pipeline',
       'CMYK / PDF Print Support'
     ],
-    // Desktop coordinates
     desktop: {
       baseX: '35%',
       baseY: '35%',
@@ -28,12 +26,11 @@ const STUDIOS = [
       config: { a: 0.8, b: 1.1, A: 10, B: 10, delta: Math.PI },
       className: 'w-20 sm:w-28 md:w-32 lg:w-40'
     },
-    // Mobile All-in-one coordinates
     allInOne: {
-      style: { top: '38%', left: '50%', transform: 'translate(-50%, -50%)' },
+      style: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
       baseRotate: -2,
-      config: { a: 0.8, b: 1.1, A: 6, B: 8, delta: Math.PI },
-      className: 'w-20 sm:w-24'
+      config: { a: 0.8, b: 1.1, A: 4, B: 4, delta: Math.PI },
+      className: 'w-18 sm:w-22'
     }
   },
   {
@@ -56,10 +53,10 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      style: { top: '10%', left: '8%' },
-      baseRotate: -5,
-      config: { a: 1.2, b: 1.8, A: 8, B: 12, delta: 0 },
-      className: 'w-24 sm:w-28'
+      style: { top: '14%', left: '10%' },
+      baseRotate: -4,
+      config: { a: 1.1, b: 1.5, A: 4, B: 4, delta: 0 },
+      className: 'w-20 sm:w-24'
     }
   },
   {
@@ -82,10 +79,10 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-44 lg:w-52'
     },
     allInOne: {
-      style: { top: '8%', right: '8%' },
-      baseRotate: 4,
-      config: { a: 1.4, b: 1.6, A: 10, B: 8, delta: Math.PI / 3 },
-      className: 'w-24 sm:w-28'
+      style: { top: '14%', right: '10%' },
+      baseRotate: 3,
+      config: { a: 1.2, b: 1.4, A: 4, B: 4, delta: Math.PI / 3 },
+      className: 'w-20 sm:w-24'
     }
   },
   {
@@ -108,10 +105,10 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      style: { bottom: '12%', left: '8%' },
-      baseRotate: 6,
-      config: { a: 1.8, b: 1.3, A: 8, B: 10, delta: Math.PI / 4 },
-      className: 'w-24 sm:w-28'
+      style: { bottom: '18%', left: '12%' },
+      baseRotate: 4,
+      config: { a: 1.4, b: 1.1, A: 4, B: 4, delta: Math.PI / 4 },
+      className: 'w-20 sm:w-24'
     }
   },
   {
@@ -134,18 +131,18 @@ const STUDIOS = [
       className: 'w-12 sm:w-16 md:w-20 lg:w-24'
     },
     allInOne: {
-      style: { bottom: '14%', right: '10%' },
-      baseRotate: -7,
-      config: { a: 1.5, b: 2.0, A: 7, B: 9, delta: Math.PI / 2 },
-      className: 'w-16 sm:w-20'
+      style: { bottom: '18%', right: '12%' },
+      baseRotate: -5,
+      config: { a: 1.3, b: 1.6, A: 3, B: 4, delta: Math.PI / 2 },
+      className: 'w-14 sm:w-16'
     }
   }
 ];
 
-export function CuttingMat({ onOpenStudio }) {
+export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
   const isMobile = useIsMobile(1024);
-  const [mobileMode, setMobileMode] = useSessionState('kitteMobileDeskMode', 'swipe');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const isDraggingRef = useRef(false);
 
   const prevIndex = (currentIndex - 1 + STUDIOS.length) % STUDIOS.length;
@@ -154,22 +151,24 @@ export function CuttingMat({ onOpenStudio }) {
   const handlePrev = (e) => {
     if (e?.stopPropagation) e.stopPropagation();
     soundFX.playPop();
-    if (e?.clientX && e?.clientY) {
+    if (e?.clientX) {
       triggerBurst(e.clientX, e.clientY);
     } else {
-      triggerBurst(window.innerWidth * 0.3, window.innerHeight * 0.45);
+      triggerBurst(window.innerWidth * 0.25, window.innerHeight * 0.45);
     }
+    setDirection(-1);
     setCurrentIndex(prevIndex);
   };
 
   const handleNext = (e) => {
     if (e?.stopPropagation) e.stopPropagation();
     soundFX.playPop();
-    if (e?.clientX && e?.clientY) {
+    if (e?.clientX) {
       triggerBurst(e.clientX, e.clientY);
     } else {
-      triggerBurst(window.innerWidth * 0.7, window.innerHeight * 0.45);
+      triggerBurst(window.innerWidth * 0.75, window.innerHeight * 0.45);
     }
+    setDirection(1);
     setCurrentIndex(nextIndex);
   };
 
@@ -190,13 +189,6 @@ export function CuttingMat({ onOpenStudio }) {
     }
   };
 
-  const handleToggleMode = (mode, e) => {
-    if (e?.stopPropagation) e.stopPropagation();
-    soundFX.playPop();
-    if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
-    setMobileMode(mode);
-  };
-
   // ==========================================
   // DESKTOP LAYOUT (Screen >= 1024px)
   // Preserves 100% of original desktop experience
@@ -204,7 +196,6 @@ export function CuttingMat({ onOpenStudio }) {
   if (!isMobile) {
     return (
       <div className="relative w-full h-full flex items-center justify-center pointer-events-none p-4 md:p-8 lg:p-12 overflow-hidden">
-        {/* The Cutting Mat SVG Base */}
         <div className="relative w-full h-full max-w-6xl scale-100 md:scale-110">
           <img 
             src="/assets/cutting-mat.svg" 
@@ -213,7 +204,6 @@ export function CuttingMat({ onOpenStudio }) {
             style={{ transform: "rotate(-1deg)" }} 
           />
           
-          {/* Container for Artifacts */}
           <div className="absolute inset-0 z-10 pointer-events-auto">
             {/* Joy Boy - Static */}
             <div className="absolute top-[8%] left-[45%] w-10 sm:w-14 md:w-16 lg:w-20 -rotate-3 z-0 pointer-events-none drop-shadow-sm select-none">
@@ -250,54 +240,15 @@ export function CuttingMat({ onOpenStudio }) {
 
   // ==========================================
   // MOBILE RESPONSIVE LAYOUT (Screen < 1024px)
-  // Dual Mode: Swipe Deck vs All-in-One Overview
+  // Maximized cutting mat workspace
   // ==========================================
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-between pointer-events-none px-3 py-2 overflow-hidden">
+    <div className="relative w-full h-full flex items-center justify-center pointer-events-none p-1 overflow-hidden">
       
-      {/* Top Controls: Tactile Dual-Mode Switcher Pill */}
-      <div className="relative z-40 pointer-events-auto flex items-center justify-center my-1 select-none">
-        <div className="flex items-center gap-1 bg-[#F4F1EA] border-2 border-[#2D2D2D] p-1 shadow-[2px_2px_0px_#2D2D2D] rounded-sm">
-          <button
-            type="button"
-            onClick={(e) => handleToggleMode('swipe', e)}
-            className={`px-3 py-1 font-marker text-xs uppercase tracking-wider transition-all relative ${
-              mobileMode === 'swipe' ? 'text-[#FBF7F5]' : 'text-[#2D2D2D] opacity-75'
-            }`}
-          >
-            {mobileMode === 'swipe' && (
-              <motion.div 
-                layoutId="matModePill"
-                className="absolute inset-0 bg-[#2D2D2D] -z-10 rounded-[2px]"
-                transition={{ type: "spring", stiffness: 450, damping: 30 }}
-              />
-            )}
-            ✦ SWIPE DECK
-          </button>
-          
-          <button
-            type="button"
-            onClick={(e) => handleToggleMode('all-in-one', e)}
-            className={`px-3 py-1 font-marker text-xs uppercase tracking-wider transition-all relative ${
-              mobileMode === 'all-in-one' ? 'text-[#FBF7F5]' : 'text-[#2D2D2D] opacity-75'
-            }`}
-          >
-            {mobileMode === 'all-in-one' && (
-              <motion.div 
-                layoutId="matModePill"
-                className="absolute inset-0 bg-[#2D2D2D] -z-10 rounded-[2px]"
-                transition={{ type: "spring", stiffness: 450, damping: 30 }}
-              />
-            )}
-            ☷ ALL-IN-ONE
-          </button>
-        </div>
-      </div>
-
-      {/* The Cutting Mat Container */}
-      <div className="relative w-full flex-1 max-w-sm sm:max-w-md my-1 flex items-center justify-center overflow-hidden">
+      {/* The Cutting Mat SVG Base - Scaled up to fill space without overflow */}
+      <div className="relative w-full h-full max-w-[94vw] max-h-[58vh] aspect-[1.38/1] flex items-center justify-center">
         
-        {/* Cutting Mat Realistic Graphic */}
+        {/* Cutting Mat Vector Base with Neo-Brutalist Shadow */}
         <img 
           src="/assets/cutting-mat.svg" 
           alt="Cutting Mat Base" 
@@ -305,18 +256,18 @@ export function CuttingMat({ onOpenStudio }) {
           style={{ transform: "rotate(-0.8deg)" }} 
         />
 
-        {/* Mat Content Layer */}
-        <div className="absolute inset-0 z-20 pointer-events-auto flex items-center justify-center overflow-hidden">
+        {/* Bounded Inner Layer (Everything stays strictly inside the green mat) */}
+        <div className="absolute inset-[4%] z-20 pointer-events-auto flex items-center justify-center overflow-hidden">
           
-          {/* Static Pinned Stickers (Background layer on mat) */}
-          <div className="absolute top-[8%] right-[10%] w-12 sm:w-14 rotate-6 z-0 pointer-events-none drop-shadow-sm select-none opacity-85">
+          {/* Static Pinned Stickers (Kept safely inside green mat bounds) */}
+          <div className="absolute top-[12%] right-[16%] w-10 sm:w-12 rotate-3 z-0 pointer-events-none drop-shadow-sm select-none opacity-85">
             <img src="/assets/joyBoy.webp" alt="Joy Boy" className="w-full h-auto" />
-            <WashiTape className="absolute -top-1.5 left-1/2 -translate-x-1/2 -rotate-2 w-7 h-3" />
+            <WashiTape className="absolute -top-1.5 left-1/2 -translate-x-1/2 -rotate-2 w-6 h-2.5" />
           </div>
 
-          <div className="absolute bottom-[16%] left-[6%] w-10 sm:w-12 -rotate-6 z-0 pointer-events-none drop-shadow-sm select-none opacity-70">
+          <div className="absolute bottom-[16%] left-[16%] w-9 sm:w-11 -rotate-3 z-0 pointer-events-none drop-shadow-sm select-none opacity-75">
             <img src="/assets/time.webp" alt="Time Archive" className="w-full h-auto" />
-            <WashiTape className="absolute -top-1 left-1/2 -translate-x-1/2 rotate-3 w-6 h-2.5" />
+            <WashiTape className="absolute -top-1 left-1/2 -translate-x-1/2 rotate-3 w-5 h-2" />
           </div>
 
           {/* ==================================== */}
@@ -325,147 +276,150 @@ export function CuttingMat({ onOpenStudio }) {
           {mobileMode === 'swipe' && (
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
               
-              {/* Left Arrow Button (dottedUpArrow.svg rotated -90deg) */}
+              {/* Left Arrow Button: Facing Left to Right (→) */}
               <button
                 type="button"
                 onClick={handlePrev}
                 aria-label="Previous Studio"
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-40 p-1 flex flex-col items-center justify-center group active:scale-90 transition-transform cursor-pointer"
+                className="absolute left-1.5 sm:left-3 top-1/2 -translate-y-1/2 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFFCE8] border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] flex items-center justify-center group active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer pointer-events-auto"
               >
                 <img 
                   src="/assets/dottedUpArrow.svg" 
                   alt="Previous" 
-                  className="w-8 h-8 sm:w-10 sm:h-10 -rotate-90 filter drop-shadow-[2px_2px_0px_#2D2D2D] select-none pointer-events-none" 
+                  className="w-5 h-5 rotate-0 select-none pointer-events-none transition-transform group-hover:scale-110" 
                 />
-                <span className="font-marker text-[9px] text-[#E6E4D9] uppercase tracking-wider handwritten-text opacity-90 -mt-1 select-none">
-                  prev
-                </span>
               </button>
 
-              {/* Right Arrow Button (dottedUpArrow.svg rotated 90deg) */}
+              {/* Right Arrow Button: Facing Right to Left (←) */}
               <button
                 type="button"
                 onClick={handleNext}
                 aria-label="Next Studio"
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-40 p-1 flex flex-col items-center justify-center group active:scale-90 transition-transform cursor-pointer"
+                className="absolute right-1.5 sm:right-3 top-1/2 -translate-y-1/2 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFFCE8] border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] flex items-center justify-center group active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer pointer-events-auto"
               >
                 <img 
                   src="/assets/dottedUpArrow.svg" 
                   alt="Next" 
-                  className="w-8 h-8 sm:w-10 sm:h-10 rotate-90 filter drop-shadow-[2px_2px_0px_#2D2D2D] select-none pointer-events-none" 
+                  className="w-5 h-5 rotate-180 select-none pointer-events-none transition-transform group-hover:scale-110" 
                 />
-                <span className="font-marker text-[9px] text-[#E6E4D9] uppercase tracking-wider handwritten-text opacity-90 -mt-1 select-none">
-                  next
-                </span>
               </button>
 
-              {/* Left Peeking Card (Clickable to move prev) */}
-              <motion.div
-                key={`peek-left-${prevIndex}`}
-                initial={{ opacity: 0, x: -60, scale: 0.7 }}
-                animate={{ opacity: 0.65, x: 0, scale: 0.8 }}
-                exit={{ opacity: 0, x: -60 }}
-                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              {/* Left Peeking Card (Clickable) */}
+              <div
                 onClick={handlePrev}
-                className="absolute left-[-8%] sm:left-[-4%] top-1/2 -translate-y-1/2 z-10 w-28 sm:w-36 -rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none"
+                className="absolute left-[-4%] sm:left-[-1%] top-1/2 -translate-y-1/2 z-10 w-24 sm:w-32 -rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity"
               >
                 <img 
                   src={STUDIOS[prevIndex].src} 
                   alt={STUDIOS[prevIndex].title} 
                   className="w-full h-auto pointer-events-none" 
                 />
-              </motion.div>
+              </div>
 
-              {/* Center Hero Card (Swipeable / Clickable) */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={STUDIOS[currentIndex].id}
-                  initial={{ opacity: 0, scale: 0.88, y: 15 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1, 
-                    y: [0, -6, 0, 6, 0],
-                    rotateZ: [0, 1.2, 0, -1.2, 0]
-                  }}
-                  exit={{ opacity: 0, scale: 0.88, y: -15 }}
-                  transition={{ 
-                    y: { repeat: Infinity, duration: 4.8, ease: "easeInOut" },
-                    rotateZ: { repeat: Infinity, duration: 4.8, ease: "easeInOut" },
-                    default: { type: "spring", stiffness: 380, damping: 26 }
-                  }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.25}
-                  onDragStart={() => {
-                    isDraggingRef.current = true;
-                  }}
-                  onDragEnd={(e, { offset, velocity }) => {
-                    setTimeout(() => {
-                      isDraggingRef.current = false;
-                    }, 50);
+              {/* Center Hero Card (Swipeable, Directional Springs) */}
+              <div className="relative z-30 flex items-center justify-center w-full h-full pointer-events-auto">
+                <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                  <motion.div
+                    key={STUDIOS[currentIndex].id}
+                    custom={direction}
+                    variants={{
+                      enter: (dir) => ({
+                        x: dir > 0 ? 80 : dir < 0 ? -80 : 0,
+                        opacity: 0,
+                        scale: 0.88
+                      }),
+                      center: {
+                        x: 0,
+                        opacity: 1,
+                        scale: 1,
+                        transition: {
+                          x: { type: "spring", stiffness: 360, damping: 26 },
+                          opacity: { duration: 0.22 },
+                          scale: { duration: 0.22 }
+                        }
+                      },
+                      exit: (dir) => ({
+                        x: dir > 0 ? -80 : 80,
+                        opacity: 0,
+                        scale: 0.88,
+                        transition: {
+                          x: { type: "spring", stiffness: 360, damping: 26 },
+                          opacity: { duration: 0.18 }
+                        }
+                      })
+                    }}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.3}
+                    onDragStart={() => {
+                      isDraggingRef.current = true;
+                    }}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      setTimeout(() => {
+                        isDraggingRef.current = false;
+                      }, 60);
 
-                    const swipe = offset.x;
-                    if (swipe < -40 || velocity.x < -300) {
-                      handleNext(e);
-                    } else if (swipe > 40 || velocity.x > 300) {
-                      handlePrev(e);
-                    }
-                  }}
-                  onClick={(e) => handleOpenStudio(STUDIOS[currentIndex], e)}
-                  whileTap={{ scale: 0.96 }}
-                  className="relative z-30 w-36 sm:w-44 max-w-[55%] cursor-pointer filter drop-shadow-[6px_6px_0px_#2D2D2D] select-none"
-                >
-                  <img 
-                    src={STUDIOS[currentIndex].src} 
-                    alt={STUDIOS[currentIndex].title} 
-                    className="w-full h-auto pointer-events-none" 
-                  />
-                  
-                  {/* Subtle headline label badge */}
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#2D2D2D] text-[#FBF7F5] px-2 py-0.5 rounded-[2px] shadow-[2px_2px_0px_#1A1A1A] pointer-events-none">
-                    <span className="font-marker text-[10px] sm:text-xs tracking-wider uppercase whitespace-nowrap handwritten-text">
-                      {STUDIOS[currentIndex].title}
-                    </span>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                      const swipe = offset.x;
+                      if (swipe < -30 || velocity.x < -200) {
+                        handleNext(e);
+                      } else if (swipe > 30 || velocity.x > 200) {
+                        handlePrev(e);
+                      }
+                    }}
+                    onClick={(e) => handleOpenStudio(STUDIOS[currentIndex], e)}
+                    className="relative w-36 sm:w-44 max-w-[55%] cursor-pointer filter drop-shadow-[6px_6px_0px_#2D2D2D] select-none"
+                  >
+                    <img 
+                      src={STUDIOS[currentIndex].src} 
+                      alt={STUDIOS[currentIndex].title} 
+                      className="w-full h-auto pointer-events-none" 
+                    />
+                    
+                    {/* Badge with studio title */}
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#2D2D2D] text-[#FFFCE8] border-2 border-[#2D2D2D] px-2.5 py-0.5 shadow-[2px_2px_0px_#1A1A1A] pointer-events-none whitespace-nowrap">
+                      <span className="font-mono font-bold text-[9px] sm:text-[10px] tracking-wider uppercase">
+                        {STUDIOS[currentIndex].title}
+                      </span>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              {/* Right Peeking Card (Clickable to move next) */}
-              <motion.div
-                key={`peek-right-${nextIndex}`}
-                initial={{ opacity: 0, x: 60, scale: 0.7 }}
-                animate={{ opacity: 0.65, x: 0, scale: 0.8 }}
-                exit={{ opacity: 0, x: 60 }}
-                transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              {/* Right Peeking Card (Clickable) */}
+              <div
                 onClick={handleNext}
-                className="absolute right-[-8%] sm:right-[-4%] top-1/2 -translate-y-1/2 z-10 w-28 sm:w-36 rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none"
+                className="absolute right-[-4%] sm:right-[-1%] top-1/2 -translate-y-1/2 z-10 w-24 sm:w-32 rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity"
               >
                 <img 
                   src={STUDIOS[nextIndex].src} 
                   alt={STUDIOS[nextIndex].title} 
                   className="w-full h-auto pointer-events-none" 
                 />
-              </motion.div>
+              </div>
 
-              {/* Bottom Deck Indicator */}
-              <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-0.5 pointer-events-none select-none">
-                <div className="flex items-center gap-2">
+              {/* Bottom Deck Indicator with High-Contrast Pill & zigzagHeart Asset */}
+              <div className="absolute bottom-2.5 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2 bg-[#2D2D2D] border-2 border-[#FFFCE8] px-3 py-1 shadow-[2px_2px_0px_#1A1A1A] rounded-sm">
                   {STUDIOS.map((s, idx) => (
-                    <span
-                      key={s.id}
-                      className={`transition-all duration-300 font-marker ${
-                        idx === currentIndex 
-                          ? 'text-[#F9F7F1] text-sm scale-125' 
-                          : 'text-[#F9F7F1]/40 text-xs'
-                      }`}
-                    >
-                      {idx === currentIndex ? '✦' : '•'}
+                    <span key={s.id} className="flex items-center justify-center">
+                      {idx === currentIndex ? (
+                        <img 
+                          src="/assets/zigzagHeart.webp" 
+                          alt="Active" 
+                          className="w-3.5 h-3.5 object-contain inline-block filter drop-shadow-[0px_0px_2px_rgba(255,255,255,0.7)]" 
+                        />
+                      ) : (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#FFFCE8]/50 inline-block" />
+                      )}
                     </span>
                   ))}
+                  <span className="ml-1 text-[10px] font-mono font-bold text-[#FFFCE8] tracking-widest uppercase">
+                    DECK ({currentIndex + 1}/{STUDIOS.length})
+                  </span>
                 </div>
-                <span className="font-marker text-[10px] tracking-widest text-[#E6E4D9]/90 uppercase handwritten-text">
-                  ••• swipe deck ({currentIndex + 1}/{STUDIOS.length}) •••
-                </span>
               </div>
 
             </div>
@@ -473,12 +427,13 @@ export function CuttingMat({ onOpenStudio }) {
 
           {/* ========================================= */}
           {/* OPTION 2: ALL-IN-ONE VIEW (Five in One)   */}
+          {/* Strictly bounded inside green cutting mat */}
           {/* ========================================= */}
           {mobileMode === 'all-in-one' && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative w-full h-full pointer-events-auto"
             >
               {STUDIOS.map((s) => (
@@ -497,11 +452,18 @@ export function CuttingMat({ onOpenStudio }) {
                 />
               ))}
 
-              {/* Bottom All-In-One Indicator */}
-              <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
-                <span className="font-marker text-[10px] tracking-widest text-[#E6E4D9]/90 uppercase handwritten-text">
-                  ••• all-in-one studio overview •••
-                </span>
+              {/* Bottom Indicator with zigzagHeart */}
+              <div className="absolute bottom-2.5 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
+                <div className="flex items-center gap-1.5 bg-[#2D2D2D] border-2 border-[#FFFCE8] px-3 py-1 shadow-[2px_2px_0px_#1A1A1A] rounded-sm">
+                  <img 
+                    src="/assets/zigzagHeart.webp" 
+                    alt="Active" 
+                    className="w-3.5 h-3.5 object-contain inline-block filter drop-shadow-[0px_0px_2px_rgba(255,255,255,0.7)]" 
+                  />
+                  <span className="text-[10px] font-mono font-bold text-[#FFFCE8] tracking-widest uppercase">
+                    ALL-IN-ONE STUDIO OVERVIEW
+                  </span>
+                </div>
               </div>
             </motion.div>
           )}

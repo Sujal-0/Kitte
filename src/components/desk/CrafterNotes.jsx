@@ -86,19 +86,18 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
         {isOpen && (
           <motion.div 
             key="notes-modal-overlay"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 lg:p-12"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 cursor-pointer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)} 
           >
             <motion.div 
-              // Locked width, auto height so image dictates aspect ratio perfectly
-              className="relative w-full max-w-[650px] inline-block"
-              initial={{ y: 50, scale: 0.95, rotateZ: -1 }}
+              className="relative w-full max-w-[340px] sm:max-w-[480px] md:max-w-[620px] flex items-center justify-center cursor-auto"
+              initial={{ y: 30, scale: 0.95, rotateZ: -1 }}
               animate={{ y: 0, scale: 1, rotateZ: 0 }}
-              exit={{ y: 50, scale: 0.95, rotateZ: -1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              exit={{ y: 30, scale: 0.95, rotateZ: -1 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
               onClick={(e) => e.stopPropagation()} 
             >
               <img 
@@ -107,23 +106,19 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                 className="w-full h-auto drop-shadow-2xl pointer-events-none select-none z-10 block"
               />
 
-              {/* VISIBLE CLOSE BUTTON - Moved much further inside to stay on the paper */}
+              {/* Close Button */}
               <button 
-                className="absolute top-[18%] right-[15%] z-30 cursor-pointer font-marker text-4xl text-pencil hover:text-markerRed transition-transform hover:scale-110 active:scale-95"
+                className="absolute top-[14%] sm:top-[16%] right-[12%] sm:right-[14%] z-30 cursor-pointer font-marker text-2xl sm:text-3xl text-pencil hover:text-markerRed transition-transform hover:scale-110 active:scale-95"
                 onClick={(e) => { e.stopPropagation(); soundFX.playPop(); setIsOpen(false); }}
                 aria-label="Close Note"
               >
                 X
               </button>
 
-              {/* 
-                TEXT OVERLAY & INTERACTION ZONE
-                Increased left padding to 18% to align exactly with the ruled lines.
-                Increased right/bottom padding to ensure text stays completely inside the torn edges.
-              */}
+              {/* Text Overlay & Interaction Zone */}
               <div 
-                className="absolute top-[28%] bottom-[20%] left-[18%] right-[18%] flex flex-col z-20 font-marker text-pencil cursor-pointer"
-                style={{ transform: "rotate(-3deg)" }}
+                className="absolute top-[26%] bottom-[16%] left-[16%] right-[16%] flex flex-col justify-between z-20 font-marker text-pencil cursor-pointer"
+                style={{ transform: "rotate(-2.5deg)" }}
                 onClick={handleNextPage}
                 onWheel={handleWheel}
                 onTouchStart={(e) => {
@@ -133,25 +128,24 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                   if (!window.touchStartY) return;
                   const touchEndY = e.changedTouches[0].clientY;
                   const delta = window.touchStartY - touchEndY;
-                  if (delta > 40) handleNextPage(e); // swipe up
-                  else if (delta < -40) handlePrevPage(e); // swipe down
+                  if (delta > 35) handleNextPage(e);
+                  else if (delta < -35) handlePrevPage(e);
                   window.touchStartY = null;
                 }}
               >
-                
-                <div className="flex-1 w-full h-full relative">
+                <div className="flex-1 w-full h-full relative overflow-hidden flex flex-col justify-center">
                   <AnimatePresence mode="wait">
                     {page === 0 && (
                       <motion.div 
                         key="page0"
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-snug flex flex-col gap-3"
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.18 }}
+                        className="text-xs sm:text-base md:text-xl lg:text-2xl leading-snug flex flex-col gap-1.5 sm:gap-2.5"
                       >
                         <p>
-                          <span className="bg-postitYellow px-2 -rotate-1 inline-block">Analog memory methodology.</span>
+                          <span className="bg-postitYellow px-1.5 py-0.5 -rotate-1 inline-block">Analog memory methodology.</span>
                         </p>
                         <p>
                           We are a digital fabrication studio obsessed with the physical workspace.
@@ -162,11 +156,11 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                     {page === 1 && (
                       <motion.div 
                         key="page1"
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-snug flex flex-col gap-3"
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.18 }}
+                        className="text-xs sm:text-base md:text-xl lg:text-2xl leading-snug flex flex-col gap-1.5 sm:gap-2.5"
                       >
                         <p>
                           Users design, manipulate, and generate a production-level textile application blending neo-brutalism with manga aesthetics.
@@ -177,16 +171,16 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                     {page === 2 && (
                       <motion.div 
                         key="page2"
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-snug flex flex-col gap-3"
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.18 }}
+                        className="text-xs sm:text-base md:text-xl lg:text-2xl leading-snug flex flex-col gap-1.5 sm:gap-2"
                       >
                         <p>
                           Features five core studios generating tactile items like <span className="text-ballpointBlue">Bounty Posters</span> and <span className="text-ballpointBlue">Travel IDs</span>.
                         </p>
-                        <div className="mt-3 pt-3 border-t-2 border-pencil/20 opacity-80 text-base md:text-lg">
+                        <div className="mt-1.5 pt-1.5 border-t border-pencil/20 opacity-80 text-[10px] sm:text-xs md:text-sm">
                           <p>Local storage: ACTIVE // Desk UI: SECURE</p>
                           <p>Est. 2026 // By Sujal Singh</p>
                         </div>
@@ -195,8 +189,8 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                   </AnimatePresence>
                 </div>
 
-                {/* Micro-interaction indicator - Moved safely inside the container */}
-                <div className="absolute -bottom-[10%] right-[5%] animate-pulse text-pencil/50 text-xs sm:text-sm md:text-base font-bold tracking-widest pointer-events-none" style={{ transform: "rotate(-1deg)" }}>
+                {/* Micro-interaction indicator */}
+                <div className="text-right text-pencil/50 text-[9px] sm:text-xs md:text-sm font-bold tracking-widest pointer-events-none pb-1">
                   ( swipe or tap )
                 </div>
               </div>

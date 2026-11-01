@@ -58,46 +58,41 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
         {isOpen && (
           <motion.div 
             key="receipt-modal-overlay"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 lg:p-12"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6 cursor-pointer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)} 
           >
             <motion.div 
-              className="relative h-[90vh] w-fit max-w-[95vw] inline-flex justify-center items-center cursor-pointer"
-              initial={{ y: 50, scale: 0.95, rotateZ: 1 }}
+              className="relative w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px] h-[78vh] sm:h-[84vh] max-h-[740px] flex justify-center items-center cursor-auto"
+              initial={{ y: 30, scale: 0.95, rotateZ: 1 }}
               animate={{ y: 0, scale: 1, rotateZ: 0 }}
-              exit={{ y: 50, scale: 0.95, rotateZ: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              exit={{ y: 30, scale: 0.95, rotateZ: 1 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
               onClick={(e) => e.stopPropagation()} 
             >
               <img 
                 src="/assets/receiptPrivacy_blank.webp" 
                 alt="Receipt Background"
-                className="h-full w-auto object-contain drop-shadow-2xl pointer-events-none select-none z-10 block"
+                className="w-full h-full object-contain drop-shadow-2xl pointer-events-none select-none z-10 block"
               />
 
-              {/* VISIBLE CLOSE BUTTON - Moved slightly down */}
+              {/* VISIBLE CLOSE BUTTON */}
               <button 
-                className="absolute top-[6%] right-[8%] z-30 cursor-pointer font-marker text-3xl md:text-4xl text-zinc-900 hover:text-markerRed transition-transform hover:scale-110 active:scale-95 mix-blend-multiply opacity-80"
+                className="absolute top-[5%] right-[7%] z-30 cursor-pointer font-marker text-2xl sm:text-3xl text-zinc-900 hover:text-markerRed transition-transform hover:scale-110 active:scale-95 mix-blend-multiply opacity-80"
                 onClick={(e) => { e.stopPropagation(); soundFX.playPop(); setIsOpen(false); }}
                 aria-label="Close Receipt"
               >
                 X
               </button>
 
-              {/* 
-                THE TEXT OVERLAY 
-                Shifted down (top-[26%]) to avoid overlapping the baked-in date.
-              */}
-              <div className="absolute top-[26%] bottom-[18%] left-[10%] right-[10%] flex flex-col z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-4 md:px-6 py-2">
-                
-                {/* Font sizes reduced slightly (e.g. text-[8px] instead of [9px]) */}
-                <div className="flex-1 text-[8px] sm:text-[10px] md:text-[12px] lg:text-[13px] space-y-3 md:space-y-4 font-bold flex flex-col justify-center">
+              {/* THE TEXT OVERLAY */}
+              <div className="absolute top-[25%] bottom-[16%] left-[8%] right-[8%] flex flex-col justify-between z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-2 sm:px-4 py-1.5">
+                <div className="text-[8px] sm:text-[10px] md:text-[12px] space-y-2 sm:space-y-3 font-bold flex flex-col justify-center">
                   
-                  {/* Grid layout for perfect alignment and gap between item & price */}
-                  <div className="grid grid-cols-[auto_1fr_auto] gap-4 uppercase pb-1">
+                  {/* Header row */}
+                  <div className="grid grid-cols-[auto_1fr_auto] gap-2 uppercase pb-1 text-[7px] sm:text-[9px]">
                     <span>Qty</span>
                     <span className="text-center">Item</span>
                     <span className="text-right">Price</span>
@@ -105,40 +100,39 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
                   
                   <div className="border-t-[1.5px] border-dashed border-zinc-900/60 w-full"></div>
 
-                  <div className="space-y-4 md:space-y-5 py-3 md:py-4">
+                  <div className="space-y-2.5 sm:space-y-3.5 py-1">
                     <div>
-                      <div className="grid grid-cols-[auto_1fr_auto] gap-4">
+                      <div className="grid grid-cols-[auto_1fr_auto] gap-2">
                         <span>01</span>
-                        <span className="pl-2">ESSENTIAL COOKIES</span>
+                        <span className="pl-1">ESSENTIAL COOKIES</span>
                         <span className="text-right">$0.00</span>
                       </div>
-                      <p className="text-[6px] sm:text-[8px] lg:text-[9px] text-zinc-600 pl-6 md:pl-8 uppercase leading-none mt-1">Store local memory state</p>
+                      <p className="text-[6px] sm:text-[8px] text-zinc-600 pl-4 uppercase leading-none mt-0.5">Store local memory state</p>
                     </div>
 
                     <div>
-                      <div className="grid grid-cols-[auto_1fr_auto] gap-4">
+                      <div className="grid grid-cols-[auto_1fr_auto] gap-2">
                         <span>00</span>
-                        <span className="pl-2">TRACKING SCRIPTS</span>
+                        <span className="pl-1">TRACKING SCRIPTS</span>
                         <span className="text-right">VOID</span>
                       </div>
-                      <p className="text-[6px] sm:text-[8px] lg:text-[9px] text-zinc-600 pl-6 md:pl-8 uppercase leading-none mt-1">No user data harvested</p>
+                      <p className="text-[6px] sm:text-[8px] text-zinc-600 pl-4 uppercase leading-none mt-0.5">No user data harvested</p>
                     </div>
                   </div>
 
                   <div className="border-t-[1.5px] border-dashed border-zinc-900/60 w-full"></div>
 
-                  <div className="space-y-2 md:space-y-3 pt-2 md:pt-4">
-                    <div className="flex justify-between">
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex justify-between text-[7px] sm:text-[9px]">
                       <span>DATA HARVESTED:</span>
                       <span>0 BYTES</span>
                     </div>
-                    <div className="flex justify-between text-xs sm:text-sm md:text-base lg:text-lg font-black mt-2">
+                    <div className="flex justify-between text-[10px] sm:text-xs md:text-sm font-black mt-1">
                       <span>TOTAL SECURE:</span>
                       <span>100%</span>
                     </div>
                   </div>
                 </div>
-                
               </div>
 
             </motion.div>

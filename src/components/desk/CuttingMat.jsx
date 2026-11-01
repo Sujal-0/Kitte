@@ -131,10 +131,10 @@ const STUDIOS = [
       className: 'w-12 sm:w-16 md:w-20 lg:w-24'
     },
     allInOne: {
-      style: { bottom: '18%', right: '12%' },
+      style: { bottom: '18%', right: '14%' },
       baseRotate: -5,
-      config: { a: 1.3, b: 1.6, A: 3, B: 4, delta: Math.PI / 2 },
-      className: 'w-14 sm:w-16'
+      config: { a: 1.3, b: 1.6, A: 2, B: 3, delta: Math.PI / 2 },
+      className: 'w-7 sm:w-8'
     }
   }
 ];
@@ -307,7 +307,9 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
               {/* Left Peeking Card (Clickable) */}
               <div
                 onClick={handlePrev}
-                className="absolute left-[-4%] sm:left-[-1%] top-1/2 -translate-y-1/2 z-10 w-24 sm:w-32 -rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity"
+                className={`absolute left-[-4%] sm:left-[-1%] top-1/2 -translate-y-1/2 z-10 -rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity ${
+                  STUDIOS[prevIndex].id === 'ticket' ? 'w-10 sm:w-12' : 'w-24 sm:w-32'
+                }`}
               >
                 <img 
                   src={STUDIOS[prevIndex].src} 
@@ -370,7 +372,11 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
                       }
                     }}
                     onClick={(e) => handleOpenStudio(STUDIOS[currentIndex], e)}
-                    className="relative w-36 sm:w-44 max-w-[55%] cursor-pointer filter drop-shadow-[6px_6px_0px_#2D2D2D] select-none"
+                    className={`relative cursor-pointer filter drop-shadow-[6px_6px_0px_#2D2D2D] select-none ${
+                      STUDIOS[currentIndex].id === 'ticket' 
+                        ? 'w-16 sm:w-20 max-h-[44vh]' 
+                        : 'w-36 sm:w-44 max-w-[55%]'
+                    }`}
                   >
                     <img 
                       src={STUDIOS[currentIndex].src} 
@@ -391,7 +397,9 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
               {/* Right Peeking Card (Clickable) */}
               <div
                 onClick={handleNext}
-                className="absolute right-[-4%] sm:right-[-1%] top-1/2 -translate-y-1/2 z-10 w-24 sm:w-32 rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity"
+                className={`absolute right-[-4%] sm:right-[-1%] top-1/2 -translate-y-1/2 z-10 rotate-12 cursor-pointer filter drop-shadow-[3px_3px_0px_#2D2D2D] select-none opacity-55 hover:opacity-80 transition-opacity ${
+                  STUDIOS[nextIndex].id === 'ticket' ? 'w-10 sm:w-12' : 'w-24 sm:w-32'
+                }`}
               >
                 <img 
                   src={STUDIOS[nextIndex].src} 

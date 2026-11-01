@@ -42,14 +42,19 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
       {isOpen && (
         <motion.div 
           key="phone-modal-overlay"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 backdrop-blur-sm p-4 sm:p-6 cursor-pointer"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 backdrop-blur-sm p-3 sm:p-6 cursor-pointer"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => setIsOpen(false)} 
         >
           <motion.div 
-            className="relative w-full max-w-[300px] sm:max-w-[340px] md:max-w-[380px] h-[75vh] sm:h-[82vh] max-h-[720px] flex justify-center items-center cursor-auto"
+            className="relative flex justify-center items-center cursor-auto select-none"
+            style={{
+              height: 'min(78vh, 800px, calc(88vw * 593 / 320))',
+              width: 'min(calc(78vh * 320 / 593), calc(800px * 320 / 593), 88vw)',
+              aspectRatio: '320 / 593'
+            }}
             initial={{ y: 30, scale: 0.95, rotateZ: -2 }}
             animate={{ y: 0, scale: 1, rotateZ: 0 }}
             exit={{ y: 30, scale: 0.95, rotateZ: -2 }}
@@ -60,11 +65,11 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
             <img 
               src="/assets/phoneContact.webp" 
               alt="Phone Modal Base"
-              className="w-full h-full object-contain drop-shadow-2xl pointer-events-none select-none z-10"
+              className="w-full h-full object-contain drop-shadow-2xl pointer-events-none select-none z-10 block"
             />
 
             {/* INTERACTIVE FORM OVERLAY */}
-            <div className="absolute top-[17%] bottom-[18%] left-[7.5%] right-[9%] flex flex-col text-zinc-900 bg-[#EAEAEA]/90 z-20 overflow-hidden rounded-sm">
+            <div className="absolute top-[18%] bottom-[19%] left-[7.5%] right-[9.5%] flex flex-col text-zinc-900 bg-[#EAEAEA]/90 z-20 overflow-hidden rounded-sm">
               
               {/* REAL-TIME IOS STATUS BAR */}
               <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-semibold px-3 pt-1 pb-1">
@@ -96,7 +101,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                 </button>
               </div>
               
-              <form onSubmit={handleSubmit} className="space-y-0 text-[11px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden">
+              <form onSubmit={handleSubmit} className="space-y-0 text-[10px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden">
                 <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
                   <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">To:</span>
                   <span className="font-medium text-[10px] sm:text-xs truncate">sujalsingh2204@gmail.com</span>
@@ -135,7 +140,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full flex-1 bg-transparent focus:outline-none resize-none mt-1 px-2 text-[11px] sm:text-[12px] leading-relaxed text-zinc-900"
+                  className="w-full flex-1 bg-transparent focus:outline-none resize-none mt-1 p-2 text-[11px] sm:text-[13px] leading-relaxed text-zinc-900"
                 />
               </form>
             </div>

@@ -27,7 +27,8 @@ const STUDIOS = [
       className: 'w-20 sm:w-28 md:w-32 lg:w-40'
     },
     allInOne: {
-      style: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
+      baseX: '36%',
+      baseY: '34%',
       baseRotate: -2,
       config: { a: 0.8, b: 1.1, A: 4, B: 4, delta: Math.PI },
       className: 'w-18 sm:w-22'
@@ -53,7 +54,8 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      style: { top: '14%', left: '10%' },
+      baseX: '8%',
+      baseY: '10%',
       baseRotate: -4,
       config: { a: 1.1, b: 1.5, A: 4, B: 4, delta: 0 },
       className: 'w-20 sm:w-24'
@@ -79,7 +81,8 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-44 lg:w-52'
     },
     allInOne: {
-      style: { top: '14%', right: '10%' },
+      baseX: '62%',
+      baseY: '8%',
       baseRotate: 3,
       config: { a: 1.2, b: 1.4, A: 4, B: 4, delta: Math.PI / 3 },
       className: 'w-20 sm:w-24'
@@ -105,7 +108,8 @@ const STUDIOS = [
       className: 'w-24 sm:w-32 md:w-40 lg:w-48'
     },
     allInOne: {
-      style: { bottom: '18%', left: '12%' },
+      baseX: '10%',
+      baseY: '56%',
       baseRotate: 4,
       config: { a: 1.4, b: 1.1, A: 4, B: 4, delta: Math.PI / 4 },
       className: 'w-20 sm:w-24'
@@ -131,7 +135,8 @@ const STUDIOS = [
       className: 'w-12 sm:w-16 md:w-20 lg:w-24'
     },
     allInOne: {
-      style: { bottom: '18%', right: '14%' },
+      baseX: '68%',
+      baseY: '54%',
       baseRotate: -5,
       config: { a: 1.3, b: 1.6, A: 2, B: 3, delta: Math.PI / 2 },
       className: 'w-7 sm:w-8'
@@ -217,21 +222,71 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
               <WashiTape className="absolute -top-1 left-1/2 -translate-x-1/2 -rotate-3 w-6 md:w-8 h-3 md:h-4" />
             </div>
 
-            {/* FLOATING ARTIFACTS */}
-            {STUDIOS.map((s) => (
-              <FloatingArtifact 
-                key={s.id}
-                src={s.src}
-                alt={s.alt}
-                headline={s.title}
-                baseX={s.desktop.baseX}
-                baseY={s.desktop.baseY}
-                baseRotate={s.desktop.baseRotate}
-                config={s.desktop.config}
-                className={s.desktop.className}
-                onOpenStudio={onOpenStudio}
-              />
-            ))}
+            {/* FLOATING ARTIFACTS - Original Exact Stacking & Layout */}
+            {/* Top Left: Travel ID */}
+            <FloatingArtifact 
+              src="/assets/travelID.webp"
+              alt="Travel ID Generator"
+              headline="TRAVEL ID"
+              baseX="10%"
+              baseY="15%"
+              baseRotate={-5}
+              config={{ a: 1.2, b: 2.1, A: 15, B: 25, delta: 0 }}
+              className="w-24 sm:w-32 md:w-40 lg:w-48"
+              onOpenStudio={onOpenStudio}
+            />
+
+            {/* Top Right: Photo Booth */}
+            <FloatingArtifact 
+              src="/assets/photoBooth.webp"
+              alt="Photo Booth Studio"
+              headline="PHOTO BOOTH"
+              baseX="65%"
+              baseY="10%"
+              baseRotate={4}
+              config={{ a: 1.5, b: 1.8, A: 20, B: 15, delta: Math.PI / 3 }}
+              className="w-24 sm:w-32 md:w-44 lg:w-52"
+              onOpenStudio={onOpenStudio}
+            />
+
+            {/* Center: Bounty Poster */}
+            <FloatingArtifact 
+              src="/assets/bountyPoster.webp"
+              alt="Bounty Poster Generator"
+              headline="BOUNTY POSTER"
+              baseX="35%"
+              baseY="35%"
+              baseRotate={-2}
+              config={{ a: 0.8, b: 1.1, A: 10, B: 10, delta: Math.PI }}
+              className="w-20 sm:w-28 md:w-32 lg:w-40"
+              onOpenStudio={onOpenStudio}
+            />
+
+            {/* Bottom Left: Time Letter */}
+            <FloatingArtifact 
+              src="/assets/timeLetter.webp"
+              alt="Time Letter Archive"
+              headline="TIME CAPSULE"
+              baseX="15%"
+              baseY="65%"
+              baseRotate={6}
+              config={{ a: 2.1, b: 1.4, A: 18, B: 22, delta: Math.PI / 4 }}
+              className="w-24 sm:w-32 md:w-40 lg:w-48"
+              onOpenStudio={onOpenStudio}
+            />
+
+            {/* Bottom Right: Ticket Stub */}
+            <FloatingArtifact 
+              src="/assets/memoryTicketStub.webp"
+              alt="Memory Ticket Maker"
+              headline="TICKET STUB"
+              baseX="70%"
+              baseY="60%"
+              baseRotate={-7}
+              config={{ a: 1.7, b: 2.3, A: 12, B: 20, delta: Math.PI / 2 }}
+              className="w-12 sm:w-16 md:w-20 lg:w-24"
+              onOpenStudio={onOpenStudio}
+            />
           </div>
         </div>
       </div>
@@ -450,12 +505,11 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
                   src={s.src}
                   alt={s.alt}
                   headline={s.title}
-                  baseX={s.allInOne.style.left || 'auto'}
-                  baseY={s.allInOne.style.top || 'auto'}
+                  baseX={s.allInOne.baseX}
+                  baseY={s.allInOne.baseY}
                   baseRotate={s.allInOne.baseRotate}
                   config={s.allInOne.config}
                   className={s.allInOne.className}
-                  style={s.allInOne.style}
                   onOpenStudio={onOpenStudio}
                 />
               ))}

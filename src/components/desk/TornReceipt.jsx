@@ -29,7 +29,12 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
           onClick={() => setIsOpen(false)} 
         >
           <motion.div 
-            className="relative w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px] h-[78vh] sm:h-[84vh] max-h-[740px] flex justify-center items-center cursor-auto"
+            className="relative flex justify-center items-center cursor-auto select-none"
+            style={{
+              height: 'min(80vh, 800px, calc(88vw * 1205 / 704))',
+              width: 'min(calc(80vh * 704 / 1205), calc(800px * 704 / 1205), 88vw)',
+              aspectRatio: '704 / 1205'
+            }}
             initial={{ y: 30, scale: 0.95, rotateZ: 1 }}
             animate={{ y: 0, scale: 1, rotateZ: 0 }}
             exit={{ y: 30, scale: 0.95, rotateZ: 1 }}
@@ -51,12 +56,12 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
               X
             </button>
 
-            {/* THE TEXT OVERLAY */}
-            <div className="absolute top-[25%] bottom-[16%] left-[8%] right-[8%] flex flex-col justify-between z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-2 sm:px-4 py-1.5">
+            {/* THE TEXT OVERLAY - Placed safely below 01 OCT 2026 */}
+            <div className="absolute top-[28%] bottom-[16%] left-[10%] right-[10%] flex flex-col justify-between z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-3 sm:px-5 py-1">
               <div className="text-[8px] sm:text-[10px] md:text-[12px] space-y-2 sm:space-y-3 font-bold flex flex-col justify-center">
                 
                 {/* Header row */}
-                <div className="grid grid-cols-[auto_1fr_auto] gap-2 uppercase pb-1 text-[7px] sm:text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_auto] gap-2 uppercase pb-1 text-[7px] sm:text-[9px] md:text-[11px]">
                   <span>Qty</span>
                   <span className="text-center">Item</span>
                   <span className="text-right">Price</span>
@@ -87,7 +92,7 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
                 <div className="border-t-[1.5px] border-dashed border-zinc-900/60 w-full"></div>
 
                 <div className="space-y-1.5 pt-1">
-                  <div className="flex justify-between text-[7px] sm:text-[9px]">
+                  <div className="flex justify-between text-[7px] sm:text-[9px] md:text-[11px]">
                     <span>DATA HARVESTED:</span>
                     <span>0 BYTES</span>
                   </div>

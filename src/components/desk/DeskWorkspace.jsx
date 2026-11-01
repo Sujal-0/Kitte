@@ -96,7 +96,7 @@ export function DeskWorkspace({ onEnterStudio }) {
         /* DESKTOP VIEWPORT (>= 1024px)                             */
         /* 100% Unchanged Desktop 3D Isometric Desk Layout          */
         /* ======================================================== */
-        <main className="relative w-screen h-[100dvh] overflow-hidden text-pencil select-none flex">
+        <main className="relative w-screen h-screen overflow-hidden text-pencil select-none flex">
           {/* Sketchy Hand-drawn Grid Floor Pattern */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.15]">
             <svg width="100%" height="100%">

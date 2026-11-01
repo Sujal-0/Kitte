@@ -59,7 +59,12 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
           onClick={() => setIsOpen(false)} 
         >
           <motion.div 
-            className="relative w-full max-w-[340px] sm:max-w-[480px] md:max-w-[620px] flex items-center justify-center cursor-auto"
+            className="relative flex items-center justify-center cursor-auto select-none"
+            style={{
+              width: 'min(90vw, 640px, calc(80vh * 578 / 432))',
+              height: 'min(calc(90vw * 432 / 578), calc(640px * 432 / 578), 80vh)',
+              aspectRatio: '578 / 432'
+            }}
             initial={{ y: 30, scale: 0.95, rotateZ: -1 }}
             animate={{ y: 0, scale: 1, rotateZ: 0 }}
             exit={{ y: 30, scale: 0.95, rotateZ: -1 }}
@@ -69,12 +74,12 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
             <img 
               src="/assets/notesAbout_blank.webp" 
               alt="Notes Background"
-              className="w-full h-auto drop-shadow-2xl pointer-events-none select-none z-10 block"
+              className="w-full h-full object-contain drop-shadow-2xl pointer-events-none select-none z-10 block"
             />
 
             {/* Close Button */}
             <button 
-              className="absolute top-[14%] sm:top-[16%] right-[12%] sm:right-[14%] z-30 cursor-pointer font-marker text-2xl sm:text-3xl text-pencil hover:text-markerRed transition-transform hover:scale-110 active:scale-95"
+              className="absolute top-[16%] right-[14%] z-30 cursor-pointer font-marker text-2xl sm:text-3xl text-pencil hover:text-markerRed transition-transform hover:scale-110 active:scale-95"
               onClick={(e) => { e.stopPropagation(); soundFX.playPop(); setIsOpen(false); }}
               aria-label="Close Note"
             >
@@ -83,8 +88,8 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
 
             {/* Text Overlay & Interaction Zone */}
             <div 
-              className="absolute top-[26%] bottom-[16%] left-[16%] right-[16%] flex flex-col justify-between z-20 font-marker text-pencil cursor-pointer"
-              style={{ transform: "rotate(-2.5deg)" }}
+              className="absolute top-[27%] bottom-[18%] left-[17%] right-[17%] flex flex-col justify-between z-20 font-marker text-pencil cursor-pointer"
+              style={{ transform: "rotate(-2.8deg)" }}
               onClick={handleNextPage}
               onWheel={handleWheel}
               onTouchStart={(e) => {

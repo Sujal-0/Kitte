@@ -62,6 +62,15 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
     setIsOpen(true);
   };
 
+  const resetToDefault = () => {
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    soundFX.playPop();
+    setStatus('idle');
+    setSender('');
+    setMessage(DEFAULT_MESSAGE);
+    setSentSnippet('');
+  };
+
   const handleClose = () => {
     if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
     soundFX.playPop();
@@ -130,15 +139,12 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
         triggerBurst(cx, cy);
       }
 
-      // Automatically return to default state after 2.5 seconds
+      // Return to default phase without closing modal so user can use the phone again
       resetTimerRef.current = setTimeout(() => {
-        setIsOpen(false);
-        setTimeout(() => {
-          setStatus('idle');
-          setSender('');
-          setMessage(DEFAULT_MESSAGE);
-          setSentSnippet('');
-        }, 350);
+        setStatus('idle');
+        setSender('');
+        setMessage(DEFAULT_MESSAGE);
+        setSentSnippet('');
       }, 2500);
 
     } catch (err) {
@@ -146,13 +152,10 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
       soundFX.playSuccess();
       setStatus('sent');
       resetTimerRef.current = setTimeout(() => {
-        setIsOpen(false);
-        setTimeout(() => {
-          setStatus('idle');
-          setSender('');
-          setMessage(DEFAULT_MESSAGE);
-          setSentSnippet('');
-        }, 350);
+        setStatus('idle');
+        setSender('');
+        setMessage(DEFAULT_MESSAGE);
+        setSentSnippet('');
       }, 2500);
     }
   };
@@ -220,67 +223,79 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                 </span>
                 <button 
                   type="button" 
-                  onClick={handleSubmit} 
-                  disabled={status === 'sending' || status === 'sent'}
-                  className={`text-[#007AFF] font-bold hover:opacity-70 cursor-pointer transition-opacity ${status === 'sending' || status === 'sent' ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  onClick={status === 'sent' ? resetToDefault : handleSubmit} 
+                  disabled={status === 'sending'}
+                  className={`text-[#007AFF] font-bold hover:opacity-70 cursor-pointer transition-opacity ${status === 'sending' ? 'opacity-40 cursor-not-allowed' : ''}`}
                 >
-                  {status === 'sending' ? 'Sending...' : 'Send'}
+                  {status === 'sending' ? 'Sending...' : status === 'sent' ? 'Done' : 'Send'}
                 </button>
               </div>
               
-              {status === 'sent' ? (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                  className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 text-center select-none"
-                >
-                  {/* Retro iOS green checkmark badge */}
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#34C759] flex items-center justify-center text-white text-xl sm:text-2xl shadow-sm mb-2">
-                    ✓
-                  </div>
-                  <h4 className="font-bold text-zinc-900 text-xs sm:text-sm">Message Sent!</h4>
-                  <p className="text-zinc-600 text-[9px] sm:text-[11px] mt-0.5 max-w-[190px] leading-snug">
-                    Delivered to <span className="font-medium text-zinc-800">sujalsingh2204@gmail.com</span>
-                  </p>
+              <AnimatePresence mode="wait">
+                {status === 'sent' ? (
+                  <motion.div 
+                    key="sent-confirmation"
+                    initial={{ opacity: 0, scale: 0.94 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.94 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                    className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 text-center select-none cursor-pointer"
+                    onClick={resetToDefault}
+                  >
+                    {/* Retro iOS green checkmark badge */}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#34C759] flex items-center justify-center text-white text-xl sm:text-2xl shadow-sm mb-2">
+                      ✓
+                    </div>
+                    <h4 className="font-bold text-zinc-900 text-xs sm:text-sm">Message Sent!</h4>
+                    <p className="text-zinc-600 text-[9px] sm:text-[11px] mt-0.5 max-w-[190px] leading-snug">
+                      Delivered to <span className="font-medium text-zinc-800">sujalsingh2204@gmail.com</span>
+                    </p>
 
-                  {/* iOS iMessage Sent Bubble */}
-                  <div className="mt-2.5 bg-[#007AFF] text-white text-[10px] sm:text-xs px-3 py-1.5 rounded-2xl rounded-br-xs max-w-[190px] text-left shadow-sm break-words line-clamp-3">
-                    {sentSnippet}
-                  </div>
-                  <span className="text-[8px] sm:text-[9px] text-zinc-400 mt-1 font-sans">
-                    Delivered • Just now
-                  </span>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-0 text-[10px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden">
-                  <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
-                    <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">To:</span>
-                    <span className="font-medium text-[10px] sm:text-xs truncate">sujalsingh2204@gmail.com</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
-                    <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">From:</span>
-                    <input
-                      type="email"
-                      placeholder="you@somewhere.com"
-                      value={sender}
-                      onChange={(e) => setSender(e.target.value)}
+                    {/* iOS iMessage Sent Bubble */}
+                    <div className="mt-2.5 bg-[#007AFF] text-white text-[10px] sm:text-xs px-3 py-1.5 rounded-2xl rounded-br-xs max-w-[190px] text-left shadow-sm break-words line-clamp-3">
+                      {sentSnippet}
+                    </div>
+                    <span className="text-[8px] sm:text-[9px] text-zinc-400 mt-1 font-sans">
+                      Delivered • Just now
+                    </span>
+                  </motion.div>
+                ) : (
+                  <motion.form 
+                    key="contact-form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onSubmit={handleSubmit} 
+                    className="space-y-0 text-[10px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden"
+                  >
+                    <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
+                      <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">To:</span>
+                      <span className="font-medium text-[10px] sm:text-xs truncate">sujalsingh2204@gmail.com</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
+                      <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">From:</span>
+                      <input
+                        type="email"
+                        placeholder="you@somewhere.com"
+                        value={sender}
+                        onChange={(e) => setSender(e.target.value)}
+                        disabled={status === 'sending'}
+                        className="w-full bg-transparent focus:outline-none placeholder:text-zinc-400/70 text-zinc-900 text-[10px] sm:text-xs"
+                      />
+                    </div>
+                    <textarea
+                      ref={messageRef}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onFocus={handleMessageFocus}
+                      onClick={handleMessageClick}
                       disabled={status === 'sending'}
-                      className="w-full bg-transparent focus:outline-none placeholder:text-zinc-400/70 text-zinc-900 text-[10px] sm:text-xs"
+                      placeholder="What kind of website are we making? :)"
+                      className="w-full flex-1 bg-transparent focus:outline-none resize-none mt-1 p-2 text-[11px] sm:text-[13px] leading-relaxed text-zinc-900"
                     />
-                  </div>
-                  <textarea
-                    ref={messageRef}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onFocus={handleMessageFocus}
-                    onClick={handleMessageClick}
-                    disabled={status === 'sending'}
-                    placeholder="What kind of website are we making? :)"
-                    className="w-full flex-1 bg-transparent focus:outline-none resize-none mt-1 p-2 text-[11px] sm:text-[13px] leading-relaxed text-zinc-900"
-                  />
-                </form>
-              )}
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
             
             {/* TOP CRACK LAYER */}

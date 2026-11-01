@@ -7,6 +7,10 @@ import { triggerBurst } from '../ui/ClickBurstEngine';
 
 const DEFAULT_MESSAGE = "Let's work together! What kind of website are we making? :)";
 
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((email || '').trim());
+};
+
 export function ContactPhone({ className = "w-24 md:w-28" }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -18,6 +22,10 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
   const [sentSnippet, setSentSnippet] = useState('');
   const messageRef = useRef(null);
   const resetTimerRef = useRef(null);
+
+  const isEmailValid = isValidEmail(sender);
+  const isMessageValid = message.trim().length > 0;
+  const canSend = isEmailValid && isMessageValid && status !== 'sending' && status !== 'sent';
 
   useEffect(() => {
     return () => {
@@ -85,7 +93,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (status === 'sending' || status === 'sent') return;
+    if (!canSend) return;
 
     const trimmedMsg = message.trim();
     if (!trimmedMsg) return;
@@ -224,8 +232,14 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                 <button 
                   type="button" 
                   onClick={status === 'sent' ? resetToDefault : handleSubmit} 
-                  disabled={status === 'sending'}
-                  className={`text-[#007AFF] font-bold hover:opacity-70 cursor-pointer transition-opacity ${status === 'sending' ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  disabled={status === 'sent' ? false : !canSend}
+                  className={`font-bold transition-colors ${
+                    status === 'sent'
+                      ? 'text-[#007AFF] hover:opacity-70 cursor-pointer'
+                      : canSend
+                      ? 'text-[#007AFF] hover:opacity-70 cursor-pointer'
+                      : 'text-zinc-400 cursor-not-allowed'
+                  }`}
                 >
                   {status === 'sending' ? 'Sending...' : status === 'sent' ? 'Done' : 'Send'}
                 </button>

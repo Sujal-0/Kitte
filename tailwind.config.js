@@ -1,0 +1,52 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: {
+    extend: {
+      colors: {
+        paper: "#FDFBF7",
+        pencil: "#2D2D2D",
+        mutedPaper: "#E5E0D8",
+        markerRed: "#FF4D4D",
+        ballpointBlue: "#2D5DA1",
+        postitYellow: "#FFF9C4",
+        deskSurface: "#F5EFEB",
+        floor: "#DCD3C6",
+        matGreen: "#24352B",
+        matGridGreen: "#344B3D",
+        matCream: "#ECE5D8",
+        matGridCream: "#D9D0C1",
+      },
+      fontFamily: {
+        creative: ["'creative'", "sans-serif"],
+        marker: ["'adamHandwriting'", "cursive"],
+        hand: ["'Patrick Hand'", "cursive"],
+        mono: ["'JetBrains Mono'", "monospace"],
+        woodblock: ["'Rye'", "serif"],
+        comic: ["'Comic Sans MS'", "'Chalkboard SE'", "sans-serif"],
+        impact: ["Impact", "Charcoal", "sans-serif"],
+        courier: ["'Courier Prime'", "'Courier New'", "monospace"],
+        courierPrime: ["'Courier Prime'", "monospace"],
+        specialElite: ["'Special Elite'", "cursive", "monospace"],
+        caveat: ["'Caveat'", "cursive"],
+        times: ["'Times New Roman'", "'Libre Caslon Text'", "serif"],
+        caslon: ["'Libre Caslon Text'", "Georgia", "serif"],
+        onepiece: ["'OnePieceFont'", "serif"],
+        vertiky: ["'Vertiky'", "Impact", "serif"],
+      },
+      borderRadius: {
+        wobbly: "255px 15px 225px 15px / 15px 225px 15px 255px",
+        wobblyMd: "225px 255px 15px 255px / 255px 15px 225px 15px",
+        wobblyLg: "20px 255px 20px 255px / 255px 20px 255px 20px",
+      },
+      boxShadow: {
+        hardSm: "2px 2px 0px 0px #2D2D2D",
+        hard: "4px 4px 0px 0px #2D2D2D",
+        hardLg: "8px 8px 0px 0px #2D2D2D",
+        hardHover: "10px 10px 0px 0px #2D2D2D",
+        matBevel: "inset 0 0 0 2px #344B3D, 0 10px 25px -5px rgba(0,0,0,0.3)",
+      },
+    },
+  },
+  plugins: [],
+};

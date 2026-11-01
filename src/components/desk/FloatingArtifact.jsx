@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
+import { triggerBurst } from '../ui/ClickBurstEngine';
 
 // Lissajous curve function for organic floating math
 // x = A * sin(at + delta)
@@ -23,7 +24,8 @@ export function FloatingArtifact({
   config = { a: 1, b: 2, A: 20, B: 20, delta: Math.PI / 2 },
   speed = 0.001,
   className = "w-32 md:w-48",
-  onOpenStudio
+  onOpenStudio,
+  style = {}
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const controls = useAnimation();
@@ -57,7 +59,7 @@ export function FloatingArtifact({
   return (
     <motion.div
       className={`absolute cursor-pointer group select-none ${className}`}
-      style={{ left: baseX, top: baseY }}
+      style={{ left: baseX, top: baseY, ...style }}
       animate={controls}
       whileHover={{ 
         scale: 1.15, 
@@ -67,7 +69,7 @@ export function FloatingArtifact({
         filter: "drop-shadow(6px 6px 0px #2D2D2D)",
         transition: { type: "spring", stiffness: 400, damping: 20 }
       }}
-      whileTap={{ scale: 1.05 }}
+      whileTap={{ scale: 0.96 }}
       onHoverStart={() => {
         setIsHovered(true);
         soundFX.playPop();
@@ -78,6 +80,7 @@ export function FloatingArtifact({
       onClick={(e) => {
         e.stopPropagation();
         soundFX.playSnap();
+        if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         if (onOpenStudio) {
           onOpenStudio({
             title: headline,

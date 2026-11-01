@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
 import { useUrlStateBool } from '../../hooks/useUrlState';
+import { triggerBurst } from '../ui/ClickBurstEngine';
 
-export function ContactPhone() {
+export function ContactPhone({ className = "w-24 md:w-28" }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isOpen, setIsOpen] = useUrlStateBool('phone', false);
@@ -38,10 +39,11 @@ export function ContactPhone() {
   return (
     <>
       <motion.div
-        className="relative w-24 md:w-28 cursor-pointer select-none"
-        onPointerDown={() => {
+        className={`relative ${className} cursor-pointer select-none`}
+        onPointerDown={(e) => {
           setIsPressed(true);
           soundFX.playPop();
+          if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         }}
         onPointerUp={handleOpen}
         onHoverStart={() => setIsHovered(true)}

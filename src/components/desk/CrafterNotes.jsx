@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
 import { useUrlStateBool } from '../../hooks/useUrlState';
+import { triggerBurst } from '../ui/ClickBurstEngine';
 
-export function CrafterNotes() {
+export function CrafterNotes({ className = "w-40 md:w-56" }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isOpen, setIsOpen] = useUrlStateBool('notes', false);
@@ -48,10 +49,11 @@ export function CrafterNotes() {
   return (
     <>
       <motion.div
-        className="relative w-40 md:w-56 cursor-pointer select-none"
-        onPointerDown={() => {
+        className={`relative ${className} cursor-pointer select-none`}
+        onPointerDown={(e) => {
           setIsPressed(true);
           soundFX.playPop();
+          if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         }}
         onPointerUp={handleOpen}
         onHoverStart={() => setIsHovered(true)}

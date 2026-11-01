@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+export function triggerBurst(x, y) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('kitte:burst', { detail: { x, y } }));
+  }
+}
+
 export function ClickBurstEngine() {
   const [bursts, setBursts] = useState([]);
 
@@ -22,8 +28,27 @@ export function ClickBurstEngine() {
       }, 450);
     };
 
+    const handleCustomBurst = (e) => {
+      const { x, y } = e.detail || {};
+      if (typeof x !== 'number' || typeof y !== 'number') return;
+      const newBurst = {
+        id: Date.now() + Math.random(),
+        x,
+        y,
+        rotation: Math.random() * 45,
+      };
+      setBursts((prev) => [...prev.slice(-12), newBurst]);
+      setTimeout(() => {
+        setBursts((prev) => prev.filter((b) => b.id !== newBurst.id));
+      }, 450);
+    };
+
     window.addEventListener("pointerdown", handleClick);
-    return () => window.removeEventListener("pointerdown", handleClick);
+    window.addEventListener("kitte:burst", handleCustomBurst);
+    return () => {
+      window.removeEventListener("pointerdown", handleClick);
+      window.removeEventListener("kitte:burst", handleCustomBurst);
+    };
   }, []);
 
   return (

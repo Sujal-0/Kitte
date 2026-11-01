@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
 import { WashiTape } from './WashiTape';
 import { useUrlStateBool } from '../../hooks/useUrlState';
+import { triggerBurst } from '../ui/ClickBurstEngine';
 
-export function TornReceipt() {
+export function TornReceipt({ className = "w-14 md:w-20" }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isOpen, setIsOpen] = useUrlStateBool('receipt', false);
@@ -18,10 +19,11 @@ export function TornReceipt() {
   return (
     <>
       <motion.div
-        className="relative w-14 md:w-20 cursor-pointer select-none"
-        onPointerDown={() => {
+        className={`relative ${className} cursor-pointer select-none`}
+        onPointerDown={(e) => {
           setIsPressed(true);
           soundFX.playPop();
+          if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         }}
         onPointerUp={handleOpen}
         onHoverStart={() => setIsHovered(true)}

@@ -85,25 +85,25 @@ export function TimeLetterSharePage() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#F4F1EA] overflow-hidden relative select-none">
+    <div className="w-screen h-[100dvh] flex flex-col bg-[#F4F1EA] overflow-hidden relative select-none">
       {/* Minimal Recipient Top Bar */}
-      <header className="h-14 border-b-2 border-[#1A1A1A] bg-[#FAF7EE] flex items-center justify-between px-6 z-40 shrink-0">
-        <div>
-          <h1 className="font-marker text-xl tracking-wider text-[#1A1A1A] handwritten-text leading-none">
+      <header className="min-h-12 sm:h-14 py-2 border-b-2 border-[#1A1A1A] bg-[#FAF7EE] flex items-center justify-between px-3 sm:px-6 z-40 shrink-0 gap-2">
+        <div className="min-w-0 flex-1">
+          <h1 className="font-marker text-sm sm:text-xl tracking-wider text-[#1A1A1A] handwritten-text leading-tight truncate">
             KITTE ARCHIVAL TIME LETTER
           </h1>
-          <span className="font-mono text-[9px] font-bold text-[#1A1A1A]/70 uppercase tracking-widest block mt-0.5">
+          <span className="font-mono text-[8px] sm:text-[9px] font-bold text-[#1A1A1A]/70 uppercase tracking-widest block mt-0.5 truncate">
             {activeState.letterMode === 'someone-special'
               ? `TO: ${activeState.recipient || 'SOMEONE SPECIAL'} • FROM: ${activeState.author || 'ANONYMOUS'}`
               : `A LETTER FOR YOUR FUTURE SELF • ORIGIN: ${activeState.location || 'KYOTO, JAPAN'}`}
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={handleCreateYourOwn}
-            className="bg-[#1A1A1A] text-[#FFEB3B] font-mono text-xs font-bold uppercase px-4 py-2 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#2A2A2A] transition-all cursor-pointer"
+            className="bg-[#1A1A1A] text-[#FFEB3B] font-mono text-[10px] sm:text-xs font-bold uppercase px-2.5 sm:px-4 py-1.5 sm:py-2 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#2A2A2A] transition-all cursor-pointer whitespace-nowrap"
           >
             Make Your Own ↗
           </button>
@@ -115,7 +115,7 @@ export function TimeLetterSharePage() {
         ref={sectionRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center"
+        className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center p-2 sm:p-4"
       >
         {/* Desk Background & Interactive Lines */}
         <div className="absolute inset-0 z-0 bg-deskSurface">
@@ -124,7 +124,7 @@ export function TimeLetterSharePage() {
 
         {/* Cutting Mat Container */}
         <div 
-          className="relative w-[92%] h-[92%] max-w-[1300px] border-[6px] border-[#1A1A1A] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10"
+          className="relative w-full h-full max-w-[1300px] border-[3px] sm:border-[6px] border-[#1A1A1A] shadow-[4px_4px_0px_rgba(0,0,0,0.5)] sm:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10"
         >
           {/* Cutting Mat Surface Pattern */}
           <img 
@@ -134,7 +134,7 @@ export function TimeLetterSharePage() {
           />
 
           {/* Interactive Envelope with Opening Animation & Sliding Letterhead */}
-          <div className="relative z-30">
+          <div className="relative z-30 scale-[0.48] xs:scale-[0.56] sm:scale-[0.76] md:scale-90 lg:scale-100 origin-center transition-transform touch-manipulation">
             <motion.div
               style={{ 
                 rotateX, 
@@ -151,12 +151,12 @@ export function TimeLetterSharePage() {
             </motion.div>
           </div>
 
-          {/* Top-Right Minimal Handwritten Action Hint */}
+          {/* Top-Right / Mobile-Aware Minimal Action Hint */}
           <div 
             onClick={handleToggle}
-            className="absolute top-8 right-8 z-40 cursor-pointer flex items-center gap-2 opacity-85 hover:opacity-100 transition-opacity"
+            className="absolute top-2.5 right-2.5 sm:top-8 sm:right-8 z-40 cursor-pointer flex items-center gap-1.5 sm:gap-2 bg-[#1A1A1A]/80 sm:bg-transparent px-2.5 py-1 sm:p-0 rounded border border-[#FFEB3B]/30 sm:border-none shadow-[2px_2px_0px_rgba(0,0,0,0.5)] sm:shadow-none opacity-90 hover:opacity-100 transition-opacity touch-manipulation"
           >
-            <span className="font-marker text-xl md:text-2xl text-[#F4F1EA] uppercase tracking-wider handwritten-text hover:text-[#FFEB3B]">
+            <span className="font-marker text-xs sm:text-xl md:text-2xl text-[#F4F1EA] uppercase tracking-wider handwritten-text hover:text-[#FFEB3B]">
               {isLocked 
                 ? `SEALED UNTIL ${activeState.deliveryDate}`
                 : isOpen 
@@ -166,7 +166,7 @@ export function TimeLetterSharePage() {
             <img 
               src="/assets/dottedUpArrow.svg" 
               alt="Action arrow" 
-              className={`w-7 h-7 brightness-0 invert transition-transform handwritten-text ${isLocked ? 'rotate-90' : isOpen ? 'rotate-0' : 'rotate-180'}`} 
+              className={`w-4 h-4 sm:w-7 sm:h-7 brightness-0 invert transition-transform handwritten-text ${isLocked ? 'rotate-90' : isOpen ? 'rotate-0' : 'rotate-180'}`} 
             />
           </div>
 
@@ -177,7 +177,7 @@ export function TimeLetterSharePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="absolute bottom-12 bg-[#B91C1C] text-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#FFFFFF] px-5 py-3 font-mono text-xs font-bold tracking-wide z-50 flex items-center gap-2.5 max-w-lg text-center"
+                className="absolute bottom-6 left-3 right-3 sm:bottom-12 sm:left-auto sm:right-auto bg-[#B91C1C] text-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#FFFFFF] px-3 sm:px-5 py-2 sm:py-3 font-mono text-[11px] sm:text-xs font-bold tracking-wide z-50 flex items-center justify-center gap-2 max-w-lg text-center mx-auto"
               >
                 <svg className="w-4 h-4 shrink-0 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />

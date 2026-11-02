@@ -54,7 +54,7 @@ export function TimeLetterInteractiveEnvelope({
 
   return (
     <div 
-      className="relative flex items-center justify-center cursor-pointer select-none"
+      className="relative flex items-center justify-center cursor-pointer select-none touch-manipulation"
       onClick={handleClick}
       style={{ perspective: '1400px' }}
     >

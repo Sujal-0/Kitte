@@ -863,7 +863,7 @@ export function UniversalExportOverlay() {
                         <p className="font-mono text-[10px] text-[#1A1A1A]/70 leading-snug">
                           Recipient web link with interactive cutting mat, desk lines, and realistic unsealing animation.
                         </p>
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 mt-1">
                           <button
                             type="button"
                             onClick={handleCopyTimeLetterLink}

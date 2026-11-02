@@ -127,7 +127,7 @@ export function TimeLetterCanvasArea({
             handleMakeYourOwn();
           }
         }}
-        className={`relative w-[92%] h-[92%] max-w-[1300px] border-[6px] border-[#1A1A1A] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10 ${isShowcase ? 'cursor-pointer' : ''}`}
+        className={`relative w-[96%] h-[94%] sm:w-[92%] sm:h-[92%] max-w-[1300px] border-[3px] sm:border-[6px] border-[#1A1A1A] shadow-[4px_4px_0px_rgba(0,0,0,0.5)] sm:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10 ${isShowcase ? 'cursor-pointer' : ''}`}
       >
         
         {/* Cutting Mat Surface Pattern */}
@@ -139,7 +139,7 @@ export function TimeLetterCanvasArea({
 
         {/* Dynamic Dimensions UI */}
         <motion.div 
-          className="absolute pointer-events-none z-20 flex items-center justify-center"
+          className="absolute pointer-events-none z-20 hidden sm:flex items-center justify-center"
           style={{ width: currentW, height: currentH }}
         >
           {/* Top Width Dimension */}
@@ -167,23 +167,23 @@ export function TimeLetterCanvasArea({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-8 z-50 pointer-events-auto"
+              className="absolute top-4 sm:top-8 z-50 pointer-events-auto"
             >
               <div 
-                className="bg-[#1A1A1A] text-[#F4F1EA] px-3.5 py-1.5 sm:px-4 sm:py-2 border-2 border-white -rotate-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer active:scale-95 transition-transform touch-manipulation" 
+                className="bg-[#1A1A1A] text-[#F4F1EA] px-3 py-1 sm:px-4 sm:py-2 border-2 border-white -rotate-2 shadow-[3px_3px_0px_rgba(0,0,0,0.5)] sm:shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer active:scale-95 transition-transform touch-manipulation" 
                 onClick={(e) => {
                   e.stopPropagation();
                   handleMakeYourOwn();
                 }}
               >
-                <span className="font-marker text-base sm:text-xl tracking-wide handwritten-text">Click to make your own</span>
+                <span className="font-marker text-sm sm:text-xl tracking-wide handwritten-text">Click to make your own</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Interactive Envelope with Opening Animation & Sliding Letterhead */}
-        <div className="relative z-30 touch-manipulation">
+        <div className="relative z-30 touch-manipulation scale-[0.48] xs:scale-[0.56] sm:scale-[0.76] md:scale-90 lg:scale-100 origin-center transition-transform">
           <motion.div
             style={{ 
               rotateX, 
@@ -210,9 +210,9 @@ export function TimeLetterCanvasArea({
               onUpdate('isOpen', !state.isOpen);
             }
           }}
-          className="absolute top-4 right-4 sm:top-10 sm:right-10 z-40 cursor-pointer flex items-center gap-1.5 sm:gap-2 opacity-85 group hover:opacity-100 transition-opacity touch-manipulation"
+          className="absolute top-2.5 right-2.5 sm:top-10 sm:right-10 z-40 cursor-pointer flex items-center gap-1 sm:gap-2 opacity-85 group hover:opacity-100 transition-opacity touch-manipulation"
         >
-          <span className="font-marker text-lg sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text group-hover:text-[#FFEB3B]">
+          <span className="font-marker text-xs sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text group-hover:text-[#FFEB3B]">
             {isShowcase 
               ? 'CLICK TO MAKE YOUR OWN' 
               : state.isOpen 
@@ -222,7 +222,7 @@ export function TimeLetterCanvasArea({
           <img 
             src="/assets/dottedUpArrow.svg" 
             alt="Action arrow" 
-            className={`w-5 h-5 sm:w-8 sm:h-8 brightness-0 invert transition-transform handwritten-text ${state.isOpen ? 'rotate-0' : 'rotate-180'}`} 
+            className={`w-4 h-4 sm:w-8 sm:h-8 brightness-0 invert transition-transform handwritten-text ${state.isOpen ? 'rotate-0' : 'rotate-180'}`} 
           />
         </div>
       </div>

@@ -92,7 +92,8 @@ export function TimeLetterControlPanel({
   onUpdate, 
   onReset, 
   disabled,
-  isShowcase 
+  isShowcase,
+  isMobileDrawer = false 
 }) {
   const [activeTab, setActiveTab] = useState('letter'); // 'letter' | 'envelope'
 
@@ -164,48 +165,8 @@ export function TimeLetterControlPanel({
   const activeEnvelopeTheme = state.envelopeTheme || 'linen-cream';
   const activeEnvelopeBorderColor = state.envelopeBorderColor || '#B91C1C';
 
-  return (
-    <aside className="w-[370px] h-full border-r-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0 select-none">
-      
-      {/* ========================================================
-          HEADER: 2 CLEAN TABS (LETTER & ENVELOPE ONLY)
-         ======================================================== */}
-      <div className="bg-[#1A1A1A] p-2 flex items-center gap-1 shrink-0 border-b-2 border-[#1A1A1A]">
-        <button
-          type="button"
-          onClick={() => { soundFX.playPop(); setActiveTab('letter'); }}
-          className={`flex-1 py-2 px-1 font-mono text-xs font-bold uppercase transition-all flex items-center justify-center cursor-pointer ${
-            activeTab === 'letter'
-              ? 'bg-[#FFEB3B] text-[#1A1A1A] shadow-[2px_2px_0px_#FFFFFF] font-extrabold'
-              : 'text-[#F4F1EA]/80 hover:bg-white/10'
-          }`}
-        >
-          <span>Letter</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => { soundFX.playPop(); setActiveTab('envelope'); }}
-          className={`flex-1 py-2 px-1 font-mono text-xs font-bold uppercase transition-all flex items-center justify-center cursor-pointer ${
-            activeTab === 'envelope'
-              ? 'bg-[#FFEB3B] text-[#1A1A1A] shadow-[2px_2px_0px_#FFFFFF] font-extrabold'
-              : 'text-[#F4F1EA]/80 hover:bg-white/10'
-          }`}
-        >
-          <span>Envelope</span>
-        </button>
-      </div>
-
-      {/* ========================================================
-          TAB CONTENT AREA (Scrollable, Clean, Organized)
-         ======================================================== */}
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 relative ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        
-        {/* ========================================================
-            TAB 1: LETTER WRITING, TYPOGRAPHY & DECORATION
-           ======================================================== */}
-        {activeTab === 'letter' && (
-          <div className="flex flex-col gap-4 pb-4">
+  const renderLetterControls = () => (
+    <div className="flex flex-col gap-4 pb-4">
             
             {/* Recipient & Author Fields (Unified for Future Me or Anyone) */}
             <div className="flex flex-col gap-3">
@@ -613,12 +574,12 @@ export function TimeLetterControlPanel({
             </div>
 
           </div>
-        )}
+        );
 
         {/* ========================================================
             TAB 2: ENVELOPE STYLING & DECORATION
            ======================================================== */}
-        {activeTab === 'envelope' && (
+        const renderEnvelopeControls = () => (
           <div className="flex flex-col gap-4 pb-4">
             
             {/* Envelope Notice / Occasion */}
@@ -922,8 +883,70 @@ export function TimeLetterControlPanel({
             </div>
 
           </div>
-        )}
+  );
 
+  // 1. Mobile Drawer View
+  if (isMobileDrawer) {
+    return (
+      <div className={`w-full flex flex-col gap-6 select-none pb-8 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        {/* Front Side (Envelope) Divider Badge */}
+        <div className="mt-1 mb-2 border-t-2 border-dashed border-[#1A1A1A]/30 relative flex items-center justify-center">
+          <span className="bg-[#F4F1EA] px-3 font-marker text-sm uppercase tracking-wider text-[#1A1A1A] -translate-y-1/2 border border-[#1A1A1A]/30 shadow-[1px_1px_0px_#1A1A1A] handwritten-text">
+            FRONT SIDE
+          </span>
+        </div>
+        {renderEnvelopeControls()}
+
+        {/* Back Side (Letter) Divider Badge */}
+        <div className="my-6 border-t-2 border-dashed border-[#1A1A1A]/30 relative flex items-center justify-center">
+          <span className="bg-[#F4F1EA] px-3 font-marker text-sm uppercase tracking-wider text-[#1A1A1A] -translate-y-1/2 border border-[#1A1A1A]/30 shadow-[1px_1px_0px_#1A1A1A] handwritten-text">
+            BACK SIDE
+          </span>
+        </div>
+        {renderLetterControls()}
+      </div>
+    );
+  }
+
+  // 2. Desktop View: 100% UNCHANGED
+  return (
+    <aside className="w-[370px] h-full border-r-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0 select-none">
+      
+      {/* ========================================================
+          HEADER: 2 CLEAN TABS (LETTER & ENVELOPE ONLY)
+         ======================================================== */}
+      <div className="bg-[#1A1A1A] p-2 flex items-center gap-1 shrink-0 border-b-2 border-[#1A1A1A]">
+        <button
+          type="button"
+          onClick={() => { soundFX.playPop(); setActiveTab('letter'); }}
+          className={`flex-1 py-2 px-1 font-mono text-xs font-bold uppercase transition-all flex items-center justify-center cursor-pointer ${
+            activeTab === 'letter'
+              ? 'bg-[#FFEB3B] text-[#1A1A1A] shadow-[2px_2px_0px_#FFFFFF] font-extrabold'
+              : 'text-[#F4F1EA]/80 hover:bg-white/10'
+          }`}
+        >
+          <span>Letter</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { soundFX.playPop(); setActiveTab('envelope'); }}
+          className={`flex-1 py-2 px-1 font-mono text-xs font-bold uppercase transition-all flex items-center justify-center cursor-pointer ${
+            activeTab === 'envelope'
+              ? 'bg-[#FFEB3B] text-[#1A1A1A] shadow-[2px_2px_0px_#FFFFFF] font-extrabold'
+              : 'text-[#F4F1EA]/80 hover:bg-white/10'
+          }`}
+        >
+          <span>Envelope</span>
+        </button>
+      </div>
+
+      {/* ========================================================
+          TAB CONTENT AREA (Scrollable, Clean, Organized)
+         ======================================================== */}
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 relative ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        {activeTab === 'letter' && renderLetterControls()}
+        {activeTab === 'envelope' && renderEnvelopeControls()}
       </div>
 
       {/* ========================================================

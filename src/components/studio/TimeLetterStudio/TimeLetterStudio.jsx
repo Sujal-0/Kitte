@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UniversalStudioHeader } from '../UniversalStudioHeader';
 import { TimeLetterControlPanel } from './TimeLetterControlPanel';
 import { TimeLetterCanvasArea } from './TimeLetterCanvasArea';
+import { MobileStudioDrawer } from '../MobileStudioDrawer';
 import { TimeLetterEmailModal } from './TimeLetterEmailModal';
 import { TimeLetterShareModal } from './TimeLetterShareModal';
 import { parseLetterShareFromUrl } from '../../../features/time-letter/utils/timeLetterShare';
@@ -18,6 +19,7 @@ export function TimeLetterStudio({ onExit }) {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailModalData, setEmailModalData] = useState(null);
   const [showSharePreview, setShowSharePreview] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // If a shared letter URL was opened, load it automatically into recipient preview
   useEffect(() => {
@@ -137,6 +139,25 @@ export function TimeLetterStudio({ onExit }) {
     };
   }, []);
 
+  // Export Readiness
+  const isExportReady = Boolean(state?.letterBody && state.letterBody.trim().length > 0);
+
+  const handleExport = () => {
+    if (!isExportReady) return;
+    soundFX.playSnap();
+    window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
+      detail: { 
+        type: 'Time Capsule', 
+        data: { 
+          ...state, 
+          isShowcase: !!isShowcase, 
+          exportMode: 'duplex',
+          exportSide: state.isOpen ? 'back' : 'front' 
+        } 
+      } 
+    }));
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -149,29 +170,60 @@ export function TimeLetterStudio({ onExit }) {
         title="TIME CAPSULE STUDIO" 
         description="Write a letter to your future self. Authentic airmail envelopes, wax seals, and 300 DPI craft sheets." 
         onBack={onExit}
+        onReset={handleReset}
+        onExport={handleExport}
+        isExportReady={isExportReady}
+        canReset={true}
       />
       
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Control Panel */}
-        <TimeLetterControlPanel 
-          activeSide={activeSide}
-          onFlip={handleFlip}
-          state={state} 
-          onUpdate={handleUpdate} 
-          onReset={handleReset}
-          disabled={isShowcase}
-          isShowcase={isShowcase}
-        />
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Desktop Left Control Panel */}
+        <div className="hidden lg:flex h-full shrink-0">
+          <TimeLetterControlPanel 
+            activeSide={activeSide}
+            onFlip={handleFlip}
+            state={state} 
+            onUpdate={handleUpdate} 
+            onReset={handleReset}
+            disabled={isShowcase}
+            isShowcase={isShowcase}
+          />
+        </div>
 
-        {/* Right Canvas Area */}
-        <TimeLetterCanvasArea 
-          state={state} 
-          activeSide={activeSide}
-          onFlip={handleFlip}
-          onUpdate={handleUpdate} 
-          isShowcase={isShowcase}
-          onStartCustomizing={handleStartCustomizing}
-        />
+        {/* Center/Full Canvas Area */}
+        <div className="flex-1 w-full h-full min-h-0 relative">
+          <TimeLetterCanvasArea 
+            state={state} 
+            activeSide={activeSide}
+            onFlip={handleFlip}
+            onUpdate={handleUpdate} 
+            isShowcase={isShowcase}
+            onStartCustomizing={() => {
+              handleStartCustomizing();
+              setIsDrawerOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Mobile Responsive Bottom Drawer Sheet */}
+        <div className="lg:hidden">
+          <MobileStudioDrawer
+            isOpen={isDrawerOpen}
+            onOpen={() => setIsDrawerOpen(true)}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            <TimeLetterControlPanel 
+              activeSide={activeSide}
+              onFlip={handleFlip}
+              state={state} 
+              onUpdate={handleUpdate} 
+              onReset={handleReset}
+              disabled={isShowcase}
+              isShowcase={isShowcase}
+              isMobileDrawer={true}
+            />
+          </MobileStudioDrawer>
+        </div>
       </main>
 
       {/* Recipient Live Animated Letter Preview Modal */}

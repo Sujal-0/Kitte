@@ -12,30 +12,14 @@
 
 import fs from 'fs';
 import path from 'path';
+import { sendEmail, getEnvConfig } from './email-sender.mjs';
 
 function loadEnv() {
-  const envFiles = ['.env.local', '.env'];
-  for (const f of envFiles) {
-    const full = path.resolve(process.cwd(), f);
-    if (fs.existsSync(full)) {
-      const lines = fs.readFileSync(full, 'utf-8').split('\n');
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('#')) continue;
-        const eqIdx = trimmed.indexOf('=');
-        if (eqIdx !== -1) {
-          const k = trimmed.substring(0, eqIdx).trim();
-          const v = trimmed.substring(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
-          if (!process.env[k]) process.env[k] = v;
-        }
-      }
-    }
-  }
+  getEnvConfig();
 }
 
 loadEnv();
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const LOCAL_DB_FILE = path.resolve(process.cwd(), '.data/futureme_scheduled_letters.json');
@@ -123,9 +107,10 @@ async function markLetterDelivered(source, letter, resendId) {
 export async function runDispatchSweep() {
   console.log(`[FutureMe Dispatcher] Starting sweep at ${new Date().toISOString()}...`);
 
-  if (!RESEND_API_KEY) {
-    console.error('[FutureMe Dispatcher] ERROR: No RESEND_API_KEY found in environment or .env');
-    return { success: false, error: 'Missing RESEND_API_KEY' };
+  const config = getEnvConfig();
+  if (!config.hasGmail && !config.hasResend) {
+    console.error('[FutureMe Dispatcher] ERROR: No email credentials found (GMAIL_USER & GMAIL_APP_PASSWORD or RESEND_API_KEY).');
+    return { success: false, error: 'Missing email credentials' };
   }
 
   const { source, letters } = await getDueLetters();
@@ -147,33 +132,16 @@ export async function runDispatchSweep() {
     console.log(`[FutureMe Dispatcher] Dispatching capsule ${letter.id} to ${toEmail}...`);
 
     try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'FutureMe Kitte <onboarding@resend.dev>',
-          to: [toEmail],
-          subject: subject,
-          html: html,
-          attachments: (letter.attachments || []).map(a => ({
-            filename: a.filename,
-            content: a.content
-          }))
-        })
+      const dispatchRes = await sendEmail({
+        to: toEmail,
+        subject,
+        html,
+        attachments: letter.attachments || []
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        deliveredCount++;
-        console.log(`[FutureMe Dispatcher] Successfully delivered capsule ${letter.id}. Resend ID: ${data?.id}`);
-        await markLetterDelivered(source, letter, data?.id);
-      } else {
-        failedCount++;
-        console.error(`[FutureMe Dispatcher] Resend rejected capsule ${letter.id}:`, res.status, data);
-      }
+      deliveredCount++;
+      console.log(`[FutureMe Dispatcher] Successfully delivered capsule ${letter.id} via ${dispatchRes.provider}. Message ID: ${dispatchRes.messageId}`);
+      await markLetterDelivered(source, letter, dispatchRes.messageId);
     } catch (err) {
       failedCount++;
       console.error(`[FutureMe Dispatcher] Delivery exception for ${letter.id}:`, err.message);

@@ -176,11 +176,11 @@ export function UniversalExportOverlay() {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="relative w-full h-[96vh] mt-auto bg-[#F4F1EA] border-t-8 border-[#1A1A1A] shadow-[0px_-10px_0px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row overflow-hidden pointer-events-auto"
+            className="relative w-full h-[96vh] mt-auto bg-[#F4F1EA] border-t-4 sm:border-t-8 border-[#1A1A1A] shadow-[0px_-6px_0px_rgba(0,0,0,0.5)] sm:shadow-[0px_-10px_0px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row overflow-hidden pointer-events-auto"
           >
             {/* VISIBLE CLOSE BUTTON */}
             <button 
-              className="absolute top-3 right-3 sm:top-6 sm:right-6 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center z-50 cursor-pointer font-marker text-2xl sm:text-4xl text-[#1A1A1A] hover:text-[#FF4D4D] transition-transform hover:scale-110 active:scale-95 handwritten-text"
+              className="absolute top-2.5 right-2.5 sm:top-5 sm:right-5 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center z-50 cursor-pointer font-marker text-xl sm:text-4xl text-[#1A1A1A] hover:text-[#FF4D4D] bg-[#F4F1EA] sm:bg-transparent rounded-full sm:rounded-none border-2 border-[#1A1A1A] sm:border-none shadow-[2px_2px_0px_#1A1A1A] sm:shadow-none transition-transform hover:scale-110 active:scale-95 handwritten-text"
               onClick={closeExport}
               aria-label="Close Export"
             >
@@ -561,10 +561,10 @@ export function UniversalExportOverlay() {
               </div>
             </div>
 
-            {/* 2. Center: Workbench Preview */}
+            {/* 2. Center: Workbench Preview (Non-scrollable, pinned at top on mobile) */}
             <div 
               ref={previewContainerRef}
-              className="h-[36vh] sm:h-[40vh] lg:h-full lg:flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-[#1A1A1A] shrink-0 select-none"
+              className="h-[30vh] sm:h-[36vh] lg:h-full lg:flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-[#1A1A1A] shrink-0 select-none"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
@@ -574,7 +574,7 @@ export function UniversalExportOverlay() {
               </div>
 
               {/* Actual Cutting Mat Container (Solid Object) */}
-              <div className="relative w-[95%] h-[95%] sm:w-[90%] sm:h-[90%] max-w-[1200px] border-[4px] sm:border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_rgba(0,0,0,0.5)] sm:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
+              <div className="relative w-[95%] h-[92%] sm:w-[90%] sm:h-[90%] max-w-[1200px] border-[3px] sm:border-[6px] border-[#1A1A1A] shadow-[4px_4px_0px_rgba(0,0,0,0.5)] sm:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
                 {/* The Mat Image */}
                 <img 
                   src="/assets/cutting-mat.svg" 
@@ -612,7 +612,7 @@ export function UniversalExportOverlay() {
                 {/* 3D Click-to-Flip Product with Decoy Effect */}
                 <div className="relative z-30" style={{ perspective: '1500px' }}>
                   <motion.div
-                    className={`cursor-pointer select-none relative scale-[0.52] sm:scale-[0.72] md:scale-85 lg:scale-100 touch-manipulation ${(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}`}
+                    className={`cursor-pointer select-none relative scale-[0.46] xs:scale-[0.52] sm:scale-[0.72] md:scale-85 lg:scale-100 touch-manipulation ${(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}`}
                     animate={{ rotateY: (!isPhotoBooth && !isBounty && activeSide === 'back') ? 180 : 0 }}
                     style={{ transformStyle: 'preserve-3d', rotateX }}
                     transition={{ rotateY: { type: "spring", stiffness: 60, damping: 15, mass: 1 } }}
@@ -705,29 +705,34 @@ export function UniversalExportOverlay() {
               
               {/* CLICK TO FLIP Scribble Text (Only for double-sided ID/Ticket) */}
               {!isPhotoBooth && !isBounty && (
-                <div className="absolute top-3 right-3 sm:top-12 sm:right-12 z-40 pointer-events-none flex items-center gap-1.5 sm:gap-2 opacity-80">
-                  <span className="font-marker text-xs sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
+                <div className="absolute bottom-2 right-2 sm:bottom-auto sm:top-12 sm:right-12 z-40 pointer-events-none flex items-center gap-1 sm:gap-2 opacity-85">
+                  <span className="font-marker text-[11px] sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
                     CLICK TO FLIP
                   </span>
-                  <img src="/assets/dottedUpArrow.svg" alt="Arrow" className="w-4 h-4 sm:w-8 sm:h-8 rotate-180 brightness-0 invert handwritten-text" />
+                  <img src="/assets/dottedUpArrow.svg" alt="Arrow" className="w-3.5 h-3.5 sm:w-8 sm:h-8 rotate-180 brightness-0 invert handwritten-text" />
                 </div>
               )}
             </div>
 
-            {/* 3. Right: Export Options */}
-            <div className="w-full lg:w-[410px] p-4 sm:p-6 bg-[#F4F1EA] flex flex-col gap-4 sm:gap-6 overflow-y-auto shrink-0 select-none">
-              <div className="flex flex-col gap-1.5 sm:gap-2">
-                <h2 className="font-marker text-2xl sm:text-4xl uppercase handwritten-text tracking-tighter">Export Lab</h2>
-                <div className="h-1 w-full bg-[#1A1A1A]" />
+            {/* 3. Right: Export Options (Scrollable on mobile) */}
+            <div className="w-full lg:w-[410px] p-3.5 sm:p-6 bg-[#F4F1EA] flex-1 min-h-0 lg:flex-none lg:h-full flex flex-col gap-3.5 sm:gap-6 overflow-y-auto select-none touch-pan-y overscroll-contain">
+              <div className="flex flex-col gap-1 sm:gap-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-marker text-xl sm:text-3xl lg:text-4xl uppercase handwritten-text tracking-tighter">Export Lab</h2>
+                  <span className="lg:hidden font-mono text-[9px] font-bold px-2 py-0.5 bg-[#FFEB3B] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] uppercase tracking-wider">
+                    {isTimeCapsule ? 'Time Capsule' : isBounty ? 'Wanted Poster' : isPhotoBooth ? 'Photostrip' : isTravelID ? (exportData?.cardType || 'Travel ID') : 'Ticket'}
+                  </span>
+                </div>
+                <div className="h-0.5 sm:h-1 w-full bg-[#1A1A1A]" />
               </div>
 
-              <div className="flex flex-col gap-4">
-                <label className="font-mono font-bold uppercase text-sm">Print Format</label>
+              <div className="flex flex-col gap-3 sm:gap-4">
+                <label className="font-mono font-bold uppercase text-xs sm:text-sm">Print Format</label>
                 {isTimeCapsule ? (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2.5 sm:gap-3">
                     {/* Option 1: Letter Print (Archival Letterhead 300 DPI) */}
-                    <label className={`border-4 border-[#1A1A1A] p-3 cursor-pointer transition-all ${printMode === 'borderless' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3 cursor-pointer transition-all ${printMode === 'borderless' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           name="timePrintMode"
@@ -741,12 +746,12 @@ export function UniversalExportOverlay() {
                         />
                         <div className="flex flex-col w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">Letter Print</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase">
+                            <span className="font-bold font-mono text-xs sm:text-sm">Letter Print</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase">
                               300 DPI • ARCHIVAL
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
                             Archival letterhead print with authentic stationary tone, border line, and stamp.
                           </p>
                         </div>
@@ -754,8 +759,8 @@ export function UniversalExportOverlay() {
                     </label>
 
                     {/* Option 2: Envelope DIY Craft Sheet */}
-                    <label className={`border-4 border-[#1A1A1A] p-3 cursor-pointer transition-all ${printMode === 'fold-glue' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3 cursor-pointer transition-all ${printMode === 'fold-glue' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           name="timePrintMode"
@@ -769,12 +774,12 @@ export function UniversalExportOverlay() {
                         />
                         <div className="flex flex-col w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">Envelope DIY Sheet (2-Page)</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-white px-1.5 py-0.5 uppercase">
+                            <span className="font-bold font-mono text-xs sm:text-sm">Envelope DIY Sheet (2-Page)</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-white px-1.5 py-0.5 uppercase">
                               A4 • 2-PAGE CRAFT
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
                             Page 1: 100% unmarked envelope net (margin guides trim away with scrap). Page 2: Visual 6-step assembly guide.
                           </p>
                         </div>
@@ -782,8 +787,8 @@ export function UniversalExportOverlay() {
                     </label>
 
                     {/* Option 3: DIY Stamps & Seals Sheet */}
-                    <label className={`border-4 border-[#1A1A1A] p-3 cursor-pointer transition-all ${printMode === 'stamps-decor' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3 cursor-pointer transition-all ${printMode === 'stamps-decor' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           name="timePrintMode"
@@ -796,12 +801,12 @@ export function UniversalExportOverlay() {
                         />
                         <div className="flex flex-col w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">DIY Stamps & Seals Sheet</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#15803D] text-white px-1.5 py-0.5 uppercase">
+                            <span className="font-bold font-mono text-xs sm:text-sm">DIY Stamps & Seals Sheet</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#15803D] text-white px-1.5 py-0.5 uppercase">
                               A4 • CUT & STICK
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
                             Printable A4 sheet with selected postal stamps, wax seals, and ribbons with cut marks for crafting.
                           </p>
                         </div>
@@ -809,9 +814,9 @@ export function UniversalExportOverlay() {
                     </label>
 
                     {/* Digital Delivery & Shareable Web Link (Clean, Minimal, Production-level) */}
-                    <div className="mt-2 pt-3 border-t-2 border-[#1A1A1A]/20 flex flex-col gap-2.5">
+                    <div className="mt-1 pt-2.5 sm:pt-3 border-t-2 border-[#1A1A1A]/20 flex flex-col gap-2 sm:gap-2.5">
                       <div className="flex items-center justify-between">
-                        <label className="font-mono font-bold uppercase text-xs text-[#1A1A1A]">
+                        <label className="font-mono font-bold uppercase text-[11px] sm:text-xs text-[#1A1A1A]">
                           Digital Delivery & Shareable Web Link
                         </label>
                         <span className="text-[8px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase">
@@ -820,7 +825,7 @@ export function UniversalExportOverlay() {
                       </div>
 
                       {/* Option 1: Send to Future Self or Someone Else */}
-                      <div className="bg-white border-2 border-[#1A1A1A] p-3 shadow-[2px_2px_0px_#1A1A1A] flex flex-col gap-1.5">
+                      <div className="bg-white border-2 border-[#1A1A1A] p-2.5 sm:p-3 shadow-[2px_2px_0px_#1A1A1A] flex flex-col gap-1 sm:gap-1.5">
                         <div className="flex items-center justify-between">
                           <span className="font-mono text-xs font-bold text-[#1A1A1A]">
                             Send to Future Self or Someone Else
@@ -839,14 +844,14 @@ export function UniversalExportOverlay() {
                             closeExport();
                             window.dispatchEvent(new CustomEvent('OPEN_EMAIL_DISPATCH', { detail: exportData }));
                           }}
-                          className="w-full mt-1 bg-[#FFEB3B] text-[#1A1A1A] border-2 border-[#1A1A1A] py-1.5 font-mono text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-[#FFF176] transition-all cursor-pointer text-center"
+                          className="w-full mt-1 bg-[#FFEB3B] text-[#1A1A1A] border-2 border-[#1A1A1A] py-1.5 font-mono text-[10px] sm:text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-[#FFF176] transition-all cursor-pointer text-center"
                         >
                           Configure & Schedule Delivery
                         </button>
                       </div>
 
                       {/* Option 2: Share Link */}
-                      <div className="bg-white border-2 border-[#1A1A1A] p-3 shadow-[2px_2px_0px_#1A1A1A] flex flex-col gap-1.5">
+                      <div className="bg-white border-2 border-[#1A1A1A] p-2.5 sm:p-3 shadow-[2px_2px_0px_#1A1A1A] flex flex-col gap-1 sm:gap-1.5">
                         <div className="flex items-center justify-between">
                           <span className="font-mono text-xs font-bold text-[#1A1A1A]">
                             Share Link
@@ -862,7 +867,7 @@ export function UniversalExportOverlay() {
                           <button
                             type="button"
                             onClick={handleCopyTimeLetterLink}
-                            className="flex-1 bg-[#1A1A1A] text-[#FFEB3B] border-2 border-[#1A1A1A] py-1.5 font-mono text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-[#2A2A2A] transition-all cursor-pointer text-center"
+                            className="flex-1 bg-[#1A1A1A] text-[#FFEB3B] border-2 border-[#1A1A1A] py-1.5 font-mono text-[10px] sm:text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-[#2A2A2A] transition-all cursor-pointer text-center"
                           >
                             {copiedShareLink ? 'COPIED LINK' : 'COPY SHARE LINK'}
                           </button>
@@ -873,7 +878,7 @@ export function UniversalExportOverlay() {
                               const url = generateLetterShareUrl(exportData);
                               window.open(url, '_blank');
                             }}
-                            className="flex-1 bg-[#F4F1EA] text-[#1A1A1A] border-2 border-[#1A1A1A] py-1.5 font-mono text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-white transition-all cursor-pointer text-center"
+                            className="flex-1 bg-[#F4F1EA] text-[#1A1A1A] border-2 border-[#1A1A1A] py-1.5 font-mono text-[10px] sm:text-[11px] font-bold uppercase shadow-[1px_1px_0px_#1A1A1A] hover:bg-white transition-all cursor-pointer text-center"
                           >
                             Open Web Letter ↗
                           </button>
@@ -882,10 +887,10 @@ export function UniversalExportOverlay() {
                     </div>
                   </div>
                 ) : isBounty ? (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2.5 sm:gap-3">
                     {/* Option 1: Exact Poster (Borderless) */}
-                    <label className={`border-4 border-[#1A1A1A] p-3 cursor-pointer transition-all ${printMode !== 'a4-sheet' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3 cursor-pointer transition-all ${printMode !== 'a4-sheet' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           name="bountyPrintMode"
@@ -898,12 +903,12 @@ export function UniversalExportOverlay() {
                         />
                         <div className="flex flex-col w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">Exact Poster (Borderless)</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase">
+                            <span className="font-bold font-mono text-xs sm:text-sm">Exact Poster (Borderless)</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase">
                               300 DPI
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
                             Zero white margins. Best for wallpapers, framing, and digital.
                           </p>
                         </div>
@@ -911,8 +916,8 @@ export function UniversalExportOverlay() {
                     </label>
 
                     {/* Option 2: A4 Print Sheet */}
-                    <label className={`border-4 border-[#1A1A1A] p-3 cursor-pointer transition-all ${printMode === 'a4-sheet' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-center gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3 cursor-pointer transition-all ${printMode === 'a4-sheet' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] -translate-x-0.5 -translate-y-0.5' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           name="bountyPrintMode"
@@ -925,12 +930,12 @@ export function UniversalExportOverlay() {
                         />
                         <div className="flex flex-col w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">A4 Print Sheet</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-white px-1.5 py-0.5 uppercase">
+                            <span className="font-bold font-mono text-xs sm:text-sm">A4 Print Sheet</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-white px-1.5 py-0.5 uppercase">
                               A4 • CUT MARKS
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 mt-0.5">
                             Centered on A4 with outer cut marks for scissors cutting.
                           </p>
                         </div>
@@ -938,25 +943,25 @@ export function UniversalExportOverlay() {
                     </label>
                   </div>
                 ) : isPhotoBooth ? (
-                  <div className="border-4 border-[#1A1A1A] p-4 bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A]">
-                    <div className="flex items-center gap-3 mb-1">
-                      <div className="w-4 h-4 rounded-full border-2 border-[#1A1A1A] bg-[#1A1A1A] flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                  <div className="border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-4 bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A]">
+                    <div className="flex items-center gap-2.5 sm:gap-3 mb-1">
+                      <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-[#1A1A1A] bg-[#1A1A1A] flex items-center justify-center">
+                        <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-white" />
                       </div>
-                      <span className="font-bold font-mono">Single Photostrip (1-Page)</span>
-                      <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase tracking-wider ml-auto">
+                      <span className="font-bold font-mono text-xs sm:text-sm">Single Photostrip (1-Page)</span>
+                      <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase tracking-wider ml-auto">
                         300 DPI
                       </span>
                     </div>
-                    <p className="text-xs font-mono ml-7 text-[#1A1A1A]/85">
+                    <p className="text-[11px] sm:text-xs font-mono ml-6 sm:ml-7 text-[#1A1A1A]/85">
                       Exact 1:1 scale photostrip with zero excess margins. Ready for photo paper or phone cases.
                     </p>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2.5 sm:gap-3">
                     {/* Option 1: DIY Fold & Glue */}
-                    <label className={`border-4 border-[#1A1A1A] p-3.5 cursor-pointer transition-all ${printMode === 'fold-glue' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] translate-x-[-2px] translate-y-[-2px]' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-start gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3.5 cursor-pointer transition-all ${printMode === 'fold-glue' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] translate-x-[-1px] translate-y-[-1px] sm:translate-x-[-2px] sm:translate-y-[-2px]' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-start gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           checked={printMode === 'fold-glue'} 
@@ -966,14 +971,14 @@ export function UniversalExportOverlay() {
                           }} 
                           className="w-4 h-4 mt-0.5 accent-[#1A1A1A]" 
                         />
-                        <div className="flex flex-col gap-1 w-full">
+                        <div className="flex flex-col gap-0.5 sm:gap-1 w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">DIY Fold & Glue (A4 Sheet)</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase tracking-wider">
+                            <span className="font-bold font-mono text-xs sm:text-sm">DIY Fold & Glue (A4 Sheet)</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#1A1A1A] text-[#FFEB3B] px-1.5 py-0.5 uppercase tracking-wider">
                               HOME PRINTER
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 leading-snug">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 leading-snug">
                             {isTravelID 
                               ? '1:1 scale A4 sheet. Fold & glue for a wallet-ready double-sided card.' 
                               : '1:1 scale A4 sheet with fold line. Guaranteed front/back alignment.'}
@@ -983,8 +988,8 @@ export function UniversalExportOverlay() {
                     </label>
 
                     {/* Option 2: Pro Duplex / PVC Print */}
-                    <label className={`border-4 border-[#1A1A1A] p-3.5 cursor-pointer transition-all ${printMode === 'duplex' ? 'bg-[#FFEB3B] shadow-[4px_4px_0px_#1A1A1A] translate-x-[-2px] translate-y-[-2px]' : 'bg-white hover:bg-gray-50'}`}>
-                      <div className="flex items-start gap-3">
+                    <label className={`border-2 sm:border-4 border-[#1A1A1A] p-2.5 sm:p-3.5 cursor-pointer transition-all ${printMode === 'duplex' ? 'bg-[#FFEB3B] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] translate-x-[-1px] translate-y-[-1px] sm:translate-x-[-2px] sm:translate-y-[-2px]' : 'bg-white hover:bg-gray-50'}`}>
+                      <div className="flex items-start gap-2.5 sm:gap-3">
                         <input 
                           type="radio" 
                           checked={printMode === 'duplex'} 
@@ -994,14 +999,14 @@ export function UniversalExportOverlay() {
                           }} 
                           className="w-4 h-4 mt-0.5 accent-[#1A1A1A]" 
                         />
-                        <div className="flex flex-col gap-1 w-full">
+                        <div className="flex flex-col gap-0.5 sm:gap-1 w-full">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold font-mono text-sm">Pro Direct / PVC (Exact Size)</span>
-                            <span className="text-[9px] font-mono font-bold bg-[#E91E63] text-white px-1.5 py-0.5 uppercase tracking-wider">
+                            <span className="font-bold font-mono text-xs sm:text-sm">Pro Direct / PVC (Exact Size)</span>
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold bg-[#E91E63] text-white px-1.5 py-0.5 uppercase tracking-wider">
                               PVC & DUAL PNG
                             </span>
                           </div>
-                          <p className="text-xs font-mono text-[#1A1A1A]/75 leading-snug">
+                          <p className="text-[11px] sm:text-xs font-mono text-[#1A1A1A]/75 leading-snug">
                             {isTravelID 
                               ? 'Auto-borderless 2-page PDF (85.6 × 54mm) + separate Front & Back PNGs for card printers.' 
                               : 'Auto-borderless 2-page PDF + separate Front & Back PNGs for direct card & ticket printing.'}
@@ -1015,19 +1020,19 @@ export function UniversalExportOverlay() {
 
               {/* Include Bleed / Cut Marks Option (Hidden for Bounty & PhotoBooth where format already determines it) */}
               {!isBounty && !isPhotoBooth && printMode !== 'duplex' && (
-                <label className="flex items-center gap-3 mt-2 cursor-pointer group">
-                  <div className="relative w-6 h-6 border-2 border-[#1A1A1A] bg-white flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A] transition-all">
+                <label className="flex items-center gap-2.5 sm:gap-3 mt-1 sm:mt-2 cursor-pointer group">
+                  <div className="relative w-5 h-5 sm:w-6 sm:h-6 border-2 border-[#1A1A1A] bg-white flex items-center justify-center shadow-[1px_1px_0px_#1A1A1A] sm:shadow-[2px_2px_0px_#1A1A1A] transition-all">
                     <input 
                       type="checkbox" 
                       checked={includeBleed} 
                       onChange={(e) => setIncludeBleed(e.target.checked)} 
                       className="opacity-0 absolute inset-0 cursor-pointer" 
                     />
-                    {includeBleed && <div className="w-3 h-3 bg-[#1A1A1A]" />}
+                    {includeBleed && <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-[#1A1A1A]" />}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-mono font-bold uppercase text-sm">Include Bleed / Cut Marks</span>
-                    <span className="font-mono text-[11px] text-[#1A1A1A]/60">
+                    <span className="font-mono font-bold uppercase text-xs sm:text-sm">Include Bleed / Cut Marks</span>
+                    <span className="font-mono text-[10px] sm:text-[11px] text-[#1A1A1A]/60">
                       Adds outer trim guidelines for scissors or craft knife cutting
                     </span>
                   </div>
@@ -1041,14 +1046,14 @@ export function UniversalExportOverlay() {
                 </div>
               )}
 
-              <div className="mt-auto flex flex-col gap-3 pt-4">
+              <div className="mt-auto flex flex-col gap-2.5 sm:gap-3 pt-3 sm:pt-4 pb-4 sm:pb-0">
                 {isBounty ? (
                   <>
                     <button 
                       type="button"
                       onClick={handleDownloadPDF}
                       disabled={exportingType !== null}
-                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-lg py-3 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center cursor-pointer"
+                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center cursor-pointer"
                     >
                       {exportingType === 'pdf' ? 'GENERATING PDF...' : 'DOWNLOAD PDF'}
                     </button>
@@ -1056,11 +1061,11 @@ export function UniversalExportOverlay() {
                       type="button"
                       onClick={handleDownloadPNG}
                       disabled={exportingType !== null}
-                      className="w-full bg-white text-[#1A1A1A] font-marker text-lg py-3 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center cursor-pointer"
+                      className="w-full bg-white text-[#1A1A1A] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center cursor-pointer"
                     >
                       {exportingType === 'png' ? 'GENERATING PNG...' : 'DOWNLOAD PNG'}
                     </button>
-                    <p className="font-mono text-[11px] text-[#1A1A1A]/70 text-center leading-tight">
+                    <p className="font-mono text-[10px] sm:text-[11px] text-[#1A1A1A]/70 text-center leading-tight">
                       * 300 DPI Ultra High-Resolution • Exact 1:1 Canvas Match
                     </p>
                   </>
@@ -1070,7 +1075,7 @@ export function UniversalExportOverlay() {
                       type="button"
                       onClick={handleDownloadPNG}
                       disabled={exportingType !== null}
-                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-lg py-3.5 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {exportingType === 'png'
                         ? 'Downloading Front & Back...'
@@ -1080,7 +1085,7 @@ export function UniversalExportOverlay() {
                       type="button"
                       onClick={handleDownloadPDF}
                       disabled={exportingType !== null}
-                      className="w-full bg-white text-[#1A1A1A] font-marker text-base py-3 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full bg-white text-[#1A1A1A] font-marker text-xs sm:text-sm lg:text-base py-2 sm:py-3 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {exportingType === 'pdf' 
                         ? 'Generating PDF...' 
@@ -1088,7 +1093,7 @@ export function UniversalExportOverlay() {
                           ? 'Download PDF (2-Page Card)'
                           : 'Download PDF (2-Page Ticket)'}
                     </button>
-                    <p className="font-mono text-[10px] text-[#1A1A1A]/70 text-center leading-tight">
+                    <p className="font-mono text-[9px] sm:text-[10px] text-[#1A1A1A]/70 text-center leading-tight">
                       * Direct PVC card & ticket print: Auto-borderless with zero white background on both PNG and PDF.
                     </p>
                   </>
@@ -1098,7 +1103,7 @@ export function UniversalExportOverlay() {
                       type="button"
                       onClick={handleDownloadPDF}
                       disabled={exportingType !== null}
-                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-lg py-3.5 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {exportingType === 'pdf' 
                         ? 'Generating PDF...' 
@@ -1110,7 +1115,7 @@ export function UniversalExportOverlay() {
                       type="button"
                       onClick={handleDownloadPNG}
                       disabled={exportingType !== null}
-                      className="w-full bg-white text-[#1A1A1A] font-marker text-lg py-3.5 px-4 border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full bg-white text-[#1A1A1A] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 px-3 sm:px-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[4px_4px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] sm:hover:translate-x-[2px] sm:hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#1A1A1A] sm:hover:shadow-[2px_2px_0px_#1A1A1A] transition-all uppercase tracking-wider sm:tracking-widest handwritten-text disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {exportingType === 'png'
                         ? 'Generating PNG...'
@@ -1118,7 +1123,7 @@ export function UniversalExportOverlay() {
                           ? 'Download PNG (Photostrip)'
                           : 'Download PNG (A4 Sheet)'}
                     </button>
-                    <p className="font-mono text-[10px] text-[#1A1A1A]/70 text-center leading-tight">
+                    <p className="font-mono text-[9px] sm:text-[10px] text-[#1A1A1A]/70 text-center leading-tight">
                       * 300 DPI high-resolution export for authentic physical printing.
                     </p>
                   </>

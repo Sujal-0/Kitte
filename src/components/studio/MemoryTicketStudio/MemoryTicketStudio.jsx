@@ -198,30 +198,32 @@ export function MemoryTicketStudio({ onExit }) {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-[#F4F1EA] border-[3px] border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] p-6 max-w-sm w-full flex flex-col gap-4 relative"
+              className="bg-[#F4F1EA] border-[3px] border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] p-4 sm:p-6 max-w-sm w-full flex flex-col gap-3 sm:gap-4 relative"
             >
-              <div className="flex items-center gap-3 border-b-2 border-[#1A1A1A]/20 pb-3">
-                <img src="/assets/alert.svg" alt="Warning" className="w-6 h-6" />
-                <h2 className="font-marker text-2xl uppercase tracking-wider text-[#1A1A1A] handwritten-text">Reset Ticket?</h2>
+              <div className="flex items-center gap-3 border-b-2 border-[#1A1A1A]/20 pb-2.5 sm:pb-3">
+                <img src="/assets/alert.svg" alt="Warning" className="w-5 h-5 sm:w-6 sm:h-6" />
+                <h2 className="font-marker text-xl sm:text-2xl uppercase tracking-wider text-[#1A1A1A] handwritten-text">Reset Ticket?</h2>
               </div>
-              <p className="font-mono text-sm text-[#1A1A1A] leading-relaxed">
+              <p className="font-mono text-xs sm:text-sm text-[#1A1A1A] leading-relaxed">
                 Are you sure you want to discard your current design and restore the default preview? This action cannot be undone.
               </p>
               
-              <div className="flex gap-3 mt-2">
+              <div className="flex gap-2 sm:gap-3 mt-1 sm:mt-2">
                 <button
                   type="button"
                   onClick={() => setShowResetConfirm(false)}
-                  className="flex-1 bg-white text-[#1A1A1A] font-mono font-bold uppercase py-2.5 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+                  className="flex-1 bg-white text-[#1A1A1A] font-mono font-bold uppercase py-1.5 sm:py-2.5 px-2 sm:px-3 text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
                 >
-                  Cancel
+                  <span className="sm:hidden">Cancel</span>
+                  <span className="hidden sm:inline">Cancel (Esc)</span>
                 </button>
                 <button
                   type="button"
                   onClick={confirmReset}
-                  className="flex-1 bg-[#e51717] text-white font-mono font-bold uppercase py-2.5 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+                  className="flex-1 bg-[#e51717] text-white font-mono font-bold uppercase py-1.5 sm:py-2.5 px-2 sm:px-3 text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
                 >
-                  Reset (Enter ↵)
+                  <span className="sm:hidden">Reset</span>
+                  <span className="hidden sm:inline">Reset (Enter ↵)</span>
                 </button>
               </div>
             </motion.div>

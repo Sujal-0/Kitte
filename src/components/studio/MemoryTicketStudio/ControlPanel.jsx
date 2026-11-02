@@ -423,23 +423,22 @@ export function ControlPanel({ activeSide, ticketState, onUpdate, onFlip, onRese
     </div>
   );
 
-  // 1. Mobile Drawer View: Both Front & Back rendered with dividing border
+  // 1. Mobile Drawer View: Both Front & Back rendered with identical neo-brutalist divider badge
   if (isMobileDrawer) {
     return (
       <div className={`w-full flex flex-col gap-5 select-none pb-8 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        {/* Front Controls Section */}
-        <div className="flex items-center gap-2 border-b-2 border-[#1A1A1A]/20 pb-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#1A1A1A]" />
-          <h2 className="font-marker text-lg uppercase tracking-wider text-[#1A1A1A] handwritten-text">
-            FRONT SIDE CONTROLS
-          </h2>
+        {/* Front Side Divider Badge */}
+        <div className="mt-1 mb-2 border-t-2 border-dashed border-[#1A1A1A]/30 relative flex items-center justify-center">
+          <span className="bg-[#F4F1EA] px-3 font-marker text-sm uppercase tracking-wider text-[#1A1A1A] -translate-y-1/2 border border-[#1A1A1A]/30 shadow-[1px_1px_0px_#1A1A1A] handwritten-text">
+            FRONT SIDE
+          </span>
         </div>
         {renderFrontControls()}
 
-        {/* Thin Neo-Brutalist Dividing Border */}
+        {/* Back Side Divider Badge */}
         <div className="my-6 border-t-2 border-dashed border-[#1A1A1A]/30 relative flex items-center justify-center">
-          <span className="bg-[#F4F1EA] px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A] -translate-y-1/2 border border-[#1A1A1A]/30 shadow-[1px_1px_0px_#1A1A1A]">
-            BACK SIDE CONTROLS
+          <span className="bg-[#F4F1EA] px-3 font-marker text-sm uppercase tracking-wider text-[#1A1A1A] -translate-y-1/2 border border-[#1A1A1A]/30 shadow-[1px_1px_0px_#1A1A1A] handwritten-text">
+            BACK SIDE
           </span>
         </div>
 

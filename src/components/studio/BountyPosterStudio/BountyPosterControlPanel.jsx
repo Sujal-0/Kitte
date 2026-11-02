@@ -14,6 +14,7 @@ export function BountyPosterControlPanel({
   onReset,
   disabled,
   isShowcase,
+  isMobileDrawer = false,
 }) {
   const fileInputRef = useRef(null);
   const nameInputRef = useRef(null);
@@ -74,10 +75,10 @@ export function BountyPosterControlPanel({
   const isExportReady = Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
 
   return (
-    <aside className="w-[350px] h-full border-r-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0">
+    <aside className={`${isMobileDrawer ? 'w-full h-auto border-r-0' : 'w-[350px] h-full border-r-4'} border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0`}>
       
       {/* Main Settings Container (Disabled & Dimmed in Showcase Mode, matching Travel ID) */}
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 relative ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <div className={`${isMobileDrawer ? 'overflow-visible' : 'flex-1 overflow-y-auto overflow-x-hidden'} p-4 relative ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         <div className="flex flex-col gap-6 pb-6">
           
           {/* 1. Portrait Photo Upload Section (Matching Travel ID 1:1) */}

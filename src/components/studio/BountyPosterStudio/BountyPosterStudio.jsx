@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UniversalStudioHeader } from '../UniversalStudioHeader';
 import { BountyPosterControlPanel } from './BountyPosterControlPanel';
 import { BountyPosterCanvasArea } from './BountyPosterCanvasArea';
+import { MobileStudioDrawer } from '../MobileStudioDrawer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useIDBState } from '../../../hooks/useIDBState';
 import { DEFAULT_BOUNTY_STATE } from '../../../features/bounty-poster/tokens/bountyTokens';
@@ -11,6 +12,7 @@ export function BountyPosterStudio({ onExit }) {
   const [isShowcase, setIsShowcase, isLoadedShowcase] = useIDBState('bountyPosterShowcase', true);
   const [state, setState, isLoadedState] = useIDBState('bountyPosterState', DEFAULT_BOUNTY_STATE);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const isAllLoaded = isLoadedShowcase && isLoadedState;
 
@@ -38,11 +40,28 @@ export function BountyPosterStudio({ onExit }) {
       showPaperCreases: true,
     }));
     setIsShowcase(false);
+    setIsDrawerOpen(true);
   };
 
   const handleReset = () => {
     soundFX.playPop();
     setShowResetConfirm(true);
+  };
+
+  const isExportReady = Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
+
+  const handleExport = () => {
+    if (!isExportReady) return;
+    soundFX.playSnap();
+    window.dispatchEvent(new CustomEvent('OPEN_EXPORT', {
+      detail: {
+        type: 'Bounty Poster',
+        data: {
+          ...state,
+          isShowcase: !!isShowcase,
+        }
+      }
+    }));
   };
 
   const confirmReset = useCallback(() => {
@@ -79,28 +98,58 @@ export function BountyPosterStudio({ onExit }) {
       className="w-screen h-screen flex flex-col bg-[#F4F1EA] overflow-hidden relative"
     >
       <UniversalStudioHeader 
-        title="BOUNTY POSTER STUDIO" 
+        title="BOUNTY POSTER" 
         description="World Government wanted poster generator with authentic typography. 300 DPI Export." 
         onBack={onExit}
+        onReset={handleReset}
+        onExport={handleExport}
+        isExportReady={isExportReady}
       />
       
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Control Panel */}
-        <BountyPosterControlPanel 
-          state={state} 
-          onUpdate={handleUpdate} 
-          onReset={handleReset}
-          disabled={isShowcase}
-          isShowcase={isShowcase}
-        />
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Desktop Left Control Panel */}
+        <div className="hidden lg:flex h-full shrink-0">
+          <BountyPosterControlPanel 
+            state={state} 
+            onUpdate={handleUpdate} 
+            onReset={handleReset}
+            disabled={isShowcase}
+            isShowcase={isShowcase}
+          />
+        </div>
 
-        {/* Right Canvas Area */}
-        <BountyPosterCanvasArea 
-          state={state} 
-          onUpdate={handleUpdate} 
-          isShowcase={isShowcase}
-          onStartCustomizing={handleStartCustomizing}
-        />
+        {/* Center/Full Canvas Area */}
+        <div className="flex-1 w-full h-full min-h-0 relative">
+          <BountyPosterCanvasArea 
+            state={state} 
+            onUpdate={handleUpdate} 
+            isShowcase={isShowcase}
+            onStartCustomizing={() => {
+              handleStartCustomizing();
+              setIsDrawerOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Mobile Responsive Bottom Drawer Sheet */}
+        <div className="lg:hidden">
+          <MobileStudioDrawer
+            isOpen={isDrawerOpen}
+            onOpen={() => setIsDrawerOpen(true)}
+            onClose={() => setIsDrawerOpen(false)}
+            title="POSTER CONTROLS"
+            badgeText={isShowcase ? "SHOWCASE" : undefined}
+          >
+            <BountyPosterControlPanel 
+              state={state} 
+              onUpdate={handleUpdate} 
+              onReset={handleReset}
+              disabled={isShowcase}
+              isShowcase={isShowcase}
+              isMobileDrawer={true}
+            />
+          </MobileStudioDrawer>
+        </div>
       </main>
 
       {/* Reset Confirmation Modal */}

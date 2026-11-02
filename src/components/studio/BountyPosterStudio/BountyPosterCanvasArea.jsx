@@ -19,8 +19,9 @@ export function BountyPosterCanvasArea({
   const rotateYBase = useTransform(x, [-300, 300], [-10, 10]);
 
   // Zoom State - using Spring for smooth dimension/scale tracking
-  // Default 0.82 fits the 600px tall poster comfortably inside cutting mat on all screen heights
-  const zoomTarget = useMotionValue(0.82);
+  // Responsive default: fits mobile (0.52) or desktop (0.82)
+  const defaultZoom = typeof window !== 'undefined' && window.innerWidth < 768 ? 0.52 : 0.82;
+  const zoomTarget = useMotionValue(defaultZoom);
   const zoom = useSpring(zoomTarget, { stiffness: 300, damping: 30 });
 
   useEffect(() => {
@@ -34,19 +35,49 @@ export function BountyPosterCanvasArea({
         newZoom = currentZoom - (delta * 0.01);
       }
 
-      zoomTarget.set(Math.min(Math.max(0.45, newZoom), 2.2));
+      zoomTarget.set(Math.min(Math.max(0.40, newZoom), 2.2));
+    };
+
+    // Mobile 2-finger pinch zoom
+    let initialDistance = 0;
+    let initialZoom = 1;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.hypot(dx, dy);
+        initialZoom = zoomTarget.get();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2 && initialDistance > 0) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDistance = Math.hypot(dx, dy);
+        const factor = currentDistance / initialDistance;
+        const nextZoom = Math.min(Math.max(0.35, initialZoom * factor), 2.2);
+        zoomTarget.set(nextZoom);
+      }
     };
 
     const section = sectionRef.current;
     if (section) {
       section.addEventListener('wheel', handleNativeWheel, { passive: false });
+      section.addEventListener('touchstart', handleTouchStart, { passive: true });
+      section.addEventListener('touchmove', handleTouchMove, { passive: true });
     }
     return () => {
-      if (section) section.removeEventListener('wheel', handleNativeWheel);
+      if (section) {
+        section.removeEventListener('wheel', handleNativeWheel);
+        section.removeEventListener('touchstart', handleTouchStart);
+        section.removeEventListener('touchmove', handleTouchMove);
+      }
     };
   }, [zoomTarget]);
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -54,7 +85,7 @@ export function BountyPosterCanvasArea({
     y.set(e.clientY - centerY);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     x.set(0);
     y.set(0);
   };
@@ -76,9 +107,10 @@ export function BountyPosterCanvasArea({
   return (
     <section 
       ref={sectionRef}
-      className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center select-none" 
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className="relative flex-1 w-full h-full bg-[#F4F1EA] overflow-hidden flex items-center justify-center select-none pb-14 lg:pb-0" 
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onPointerCancel={handlePointerLeave}
     >
       {/* Interactive Desk Lines Background */}
       <div className="absolute inset-0 z-0 bg-deskSurface">
@@ -86,7 +118,7 @@ export function BountyPosterCanvasArea({
       </div>
 
       {/* Cutting Mat Container (Solid Object on Desk) */}
-      <div className="relative w-[90%] h-[90%] max-w-[1200px] border-[6px] border-[#1A1A1A] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
+      <div className="relative w-[94%] lg:w-[90%] h-[94%] lg:h-[90%] max-w-[1200px] border-[4px] lg:border-[6px] border-[#1A1A1A] shadow-[6px_6px_0px_rgba(0,0,0,0.4)] lg:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
         
         {/* The Mat Texture */}
         <img 
@@ -101,22 +133,22 @@ export function BountyPosterCanvasArea({
           style={{ width: currentW, height: currentH }}
         >
           {/* Top Width Dimension */}
-          <div className="absolute -top-10 left-0 right-0 h-6 border-x-[3px] border-t-[3px] border-[#1A1A1A] flex items-start justify-center">
-            <span className="font-mono font-bold text-sm bg-[#FFEB3B] text-[#1A1A1A] px-2 py-0.5 border-[3px] border-[#1A1A1A] -translate-y-1/2 shadow-[3px_3px_0px_#1A1A1A]">
-              W: {baseW}px ({(baseW / 300).toFixed(2)}")
+          <div className="absolute -top-7 sm:-top-10 left-0 right-0 h-4 sm:h-6 border-x-2 sm:border-x-[3px] border-t-2 sm:border-t-[3px] border-[#1A1A1A] flex items-start justify-center">
+            <span className="font-mono font-bold text-[10px] sm:text-sm bg-[#FFEB3B] text-[#1A1A1A] px-1.5 sm:px-2 py-0.5 border-2 sm:border-[3px] border-[#1A1A1A] -translate-y-1/2 shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A]">
+              W: {baseW}px
             </span>
           </div>
 
           {/* Left Height Dimension */}
-          <div className="absolute -left-10 top-0 bottom-0 w-6 border-y-[3px] border-l-[3px] border-[#1A1A1A] flex items-center justify-start">
-            <span className="font-mono font-bold text-sm bg-[#FFEB3B] text-[#1A1A1A] px-2 py-0.5 border-[3px] border-[#1A1A1A] -translate-x-1/2 -rotate-90 shadow-[3px_3px_0px_#1A1A1A] whitespace-nowrap">
-              H: {baseH}px ({(baseH / 300).toFixed(2)}")
+          <div className="absolute -left-7 sm:-left-10 top-0 bottom-0 w-4 sm:w-6 border-y-2 sm:border-y-[3px] border-l-2 sm:border-l-[3px] border-[#1A1A1A] flex items-center justify-start">
+            <span className="font-mono font-bold text-[10px] sm:text-sm bg-[#FFEB3B] text-[#1A1A1A] px-1.5 sm:px-2 py-0.5 border-2 sm:border-[3px] border-[#1A1A1A] -translate-x-1/2 -rotate-90 shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] whitespace-nowrap">
+              H: {baseH}px
             </span>
           </div>
 
           {/* Top Right DPI Label */}
-          <div className="absolute -top-10 -right-12">
-            <span className="font-marker text-lg text-[#FFEB3B]" style={{ filter: "drop-shadow(2px 2px 0px #1A1A1A)" }}>
+          <div className="absolute -top-7 sm:-top-10 -right-6 sm:-right-12">
+            <span className="font-marker text-xs sm:text-lg text-[#FFEB3B]" style={{ filter: "drop-shadow(2px 2px 0px #1A1A1A)" }}>
               300 DPI
             </span>
           </div>
@@ -129,13 +161,13 @@ export function BountyPosterCanvasArea({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-8 z-50 pointer-events-auto"
+              className="absolute top-4 sm:top-8 z-50 pointer-events-auto"
             >
               <div 
-                className="bg-[#1A1A1A] text-[#F4F1EA] px-4 py-2 border-2 border-white -rotate-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer" 
+                className="bg-[#1A1A1A] text-[#F4F1EA] px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-white -rotate-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer active:scale-95 transition-transform" 
                 onClick={handleClick}
               >
-                <span className="font-marker text-xl tracking-wide handwritten-text">Click to make your own</span>
+                <span className="font-marker text-base sm:text-xl tracking-wide handwritten-text">Click to make your own</span>
               </div>
             </motion.div>
           )}

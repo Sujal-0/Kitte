@@ -57,7 +57,7 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
             </button>
 
             {/* THE TEXT OVERLAY - Placed safely below 01 OCT 2026 */}
-            <div className="absolute top-[28%] bottom-[16%] left-[10%] right-[10%] flex flex-col justify-between z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-3 sm:px-5 py-1">
+            <div className="absolute top-[32%] bottom-[16%] left-[10%] right-[10%] flex flex-col justify-between z-20 font-mono text-zinc-900 mix-blend-multiply opacity-90 overflow-hidden px-3 sm:px-5 py-1">
               <div className="text-[8px] sm:text-[10px] md:text-[12px] space-y-2 sm:space-y-3 font-bold flex flex-col justify-center">
                 
                 {/* Header row */}

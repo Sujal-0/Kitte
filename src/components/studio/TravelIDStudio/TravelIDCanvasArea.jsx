@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TravelIDCard } from './TravelIDCard';
 import { InteractiveDeskLines } from '../../desk/InteractiveDeskLines';
+import { soundFX } from '../../../utils/audio';
 
 export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isShowcase, onStartCustomizing }) {
   const sectionRef = useRef(null);
@@ -13,7 +14,9 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
   const rotateYBase = useTransform(x, [-300, 300], [-10, 10]);
   
   // Zoom State - using Spring for smooth dimension/scale tracking
-  const zoomTarget = useMotionValue(1.0);
+  // Responsive default: 0.62 on mobile so 500px card fits comfortably inside cutting mat, 1.0 on desktop
+  const defaultZoom = typeof window !== 'undefined' && window.innerWidth < 768 ? 0.62 : 1.0;
+  const zoomTarget = useMotionValue(defaultZoom);
   const zoom = useSpring(zoomTarget, { stiffness: 300, damping: 30 });
   
   useEffect(() => {
@@ -27,19 +30,49 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
         newZoom = currentZoom - (delta * 0.01);
       }
       
-      zoomTarget.set(Math.min(Math.max(0.5, newZoom), 3));
+      zoomTarget.set(Math.min(Math.max(0.4, newZoom), 3));
+    };
+
+    // Mobile 2-finger pinch zoom
+    let initialDistance = 0;
+    let initialZoom = 1;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.hypot(dx, dy);
+        initialZoom = zoomTarget.get();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2 && initialDistance > 0) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDistance = Math.hypot(dx, dy);
+        const factor = currentDistance / initialDistance;
+        const nextZoom = Math.min(Math.max(0.35, initialZoom * factor), 3);
+        zoomTarget.set(nextZoom);
+      }
     };
 
     const section = sectionRef.current;
     if (section) {
       section.addEventListener('wheel', handleNativeWheel, { passive: false });
+      section.addEventListener('touchstart', handleTouchStart, { passive: true });
+      section.addEventListener('touchmove', handleTouchMove, { passive: true });
     }
     return () => {
-      if (section) section.removeEventListener('wheel', handleNativeWheel);
+      if (section) {
+        section.removeEventListener('wheel', handleNativeWheel);
+        section.removeEventListener('touchstart', handleTouchStart);
+        section.removeEventListener('touchmove', handleTouchMove);
+      }
     };
   }, [zoomTarget]);
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -47,7 +80,7 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
     y.set(e.clientY - centerY);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     x.set(0);
     y.set(0);
   };
@@ -72,9 +105,9 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
   return (
     <section 
       ref={sectionRef}
-      className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center" 
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className="relative flex-1 w-full h-full bg-[#F4F1EA] overflow-hidden flex items-center justify-center select-none pb-14 lg:pb-0" 
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
     >
       {/* Desk Background & Lines */}
       <div className="absolute inset-0 z-0 bg-deskSurface">

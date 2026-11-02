@@ -2,12 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UniversalStudioHeader } from '../UniversalStudioHeader';
 import { TravelIDControlPanel } from './TravelIDControlPanel';
 import { TravelIDCanvasArea } from './TravelIDCanvasArea';
+import { MobileStudioDrawer } from '../MobileStudioDrawer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useIDBState } from '../../../hooks/useIDBState';
+import { soundFX } from '../../../utils/audio';
 
 export function TravelIDStudio({ onExit }) {
   const [activeSide, setActiveSide] = useState('front'); // 'front' or 'back'
   const [isShowcase, setIsShowcase, isLoadedShowcase] = useIDBState('travelIDShowcase', true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Global ID settings
   const [idState, setIdState, isLoadedId] = useIDBState('travelIDState', {
@@ -396,6 +399,20 @@ export function TravelIDStudio({ onExit }) {
 
   if (!isAllLoaded) return null;
 
+  // Export Readiness
+  const isExportReady = Boolean(idState?.imageSrc);
+
+  const handleExport = () => {
+    if (!isExportReady) return;
+    soundFX.playSnap();
+    window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
+      detail: { 
+        type: idState?.cardType || 'Travel ID', 
+        data: { ...idState, isShowcase: !!isShowcase } 
+      } 
+    }));
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -408,30 +425,62 @@ export function TravelIDStudio({ onExit }) {
         title="TRAVEL ID STUDIO" 
         description="Physical-grade permanent license of travel generator. 300 DPI Export." 
         onBack={onExit}
+        onReset={handleReset}
+        onExport={handleExport}
+        isExportReady={isExportReady}
+        canReset={true}
       />
       
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Control Panel */}
-        <TravelIDControlPanel 
-          activeSide={activeSide} 
-          idState={idState} 
-          onUpdate={handleUpdate} 
-          onFlip={handleFlip}
-          onReset={handleReset}
-          disabled={isShowcase}
-          isShowcase={isShowcase}
-          onCardTypeChange={handleCardTypeChange}
-        />
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Desktop Left Control Panel */}
+        <div className="hidden lg:flex h-full shrink-0">
+          <TravelIDControlPanel 
+            activeSide={activeSide} 
+            idState={idState} 
+            onUpdate={handleUpdate} 
+            onFlip={handleFlip}
+            onReset={handleReset}
+            disabled={isShowcase}
+            isShowcase={isShowcase}
+            onCardTypeChange={handleCardTypeChange}
+          />
+        </div>
 
-        {/* Right Canvas Area */}
-        <TravelIDCanvasArea 
-          activeSide={activeSide} 
-          idState={idState} 
-          onUpdate={handleUpdate} 
-          onFlip={handleFlip}
-          isShowcase={isShowcase}
-          onStartCustomizing={handleStartCustomizing}
-        />
+        {/* Center/Full Canvas Area */}
+        <div className="flex-1 w-full h-full min-h-0 relative">
+          <TravelIDCanvasArea 
+            activeSide={activeSide} 
+            idState={idState} 
+            onUpdate={handleUpdate} 
+            onFlip={handleFlip}
+            isShowcase={isShowcase}
+            onStartCustomizing={() => {
+              handleStartCustomizing();
+              setIsDrawerOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Mobile Responsive Bottom Drawer Sheet */}
+        <div className="lg:hidden">
+          <MobileStudioDrawer
+            isOpen={isDrawerOpen}
+            onOpen={() => setIsDrawerOpen(true)}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            <TravelIDControlPanel 
+              activeSide={activeSide} 
+              idState={idState} 
+              onUpdate={handleUpdate} 
+              onFlip={handleFlip}
+              onReset={handleReset}
+              disabled={isShowcase}
+              isShowcase={isShowcase}
+              onCardTypeChange={handleCardTypeChange}
+              isMobileDrawer={true}
+            />
+          </MobileStudioDrawer>
+        </div>
       </main>
 
       {/* Reset Confirmation Modal */}

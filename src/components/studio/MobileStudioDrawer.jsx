@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundFX } from '../../utils/audio';
 
@@ -6,13 +6,31 @@ export function MobileStudioDrawer({
   isOpen,
   onOpen,
   onClose,
-  title = "CUSTOMIZE & CONTROLS",
-  badgeText,
   children
 }) {
+  const touchStartY = useRef(null);
+
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartY.current === null) return;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchEndY - touchStartY.current;
+    if (deltaY < -30 && !isOpen) {
+      soundFX.playPop();
+      onOpen();
+    } else if (deltaY > 30 && isOpen) {
+      soundFX.playPop();
+      onClose();
+    }
+    touchStartY.current = null;
+  };
+
   return (
     <>
-      {/* 1. Backdrop Overlay covering top 20% when drawer is expanded */}
+      {/* 1. Backdrop Overlay covering top 10% when drawer is expanded */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -21,69 +39,78 @@ export function MobileStudioDrawer({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 top-0 h-[20vh] z-40 bg-black/40 backdrop-blur-[2px] cursor-pointer"
+            className="fixed inset-x-0 top-0 h-[10vh] z-40 bg-black/40 backdrop-blur-[2px] cursor-pointer"
             onClick={() => {
               soundFX.playPop();
               onClose();
             }}
-            aria-label="Tap to close drawer"
-          >
-            <div className="w-full h-full flex items-center justify-center pointer-events-none">
-              <span className="bg-[#1A1A1A]/85 text-white font-mono text-[10px] px-3 py-1 border border-white/20 uppercase tracking-wider shadow">
-                Tap outside to close
-              </span>
-            </div>
-          </motion.div>
+            aria-label="Close drawer"
+          />
         )}
       </AnimatePresence>
 
-      {/* 2. Bottom Drawer Sheet (Swipeable & Animated) */}
+      {/* 2. Bottom Drawer Sheet (Swipeable & Animated to 90vh) */}
       <motion.div
         className="fixed inset-x-0 bottom-0 z-50 bg-[#F4F1EA] border-t-[4px] border-[#1A1A1A] shadow-[0px_-8px_0px_rgba(0,0,0,0.25)] flex flex-col select-none"
         initial={false}
         animate={{
-          height: isOpen ? "80vh" : "56px",
+          height: isOpen ? "90vh" : "44px",
         }}
         transition={{ type: "spring", stiffness: 340, damping: 32 }}
       >
-        {/* Top Handle / Peek Button Bar */}
+        {/* Minimal Centered Handle Bar (Tap or Swipe) */}
         <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           onClick={() => {
             soundFX.playPop();
             if (isOpen) onClose();
             else onOpen();
           }}
-          className="w-full h-14 bg-[#F4F1EA] border-b-2 border-[#1A1A1A]/20 flex items-center justify-between px-4 cursor-pointer shrink-0 select-none hover:bg-[#eae4d3] transition-colors"
+          className="w-full h-11 bg-[#F4F1EA] border-b-2 border-[#1A1A1A]/20 flex items-center justify-center cursor-pointer shrink-0 select-none hover:bg-[#eae4d3] transition-colors"
+          role="button"
+          tabIndex={0}
+          aria-label={isOpen ? "Close controls drawer" : "Open controls drawer"}
         >
-          {/* Left: Drag indicator bar or icon */}
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1A1A1A]" />
-            <span className="font-marker text-sm uppercase tracking-wider text-[#1A1A1A] handwritten-text">
-              {title}
-            </span>
-            {badgeText && (
-              <span className="font-mono text-[9px] font-bold bg-[#FFEB3B] border border-[#1A1A1A] px-1.5 py-0.5 shadow-[1px_1px_0px_#1A1A1A] uppercase">
-                {badgeText}
-              </span>
-            )}
-          </div>
-
-          {/* Center / Action: dottedUpArrow with swipe animation */}
-          <div className="flex items-center gap-2">
-            <motion.div
-              animate={isOpen ? { rotate: 180, y: [0, 2, 0] } : { rotate: 0, y: [0, -3, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="flex items-center justify-center w-7 h-7 bg-[#E4D4B0] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]"
+          {/* Centered Triangle Button (^ when closed, v when open) */}
+          <div className="relative flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+            <svg 
+              width="54" 
+              height="24" 
+              viewBox="0 0 54 24" 
+              className="drop-shadow-[2px_2px_0px_#1A1A1A]"
             >
+              {isOpen ? (
+                // V triangle pointing down (when open)
+                <polygon 
+                  points="4,3 50,3 27,22" 
+                  fill="#E4D4B0" 
+                  stroke="#1A1A1A" 
+                  strokeWidth="2.5" 
+                  strokeLinejoin="round" 
+                />
+              ) : (
+                // ^ triangle pointing up (when closed)
+                <polygon 
+                  points="27,2 50,21 4,21" 
+                  fill="#E4D4B0" 
+                  stroke="#1A1A1A" 
+                  strokeWidth="2.5" 
+                  strokeLinejoin="round" 
+                />
+              )}
+            </svg>
+
+            {/* Dotted Arrow strictly facing UP (-rotate-90) when closed, and DOWN (rotate-90) when open */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <img
                 src="/assets/dottedUpArrow.svg"
-                alt="Toggle Drawer"
-                className="w-4 h-4 object-contain handwritten-text"
+                alt={isOpen ? "Close" : "Open"}
+                className={`w-3.5 h-3.5 object-contain handwritten-text transition-transform duration-300 ${
+                  isOpen ? "rotate-90 translate-y-0.5" : "-rotate-90 -translate-y-0.5"
+                }`}
               />
-            </motion.div>
-            <span className="font-marker text-xs text-[#1A1A1A] handwritten-text">
-              {isOpen ? "CLOSE" : "SWIPE UP"}
-            </span>
+            </div>
           </div>
         </div>
 
@@ -99,3 +126,4 @@ export function MobileStudioDrawer({
     </>
   );
 }
+

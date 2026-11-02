@@ -137,8 +137,6 @@ export function BountyPosterStudio({ onExit }) {
             isOpen={isDrawerOpen}
             onOpen={() => setIsDrawerOpen(true)}
             onClose={() => setIsDrawerOpen(false)}
-            title="POSTER CONTROLS"
-            badgeText={isShowcase ? "SHOWCASE" : undefined}
           >
             <BountyPosterControlPanel 
               state={state} 

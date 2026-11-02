@@ -73,8 +73,8 @@ export function UniversalStudioHeader({
           </div>
         </div>
 
-        {/* Right: Reset and Export Buttons */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Right: Reset and Export Buttons with desktop-identical font-marker & tactile animation */}
+        <div className="flex items-center gap-2 shrink-0">
           {onReset && (
             <button
               type="button"
@@ -83,7 +83,7 @@ export function UniversalStudioHeader({
                 onReset();
               }}
               disabled={!canReset}
-              className="px-2.5 py-1.5 font-mono text-[11px] font-bold uppercase bg-[#E4D4B0] text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-[#d8c69e] cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 sm:px-3 py-1 font-marker text-xs sm:text-sm uppercase tracking-wider text-[#1A1A1A] bg-[#E4D4B0] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed handwritten-text"
             >
               RESET
             </button>
@@ -98,10 +98,10 @@ export function UniversalStudioHeader({
                 onExport();
               }}
               disabled={!isExportReady}
-              className={`px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-wider border-2 border-[#1A1A1A] transition-all shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
+              className={`px-3 sm:px-3.5 py-1 font-marker text-xs sm:text-sm uppercase tracking-widest border-2 border-[#1A1A1A] transition-all handwritten-text ${
                 isExportReady
-                  ? 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] cursor-pointer'
-                  : 'bg-neutral-300 text-neutral-500 opacity-60 cursor-not-allowed'
+                  ? 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] shadow-[3px_3px_0px_#1A1A1A] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none cursor-pointer'
+                  : 'bg-neutral-300 text-neutral-500 opacity-60 shadow-none cursor-not-allowed'
               }`}
             >
               EXPORT

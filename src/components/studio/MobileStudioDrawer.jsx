@@ -54,11 +54,68 @@ export function MobileStudioDrawer({
         className="fixed inset-x-0 bottom-0 z-50 bg-[#F4F1EA] border-t-[4px] border-[#1A1A1A] shadow-[0px_-8px_0px_rgba(0,0,0,0.25)] flex flex-col select-none"
         initial={false}
         animate={{
-          height: isOpen ? "90vh" : "44px",
+          height: isOpen ? "90vh" : "48px",
         }}
         transition={{ type: "spring", stiffness: 340, damping: 32 }}
       >
-        {/* Minimal Centered Handle Bar (Tap or Swipe) */}
+        {/* Prominent 3D Triangle Handle Tab (Straddling top border - half sticking outside in the middle) */}
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onClick={(e) => {
+            e.stopPropagation();
+            soundFX.playPop();
+            if (isOpen) onClose();
+            else onOpen();
+          }}
+          className="absolute -top-[27px] left-1/2 -translate-x-1/2 z-30 cursor-pointer select-none active:scale-95 transition-transform"
+          role="button"
+          tabIndex={0}
+          aria-label={isOpen ? "Close controls drawer" : "Open controls drawer"}
+        >
+          <div className="relative flex items-center justify-center">
+            {/* Enlarged Triangle SVG Button (Upside down V / ^ when closed, V when open) */}
+            <svg 
+              width="108" 
+              height="54" 
+              viewBox="0 0 108 54" 
+              className="drop-shadow-[3px_3px_0px_#1A1A1A]"
+            >
+              {isOpen ? (
+                // V triangle pointing down (when open)
+                <polygon 
+                  points="6,4 102,4 54,50" 
+                  fill="#E4D4B0" 
+                  stroke="#1A1A1A" 
+                  strokeWidth="3.5" 
+                  strokeLinejoin="round" 
+                />
+              ) : (
+                // ^ triangle pointing up (when closed)
+                <polygon 
+                  points="54,4 102,50 6,50" 
+                  fill="#E4D4B0" 
+                  stroke="#1A1A1A" 
+                  strokeWidth="3.5" 
+                  strokeLinejoin="round" 
+                />
+              )}
+            </svg>
+
+            {/* Enlarged Dotted Arrow strictly facing UP (-rotate-90) when closed, and DOWN (rotate-90) when open */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <img
+                src="/assets/dottedUpArrow.svg"
+                alt={isOpen ? "Close" : "Open"}
+                className={`w-8 h-8 object-contain handwritten-text transition-transform duration-300 ${
+                  isOpen ? "rotate-90 -translate-y-1.5" : "-rotate-90 translate-y-1.5"
+                }`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Minimal Peek Bar (Swipeable & Clickable) */}
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -67,52 +124,11 @@ export function MobileStudioDrawer({
             if (isOpen) onClose();
             else onOpen();
           }}
-          className="w-full h-11 bg-[#F4F1EA] border-b-2 border-[#1A1A1A]/20 flex items-center justify-center cursor-pointer shrink-0 select-none hover:bg-[#eae4d3] transition-colors"
+          className="w-full h-12 bg-[#F4F1EA] border-b-2 border-[#1A1A1A]/20 flex items-center justify-center cursor-pointer shrink-0 select-none hover:bg-[#eae4d3] transition-colors"
           role="button"
           tabIndex={0}
           aria-label={isOpen ? "Close controls drawer" : "Open controls drawer"}
-        >
-          {/* Centered Triangle Button (^ when closed, v when open) */}
-          <div className="relative flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
-            <svg 
-              width="54" 
-              height="24" 
-              viewBox="0 0 54 24" 
-              className="drop-shadow-[2px_2px_0px_#1A1A1A]"
-            >
-              {isOpen ? (
-                // V triangle pointing down (when open)
-                <polygon 
-                  points="4,3 50,3 27,22" 
-                  fill="#E4D4B0" 
-                  stroke="#1A1A1A" 
-                  strokeWidth="2.5" 
-                  strokeLinejoin="round" 
-                />
-              ) : (
-                // ^ triangle pointing up (when closed)
-                <polygon 
-                  points="27,2 50,21 4,21" 
-                  fill="#E4D4B0" 
-                  stroke="#1A1A1A" 
-                  strokeWidth="2.5" 
-                  strokeLinejoin="round" 
-                />
-              )}
-            </svg>
-
-            {/* Dotted Arrow strictly facing UP (-rotate-90) when closed, and DOWN (rotate-90) when open */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <img
-                src="/assets/dottedUpArrow.svg"
-                alt={isOpen ? "Close" : "Open"}
-                className={`w-3.5 h-3.5 object-contain handwritten-text transition-transform duration-300 ${
-                  isOpen ? "rotate-90 translate-y-0.5" : "-rotate-90 -translate-y-0.5"
-                }`}
-              />
-            </div>
-          </div>
-        </div>
+        />
 
         {/* Drawer Scrollable Content Area */}
         <div 

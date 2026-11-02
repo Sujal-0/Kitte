@@ -19,6 +19,7 @@ export function PhotoBoothControlPanel({
   onReset,
   disabled,
   isShowcase,
+  isMobileDrawer = false,
 }) {
   const fileInputRef = useRef(null);
   const singleSlotInputRef = useRef(null);
@@ -86,9 +87,8 @@ export function PhotoBoothControlPanel({
     e.target.value = '';
   };
 
-  return (
-    <aside className="w-[360px] h-full border-r-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0">
-      
+  const settingsContent = (
+    <>
       {/* Hidden file pickers */}
       <input 
         type="file" 
@@ -105,9 +105,6 @@ export function PhotoBoothControlPanel({
         className="hidden" 
         onChange={handleSingleSlotUpload} 
       />
-
-      {/* Scrollable Settings Container */}
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 flex flex-col gap-6 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         
         {/* =====================================================================
             1. PHOTO STRIP LAYOUT SELECTOR (2, 3, or 4 Photos)
@@ -517,11 +514,27 @@ export function PhotoBoothControlPanel({
             </div>
           )}
         </div>
+    </>
+  );
 
+  // 1. Mobile Drawer View
+  if (isMobileDrawer) {
+    return (
+      <div className={`w-full flex flex-col gap-6 select-none pb-8 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        {settingsContent}
+      </div>
+    );
+  }
+
+  // 2. Desktop View: 100% UNCHANGED
+  return (
+    <aside className="w-[360px] h-full border-r-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0">
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 flex flex-col gap-6 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        {settingsContent}
       </div>
 
       {/* =========================================================================
-          BOTTOM ACTIONS: RESET & GATED EXPORT BUTTON
+          BOTTOM ACTIONS: RESET & GATED EXPORT BUTTON (Desktop only)
           ========================================================================= */}
       <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         <button 
@@ -531,7 +544,7 @@ export function PhotoBoothControlPanel({
           Reset Progress
         </button>
 
-        {/* EXPORT BUTTON: Disabled when user hasn't filled all slots (same as Travel ID) */}
+        {/* EXPORT BUTTON: Disabled when user hasn't filled all slots */}
         <button 
           type="button"
           id="export-photostrip-btn"

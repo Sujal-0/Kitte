@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { UniversalStudioHeader } from '../UniversalStudioHeader';
 import { PhotoBoothControlPanel } from './PhotoBoothControlPanel';
 import { PhotoBoothCanvasArea } from './PhotoBoothCanvasArea';
+import { MobileStudioDrawer } from '../MobileStudioDrawer';
 import { useIDBState } from '../../../hooks/useIDBState';
 import { PHOTO_BOOTH_TOKENS } from '../../../features/photobooth/tokens/photoBoothTokens';
-import { playClick, playScribble } from '../../../utils/audio';
+import { playClick, playScribble, soundFX } from '../../../utils/audio';
 
 export function PhotoBoothStudio({ onExit }) {
   const [stripState, setStripState, isLoadedState] = useIDBState(
@@ -20,6 +21,7 @@ export function PhotoBoothStudio({ onExit }) {
 
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Update specific top-level state key
   const handleUpdateState = (key, value) => {
@@ -70,6 +72,27 @@ export function PhotoBoothStudio({ onExit }) {
     setShowResetConfirm(false);
   }, [setStripState, setIsShowcase]);
 
+  // Export Readiness
+  const photoCount = stripState?.photoCount || 4;
+  const photos = stripState?.photos || PHOTO_BOOTH_TOKENS.showcaseDefaults.photos;
+  const activePhotos = photos.slice(0, photoCount);
+  const uploadedCount = activePhotos.filter(p => !!p.src).length;
+  const isExportReady = uploadedCount === photoCount;
+
+  const handleExport = () => {
+    if (!isExportReady) return;
+    soundFX.playSnap();
+    window.dispatchEvent(new CustomEvent('OPEN_EXPORT', {
+      detail: {
+        type: 'Photo Booth',
+        data: {
+          ...stripState,
+          isShowcase: !!isShowcase,
+        }
+      }
+    }));
+  };
+
   // Keyboard shortcut listener: Enter to confirm reset, Escape to cancel
   useEffect(() => {
     if (!showResetConfirm) return;
@@ -103,29 +126,61 @@ export function PhotoBoothStudio({ onExit }) {
         title="PHOTO BOOTH STUDIO"
         description="Instant vintage photostrip creator. 300 DPI Export."
         onBack={onExit}
+        onReset={handleReset}
+        onExport={handleExport}
+        isExportReady={isExportReady}
+        canReset={true}
       />
 
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Control Panel */}
-        <PhotoBoothControlPanel
-          state={stripState}
-          activeSlotIndex={activeSlotIndex}
-          onSelectSlot={(idx) => setActiveSlotIndex(idx)}
-          onUpdateState={handleUpdateState}
-          onUpdatePhotoSlot={handleUpdatePhotoSlot}
-          onReset={handleReset}
-          disabled={isShowcase}
-          isShowcase={isShowcase}
-        />
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Desktop Left Control Panel */}
+        <div className="hidden lg:flex h-full shrink-0">
+          <PhotoBoothControlPanel
+            state={stripState}
+            activeSlotIndex={activeSlotIndex}
+            onSelectSlot={(idx) => setActiveSlotIndex(idx)}
+            onUpdateState={handleUpdateState}
+            onUpdatePhotoSlot={handleUpdatePhotoSlot}
+            onReset={handleReset}
+            disabled={isShowcase}
+            isShowcase={isShowcase}
+          />
+        </div>
 
-        {/* Right Cutting Mat Canvas Area */}
-        <PhotoBoothCanvasArea
-          state={stripState}
-          activeSlotIndex={activeSlotIndex}
-          onSelectSlot={(idx) => setActiveSlotIndex(idx)}
-          isShowcase={isShowcase}
-          onStartCustomizing={handleStartCustomizing}
-        />
+        {/* Center/Full Canvas Area */}
+        <div className="flex-1 w-full h-full min-h-0 relative">
+          <PhotoBoothCanvasArea
+            state={stripState}
+            activeSlotIndex={activeSlotIndex}
+            onSelectSlot={(idx) => setActiveSlotIndex(idx)}
+            isShowcase={isShowcase}
+            onStartCustomizing={() => {
+              handleStartCustomizing();
+              setIsDrawerOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Mobile Responsive Bottom Drawer Sheet */}
+        <div className="lg:hidden">
+          <MobileStudioDrawer
+            isOpen={isDrawerOpen}
+            onOpen={() => setIsDrawerOpen(true)}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            <PhotoBoothControlPanel
+              state={stripState}
+              activeSlotIndex={activeSlotIndex}
+              onSelectSlot={(idx) => setActiveSlotIndex(idx)}
+              onUpdateState={handleUpdateState}
+              onUpdatePhotoSlot={handleUpdatePhotoSlot}
+              onReset={handleReset}
+              disabled={isShowcase}
+              isShowcase={isShowcase}
+              isMobileDrawer={true}
+            />
+          </MobileStudioDrawer>
+        </div>
       </main>
 
       {/* Reset Confirmation Modal */}

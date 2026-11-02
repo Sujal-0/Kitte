@@ -268,16 +268,16 @@ export function TimeLetterEmailModal({
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
-                  <span>{copiedLink ? 'Copied to Clipboard!' : 'Copy Secret Link'}</span>
+                  <span>{copiedLink ? 'COPIED LINK' : 'COPY SHARE LINK'}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleOpenSharePreview}
-                  className="w-full sm:w-auto bg-white hover:bg-[#FAF7EE] text-[#1A1A1A] font-mono text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] transition-all cursor-pointer shrink-0 uppercase text-center"
-                  title="Open live preview in new tab"
+                  className="w-full sm:w-auto bg-[#F4F1EA] hover:bg-white text-[#1A1A1A] font-mono text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] transition-all cursor-pointer shrink-0 uppercase text-center"
+                  title="Open live web letter in new tab"
                 >
-                  Preview ↗
+                  Open Web Letter ↗
                 </button>
               </div>
 

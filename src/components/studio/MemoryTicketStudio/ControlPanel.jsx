@@ -1,8 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeoInput, validateDateField } from '../../ui/NeoInput';
+import { soundFX } from '../../../utils/audio';
 
-export function ControlPanel({ activeSide, ticketState, onUpdate, onFlip, onReset, disabled, isMobileDrawer = false }) {
+export function ControlPanel({ 
+  activeSide, 
+  ticketState, 
+  onUpdate, 
+  onFlip, 
+  onReset, 
+  disabled, 
+  isMobileDrawer = false,
+  isShowcase = false 
+}) {
   
   const fileInputRef = useRef(null);
   const [showAdjustDrawer, setShowAdjustDrawer] = useState(false);
@@ -423,6 +433,41 @@ export function ControlPanel({ activeSide, ticketState, onUpdate, onFlip, onRese
     </div>
   );
 
+  const isExportReady = !isShowcase && Boolean(ticketState?.imageSrc);
+
+  const actionButtons = (
+    <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <button 
+        type="button"
+        onClick={onReset}
+        className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px] cursor-pointer"
+      >
+        Reset Progress
+      </button>
+      <button 
+        type="button"
+        disabled={!isExportReady}
+        onClick={() => {
+          if (!isExportReady) return;
+          soundFX.playSnap();
+          window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
+            detail: { 
+              type: 'Memory Ticket', 
+              data: ticketState 
+            } 
+          }));
+        }}
+        className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
+          !isExportReady 
+            ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' 
+            : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px] cursor-pointer'
+        }`}
+      >
+        Export Ticket
+      </button>
+    </div>
+  );
+
   // 1. Mobile Drawer View: Both Front & Back rendered with identical neo-brutalist divider badge
   if (isMobileDrawer) {
     return (
@@ -444,6 +489,9 @@ export function ControlPanel({ activeSide, ticketState, onUpdate, onFlip, onRese
 
         {/* Back Controls Section */}
         {renderBackControls()}
+
+        {/* Action Buttons inside Drawer */}
+        {actionButtons}
       </div>
     );
   }
@@ -482,28 +530,7 @@ export function ControlPanel({ activeSide, ticketState, onUpdate, onFlip, onRese
       </div>
 
       {/* Action Buttons */}
-      <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button 
-          onClick={onReset}
-          className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px]"
-        >
-          Reset Progress
-        </button>
-        <button 
-          disabled={!ticketState.imageSrc}
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
-              detail: { 
-                type: 'Memory Ticket', 
-                data: ticketState 
-              } 
-            }));
-          }}
-          className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${!ticketState.imageSrc ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px]'}`}
-        >
-          Export Ticket
-        </button>
-      </div>
+      {actionButtons}
 
     </aside>
   );

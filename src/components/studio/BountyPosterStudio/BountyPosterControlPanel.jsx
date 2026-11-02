@@ -72,7 +72,7 @@ export function BountyPosterControlPanel({
     }
   };
 
-  const isExportReady = Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
+  const isExportReady = !isShowcase && Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
 
   return (
     <aside className={`${isMobileDrawer ? 'w-full h-auto border-r-0' : 'w-[350px] h-full border-r-4'} border-[#1A1A1A] bg-[#F4F1EA] flex flex-col z-10 shrink-0`}>

@@ -885,6 +885,57 @@ export function TimeLetterControlPanel({
           </div>
   );
 
+  const actionButtons = (
+    <div className={`p-3.5 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-2 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <button 
+        type="button"
+        onClick={onReset} 
+        className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-xs py-2 border-2 border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-4 cursor-pointer"
+      >
+        Reset to Showcase
+      </button>
+
+      <button 
+        type="button"
+        onClick={() => handleTriggerExport('duplex')}
+        disabled={!canExport}
+        className={`w-full font-marker text-lg py-3.5 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
+          !canExport
+            ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]'
+            : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[2px] cursor-pointer'
+        }`}
+      >
+        Export Keepsake Lab
+      </button>
+
+      <button 
+        type="button"
+        onClick={() => {
+          soundFX.playPop();
+          window.dispatchEvent(new CustomEvent('OPEN_EMAIL_DISPATCH', { detail: state }));
+        }}
+        disabled={!canExport}
+        className={`w-full font-marker font-bold text-sm py-2.5 border-2 border-[#1A1A1A] border-b-4 transition-all uppercase tracking-wider handwritten-text text-center cursor-pointer ${
+          !canExport
+            ? 'bg-neutral-300 text-neutral-500 border-neutral-300 border-b-2 cursor-not-allowed opacity-60'
+            : 'bg-[#FFEB3B] text-[#1A1A1A] hover:bg-[#FFF176] active:border-b-2 active:translate-y-[2px]'
+        }`}
+      >
+        Digital Delivery & Share Link
+      </button>
+      
+      {!canExport && (
+        <span className={`font-mono text-[9px] text-center uppercase tracking-wide ${hasValidationErrors ? 'text-[#B91C1C] font-bold animate-pulse' : 'text-[#1A1A1A]/60'}`}>
+          {isShowcase 
+            ? 'Click envelope to customize' 
+            : hasValidationErrors 
+              ? 'Fix validation errors before export'
+              : 'Write your letter message to unlock export'}
+        </span>
+      )}
+    </div>
+  );
+
   // 1. Mobile Drawer View
   if (isMobileDrawer) {
     return (
@@ -904,6 +955,9 @@ export function TimeLetterControlPanel({
           </span>
         </div>
         {renderLetterControls()}
+
+        {/* Action Buttons inside Drawer */}
+        {actionButtons}
       </div>
     );
   }
@@ -953,54 +1007,7 @@ export function TimeLetterControlPanel({
           BOTTOM ACTION FOOTER (Reset & Main Export Keepsake)
           (Matching Travel ID Studio: Disabled until user writes letter message)
          ======================================================== */}
-      <div className={`p-3.5 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-2 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button 
-          type="button"
-          onClick={onReset} 
-          className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-xs py-2 border-2 border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-4 cursor-pointer"
-        >
-          Reset to Showcase
-        </button>
-
-        <button 
-          type="button"
-          onClick={() => handleTriggerExport('duplex')}
-          disabled={!canExport}
-          className={`w-full font-marker text-lg py-3.5 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
-            !canExport
-              ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]'
-              : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[2px] cursor-pointer'
-          }`}
-        >
-          Export Keepsake Lab
-        </button>
-
-        <button 
-          type="button"
-          onClick={() => {
-            soundFX.playPop();
-            window.dispatchEvent(new CustomEvent('OPEN_EMAIL_DISPATCH', { detail: state }));
-          }}
-          disabled={!canExport}
-          className={`w-full font-marker font-bold text-sm py-2.5 border-2 border-[#1A1A1A] border-b-4 transition-all uppercase tracking-wider handwritten-text text-center cursor-pointer ${
-            !canExport
-              ? 'bg-neutral-300 text-neutral-500 border-neutral-300 border-b-2 cursor-not-allowed opacity-60'
-              : 'bg-[#FFEB3B] text-[#1A1A1A] hover:bg-[#FFF176] active:border-b-2 active:translate-y-[2px]'
-          }`}
-        >
-          Digital Delivery & Share Link
-        </button>
-        
-        {!canExport && (
-          <span className={`font-mono text-[9px] text-center uppercase tracking-wide ${hasValidationErrors ? 'text-[#B91C1C] font-bold animate-pulse' : 'text-[#1A1A1A]/60'}`}>
-            {isShowcase 
-              ? 'Click envelope to customize' 
-              : hasValidationErrors 
-                ? 'Fix validation errors before export'
-                : 'Write your letter message to unlock export'}
-          </span>
-        )}
-      </div>
+      {actionButtons}
 
     </aside>
   );

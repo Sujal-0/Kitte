@@ -140,7 +140,7 @@ export function TimeLetterStudio({ onExit }) {
   }, []);
 
   // Export Readiness
-  const isExportReady = Boolean(state?.letterBody && state.letterBody.trim().length > 0);
+  const isExportReady = !isShowcase && Boolean(state?.letterBody && state.letterBody.trim().length > 0);
 
   const handleExport = () => {
     if (!isExportReady) return;
@@ -173,7 +173,7 @@ export function TimeLetterStudio({ onExit }) {
         onReset={handleReset}
         onExport={handleExport}
         isExportReady={isExportReady}
-        canReset={true}
+        canReset={!isShowcase}
       />
       
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">

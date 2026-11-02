@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeoInput, validateDateField } from '../../ui/NeoInput';
 import { PHOTO_BOOTH_TOKENS } from '../../../features/photobooth/tokens/photoBoothTokens';
+import { soundFX } from '../../../utils/audio';
 
 const validateCaption = (val) => {
   if (!val) return '';
@@ -37,7 +38,7 @@ export function PhotoBoothControlPanel({
   const photos = state?.photos || PHOTO_BOOTH_TOKENS.showcaseDefaults.photos;
   const activePhotos = photos.slice(0, photoCount);
   const uploadedCount = activePhotos.filter(p => !!p.src).length;
-  const isExportReady = uploadedCount === photoCount;
+  const isExportReady = !isShowcase && (uploadedCount === photoCount);
 
   const activeSlot = photos[activeSlotIndex] || photos[0];
 
@@ -517,11 +518,51 @@ export function PhotoBoothControlPanel({
     </>
   );
 
+  const actionButtons = (
+    <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <button 
+        type="button"
+        onClick={onReset} 
+        className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px] cursor-pointer"
+      >
+        Reset Progress
+      </button>
+
+      {/* EXPORT BUTTON: Disabled when user hasn't filled all slots */}
+      <button 
+        type="button"
+        id="export-photostrip-btn"
+        onClick={() => {
+          if (!isExportReady) return;
+          soundFX.playSnap();
+          window.dispatchEvent(new CustomEvent('OPEN_EXPORT', {
+            detail: {
+              type: 'Photo Booth',
+              data: {
+                ...state,
+                isShowcase: !!isShowcase,
+              }
+            }
+          }));
+        }}
+        disabled={!isExportReady} 
+        className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
+          !isExportReady 
+            ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' 
+            : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px] cursor-pointer'
+        }`}
+      >
+        Export Photostrip
+      </button>
+    </div>
+  );
+
   // 1. Mobile Drawer View
   if (isMobileDrawer) {
     return (
       <div className={`w-full flex flex-col gap-6 select-none pb-8 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         {settingsContent}
+        {actionButtons}
       </div>
     );
   }
@@ -532,45 +573,7 @@ export function PhotoBoothControlPanel({
       <div className={`flex-1 overflow-y-auto overflow-x-hidden p-4 flex flex-col gap-6 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
         {settingsContent}
       </div>
-
-      {/* =========================================================================
-          BOTTOM ACTIONS: RESET & GATED EXPORT BUTTON (Desktop only)
-          ========================================================================= */}
-      <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button 
-          onClick={onReset} 
-          className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px]"
-        >
-          Reset Progress
-        </button>
-
-        {/* EXPORT BUTTON: Disabled when user hasn't filled all slots */}
-        <button 
-          type="button"
-          id="export-photostrip-btn"
-          onClick={() => {
-            if (!isExportReady) return;
-            window.dispatchEvent(new CustomEvent('OPEN_EXPORT', {
-              detail: {
-                type: 'Photo Booth',
-                data: {
-                  ...state,
-                  isShowcase: !!isShowcase,
-                }
-              }
-            }));
-          }}
-          disabled={!isExportReady} 
-          className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
-            !isExportReady 
-              ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' 
-              : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px]'
-          }`}
-        >
-          Export Photostrip
-        </button>
-      </div>
-
+      {actionButtons}
     </aside>
   );
 }

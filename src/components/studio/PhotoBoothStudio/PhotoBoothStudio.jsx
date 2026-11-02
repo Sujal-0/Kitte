@@ -77,7 +77,7 @@ export function PhotoBoothStudio({ onExit }) {
   const photos = stripState?.photos || PHOTO_BOOTH_TOKENS.showcaseDefaults.photos;
   const activePhotos = photos.slice(0, photoCount);
   const uploadedCount = activePhotos.filter(p => !!p.src).length;
-  const isExportReady = uploadedCount === photoCount;
+  const isExportReady = !isShowcase && (uploadedCount === photoCount);
 
   const handleExport = () => {
     if (!isExportReady) return;
@@ -129,7 +129,7 @@ export function PhotoBoothStudio({ onExit }) {
         onReset={handleReset}
         onExport={handleExport}
         isExportReady={isExportReady}
-        canReset={true}
+        canReset={!isShowcase}
       />
 
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">

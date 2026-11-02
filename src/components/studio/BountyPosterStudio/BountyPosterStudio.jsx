@@ -48,7 +48,7 @@ export function BountyPosterStudio({ onExit }) {
     setShowResetConfirm(true);
   };
 
-  const isExportReady = Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
+  const isExportReady = !isShowcase && Boolean(state?.imageSrc) && Boolean(state?.name?.trim());
 
   const handleExport = () => {
     if (!isExportReady) return;
@@ -104,6 +104,7 @@ export function BountyPosterStudio({ onExit }) {
         onReset={handleReset}
         onExport={handleExport}
         isExportReady={isExportReady}
+        canReset={!isShowcase}
       />
       
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">

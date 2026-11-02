@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NeoInput, NeoTextarea, validateDateField } from '../../ui/NeoInput';
 import { NeoSelect } from '../../ui/NeoSelect';
 import { NeoSignaturePad } from '../../ui/NeoSignaturePad';
+import { soundFX } from '../../../utils/audio';
 
 export function TravelIDControlPanel({ 
   activeSide, 
@@ -579,6 +580,41 @@ export function TravelIDControlPanel({
     </div>
   );
 
+  const isExportReady = !isShowcase && Boolean(idState?.imageSrc);
+
+  const actionButtons = (
+    <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <button 
+        type="button"
+        onClick={onReset} 
+        className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px] cursor-pointer"
+      >
+        Reset Progress
+      </button>
+      <button 
+        type="button"
+        disabled={!isExportReady} 
+        onClick={() => {
+          if (!isExportReady) return;
+          soundFX.playSnap();
+          window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
+            detail: { 
+              type: idState?.cardType || 'Travel ID', 
+              data: { ...idState, isShowcase: !!isShowcase } 
+            } 
+          }));
+        }}
+        className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${
+          !isExportReady 
+            ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' 
+            : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px] cursor-pointer'
+        }`}
+      >
+        Export ID
+      </button>
+    </div>
+  );
+
   // 1. Mobile Drawer View
   if (isMobileDrawer) {
     return (
@@ -598,6 +634,9 @@ export function TravelIDControlPanel({
           </span>
         </div>
         {renderBackControls()}
+
+        {/* Action Buttons inside Drawer */}
+        {actionButtons}
       </div>
     );
   }
@@ -621,23 +660,7 @@ export function TravelIDControlPanel({
       </div>
 
       {/* Bottom Action Buttons (Matching Memory Ticket exactly) */}
-      <div className={`p-4 border-t-4 border-[#1A1A1A] bg-[#F4F1EA] flex flex-col gap-3 shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button 
-          onClick={onReset} 
-          className="w-full bg-[#F4F1EA] text-[#1A1A1A] font-marker font-bold text-sm py-2 border-[3px] border-[#1A1A1A] hover:bg-[#e51717] hover:text-white transition-colors uppercase tracking-wider handwritten-text border-b-[6px] cursor-pointer"
-        >
-          Reset Progress
-        </button>
-        <button 
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { detail: { type: idState?.cardType || 'Travel ID', data: { ...idState, isShowcase: !!isShowcase } } }));
-          }}
-          disabled={!idState.imageSrc} 
-          className={`w-full font-marker text-xl py-4 border-[3px] border-[#1A1A1A] transition-all uppercase tracking-widest handwritten-text border-b-[6px] ${!idState.imageSrc ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed opacity-60 border-b-[3px]' : 'bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] active:border-b-[3px] active:translate-y-[3px] cursor-pointer'}`}
-        >
-          Export ID
-        </button>
-      </div>
+      {actionButtons}
     </aside>
   );
 }

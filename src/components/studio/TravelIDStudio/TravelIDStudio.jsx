@@ -400,7 +400,7 @@ export function TravelIDStudio({ onExit }) {
   if (!isAllLoaded) return null;
 
   // Export Readiness
-  const isExportReady = Boolean(idState?.imageSrc);
+  const isExportReady = !isShowcase && Boolean(idState?.imageSrc);
 
   const handleExport = () => {
     if (!isExportReady) return;
@@ -428,7 +428,7 @@ export function TravelIDStudio({ onExit }) {
         onReset={handleReset}
         onExport={handleExport}
         isExportReady={isExportReady}
-        canReset={true}
+        canReset={!isShowcase}
       />
       
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">

@@ -109,8 +109,11 @@ export function MemoryTicketStudio({ onExit }) {
     setShowResetConfirm(true);
   };
 
+  const isExportReady = !isShowcase && Boolean(ticketState?.imageSrc);
+
   const handleExport = () => {
-    if (!ticketState.imageSrc) return;
+    if (!isExportReady) return;
+    soundFX.playSnap();
     window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
       detail: { 
         type: 'Memory Ticket', 
@@ -133,8 +136,8 @@ export function MemoryTicketStudio({ onExit }) {
         onBack={onExit}
         onReset={handleReset}
         onExport={handleExport}
-        isExportReady={!!ticketState.imageSrc}
-        canReset={true}
+        isExportReady={isExportReady}
+        canReset={!isShowcase}
       />
       
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
@@ -147,6 +150,7 @@ export function MemoryTicketStudio({ onExit }) {
             onFlip={handleFlip} 
             onReset={handleReset}
             disabled={isShowcase}
+            isShowcase={isShowcase}
           />
         </div>
 
@@ -179,6 +183,7 @@ export function MemoryTicketStudio({ onExit }) {
               onFlip={handleFlip} 
               onReset={handleReset}
               disabled={isShowcase}
+              isShowcase={isShowcase}
               isMobileDrawer={true}
             />
           </MobileStudioDrawer>

@@ -52,12 +52,10 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
     y.set(0);
   };
 
-  const handleClick = () => {
-    if (isShowcase) {
-      onStartCustomizing();
-    } else {
-      onFlip();
-    }
+  const handleFlipClick = (e) => {
+    e?.stopPropagation?.();
+    soundFX.playPop();
+    onFlip();
   };
 
   // Dimensions matching Memory Ticket Studio
@@ -131,7 +129,7 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
         {/* 3D ID Container - Uses same animated zoom spring! */}
         <div className="relative z-30" style={{ perspective: '1500px' }}>
           <motion.div
-            className="cursor-pointer"
+            className="cursor-pointer select-none relative"
             animate={{ rotateY: activeSide === 'back' ? 180 : 0 }}
             style={{ 
               transformStyle: 'preserve-3d', 
@@ -139,7 +137,7 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
               scale: zoom
             }}
             transition={{ rotateY: { type: "spring", stiffness: 60, damping: 15, mass: 1 } }}
-            onClick={handleClick}
+            onClick={handleFlipClick}
           >
             <motion.div 
               style={{ rotateX, rotateY: rotateYBase, transformStyle: 'preserve-3d' }}
@@ -155,15 +153,25 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
                 <TravelIDCard idState={idState} activeSide={activeSide} onUpdate={onUpdate} isShowcase={isShowcase} />
               </div>
             </motion.div>
+
+            {/* Click/Tap to Flip Capture Overlay */}
+            <div 
+              className="absolute inset-0 z-40 cursor-pointer pointer-events-auto"
+              onClick={handleFlipClick}
+              aria-label="Tap to flip card"
+            />
           </motion.div>
         </div>
 
         {/* CLICK TO FLIP Scribble Text */}
-        <div className="absolute top-12 right-12 z-40 pointer-events-none flex items-center gap-2 opacity-80">
-          <span className="font-marker text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
+        <div 
+          onClick={handleFlipClick}
+          className="absolute top-4 right-4 sm:top-12 sm:right-12 z-40 cursor-pointer flex items-center gap-1.5 sm:gap-2 opacity-85 hover:opacity-100 active:scale-95 transition-all select-none"
+        >
+          <span className="font-marker text-lg sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
             CLICK TO FLIP
           </span>
-          <img src="/assets/dottedUpArrow.svg" alt="arrow" className="w-8 h-8 rotate-180 brightness-0 invert handwritten-text" />
+          <img src="/assets/dottedUpArrow.svg" alt="arrow" className="w-5 h-5 sm:w-8 sm:h-8 rotate-180 brightness-0 invert handwritten-text" />
         </div>
       </div>
     </section>

@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UniversalStudioHeader } from '../UniversalStudioHeader';
 import { ControlPanel } from './ControlPanel';
 import { CanvasArea } from './CanvasArea';
+import { MobileStudioDrawer } from '../MobileStudioDrawer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useIDBState } from '../../../hooks/useIDBState';
 
 export function MemoryTicketStudio({ onExit }) {
   const [activeSide, setActiveSide] = useState('front'); // 'front' or 'back'
   const [isShowcase, setIsShowcase, isLoadedShowcase] = useIDBState('memoryTicketShowcase', true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Global ticket settings
   const [ticketState, setTicketState, isLoadedTicket] = useIDBState('memoryTicketState', {
@@ -107,6 +109,16 @@ export function MemoryTicketStudio({ onExit }) {
     setShowResetConfirm(true);
   };
 
+  const handleExport = () => {
+    if (!ticketState.imageSrc) return;
+    window.dispatchEvent(new CustomEvent('OPEN_EXPORT', { 
+      detail: { 
+        type: 'Memory Ticket', 
+        data: ticketState 
+      } 
+    }));
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -119,28 +131,58 @@ export function MemoryTicketStudio({ onExit }) {
         title="MEMORY TICKET STUB" 
         description="Physical-grade analog memory artifact generator. 300 DPI Export." 
         onBack={onExit}
+        onReset={handleReset}
+        onExport={handleExport}
+        isExportReady={!!ticketState.imageSrc}
+        canReset={true}
       />
       
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Control Panel */}
-        <ControlPanel 
-          activeSide={activeSide} 
-          ticketState={ticketState} 
-          onUpdate={handleUpdate} 
-          onFlip={handleFlip}
-          onReset={handleReset}
-          disabled={isShowcase}
-        />
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* Desktop Left Control Panel */}
+        <div className="hidden lg:flex h-full shrink-0">
+          <ControlPanel 
+            activeSide={activeSide} 
+            ticketState={ticketState} 
+            onUpdate={handleUpdate} 
+            onFlip={handleFlip} 
+            onReset={handleReset}
+            disabled={isShowcase}
+          />
+        </div>
 
-        {/* Right Canvas Area */}
-        <CanvasArea 
-          activeSide={activeSide} 
-          ticketState={ticketState} 
-          onUpdate={handleUpdate}
-          onFlip={handleFlip}
-          isShowcase={isShowcase}
-          onStartCustomizing={handleStartCustomizing}
-        />
+        {/* Center/Full Canvas Area */}
+        <div className="flex-1 w-full h-full min-h-0 relative">
+          <CanvasArea 
+            activeSide={activeSide} 
+            ticketState={ticketState} 
+            onUpdate={handleUpdate}
+            onFlip={handleFlip}
+            isShowcase={isShowcase}
+            onStartCustomizing={() => {
+              handleStartCustomizing();
+              setIsDrawerOpen(true);
+            }}
+          />
+        </div>
+
+        {/* Mobile Responsive Bottom Drawer Sheet */}
+        <div className="lg:hidden">
+          <MobileStudioDrawer
+            isOpen={isDrawerOpen}
+            onOpen={() => setIsDrawerOpen(true)}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            <ControlPanel 
+              activeSide={activeSide} 
+              ticketState={ticketState} 
+              onUpdate={handleUpdate} 
+              onFlip={handleFlip} 
+              onReset={handleReset}
+              disabled={isShowcase}
+              isMobileDrawer={true}
+            />
+          </MobileStudioDrawer>
+        </div>
       </main>
 
       {/* Reset Confirmation Modal */}

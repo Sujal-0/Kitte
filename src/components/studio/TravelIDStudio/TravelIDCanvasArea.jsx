@@ -52,10 +52,14 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
     y.set(0);
   };
 
-  const handleFlipClick = (e) => {
+  const handleProductClick = (e) => {
     e?.stopPropagation?.();
     soundFX.playPop();
-    onFlip();
+    if (isShowcase) {
+      onStartCustomizing();
+    } else {
+      onFlip();
+    }
   };
 
   // Dimensions matching Memory Ticket Studio
@@ -117,10 +121,13 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-8 z-50 pointer-events-auto"
+              className="absolute top-6 sm:top-8 z-50 pointer-events-auto"
             >
-              <div className="bg-[#1A1A1A] text-[#F4F1EA] px-4 py-2 border-2 border-white -rotate-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer" onClick={handleClick}>
-                <span className="font-marker text-xl tracking-wide handwritten-text">Click to make your own</span>
+              <div 
+                className="bg-[#1A1A1A] text-[#F4F1EA] px-3.5 py-1.5 sm:px-4 sm:py-2 border-2 border-white -rotate-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] cursor-pointer active:scale-95 transition-transform touch-manipulation" 
+                onClick={handleProductClick}
+              >
+                <span className="font-marker text-base sm:text-xl tracking-wide handwritten-text">Click to make your own</span>
               </div>
             </motion.div>
           )}
@@ -129,7 +136,7 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
         {/* 3D ID Container - Uses same animated zoom spring! */}
         <div className="relative z-30" style={{ perspective: '1500px' }}>
           <motion.div
-            className="cursor-pointer select-none relative"
+            className="cursor-pointer select-none relative touch-manipulation"
             animate={{ rotateY: activeSide === 'back' ? 180 : 0 }}
             style={{ 
               transformStyle: 'preserve-3d', 
@@ -137,7 +144,7 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
               scale: zoom
             }}
             transition={{ rotateY: { type: "spring", stiffness: 60, damping: 15, mass: 1 } }}
-            onClick={handleFlipClick}
+            onClick={handleProductClick}
           >
             <motion.div 
               style={{ rotateX, rotateY: rotateYBase, transformStyle: 'preserve-3d' }}
@@ -154,19 +161,19 @@ export function TravelIDCanvasArea({ activeSide, idState, onUpdate, onFlip, isSh
               </div>
             </motion.div>
 
-            {/* Click/Tap to Flip Capture Overlay */}
+            {/* Click/Tap Capture Overlay */}
             <div 
-              className="absolute inset-0 z-40 cursor-pointer pointer-events-auto"
-              onClick={handleFlipClick}
-              aria-label="Tap to flip card"
+              className="absolute inset-0 z-40 cursor-pointer pointer-events-auto touch-manipulation"
+              onClick={handleProductClick}
+              aria-label={isShowcase ? "Click to make your own" : "Click to flip card"}
             />
           </motion.div>
         </div>
 
         {/* CLICK TO FLIP Scribble Text */}
         <div 
-          onClick={handleFlipClick}
-          className="absolute top-4 right-4 sm:top-12 sm:right-12 z-40 cursor-pointer flex items-center gap-1.5 sm:gap-2 opacity-85 hover:opacity-100 active:scale-95 transition-all select-none"
+          onClick={handleProductClick}
+          className="absolute top-4 right-4 sm:top-12 sm:right-12 z-40 cursor-pointer flex items-center gap-1.5 sm:gap-2 opacity-85 hover:opacity-100 active:scale-95 transition-all select-none touch-manipulation"
         >
           <span className="font-marker text-lg sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
             CLICK TO FLIP

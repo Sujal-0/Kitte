@@ -176,19 +176,19 @@ export function UniversalExportOverlay() {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="relative w-full h-[95vh] mt-auto bg-[#F4F1EA] border-t-8 border-[#1A1A1A] shadow-[0px_-10px_0px_rgba(0,0,0,0.5)] flex overflow-hidden pointer-events-auto"
+            className="relative w-full h-[96vh] mt-auto bg-[#F4F1EA] border-t-8 border-[#1A1A1A] shadow-[0px_-10px_0px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row overflow-hidden pointer-events-auto"
           >
             {/* VISIBLE CLOSE BUTTON */}
             <button 
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center z-50 cursor-pointer font-marker text-4xl text-[#1A1A1A] hover:text-[#FF4D4D] transition-transform hover:scale-110 active:scale-95 handwritten-text"
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center z-50 cursor-pointer font-marker text-2xl sm:text-4xl text-[#1A1A1A] hover:text-[#FF4D4D] transition-transform hover:scale-110 active:scale-95 handwritten-text"
               onClick={closeExport}
               aria-label="Close Export"
             >
               X
             </button>
 
-            {/* 1. Left: Instructions & Paper Quality Guide */}
-            <div className="w-[380px] border-r-4 border-[#1A1A1A] bg-white p-6 overflow-y-auto flex flex-col gap-5 shrink-0">
+            {/* 1. Left: Instructions & Paper Quality Guide (Desktop side panel) */}
+            <div className="hidden lg:flex w-[380px] border-r-4 border-[#1A1A1A] bg-white p-6 overflow-y-auto flex-col gap-5 shrink-0">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="font-marker text-2xl uppercase handwritten-text tracking-tight">Print & Craft Guide</h2>
@@ -564,7 +564,7 @@ export function UniversalExportOverlay() {
             {/* 2. Center: Workbench Preview */}
             <div 
               ref={previewContainerRef}
-              className="flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-r-4 border-[#1A1A1A]"
+              className="h-[36vh] sm:h-[40vh] lg:h-full lg:flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-[#1A1A1A] shrink-0 select-none"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
@@ -574,7 +574,7 @@ export function UniversalExportOverlay() {
               </div>
 
               {/* Actual Cutting Mat Container (Solid Object) */}
-              <div className="relative w-[90%] h-[90%] max-w-[1200px] border-[6px] border-[#1A1A1A] shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
+              <div className="relative w-[95%] h-[95%] sm:w-[90%] sm:h-[90%] max-w-[1200px] border-[4px] sm:border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_rgba(0,0,0,0.5)] sm:shadow-[12px_12px_0px_rgba(0,0,0,0.5)] bg-[#2a3c24] flex items-center justify-center overflow-hidden z-10">
                 {/* The Mat Image */}
                 <img 
                   src="/assets/cutting-mat.svg" 
@@ -584,7 +584,7 @@ export function UniversalExportOverlay() {
                 
                 {/* Dimension UI Container */}
                 <div 
-                  className="absolute pointer-events-none z-20 flex items-center justify-center" 
+                  className="absolute pointer-events-none z-20 hidden sm:flex items-center justify-center" 
                   style={{ 
                     width: isBounty ? previewW * 0.68 : isPhotoBooth && previewH > 650 ? previewW * 0.65 : isTimeCapsule ? previewW * 0.85 : previewW, 
                     height: isBounty ? previewH * 0.68 : isPhotoBooth && previewH > 650 ? previewH * 0.65 : isTimeCapsule ? previewH * 0.85 : previewH 
@@ -612,7 +612,7 @@ export function UniversalExportOverlay() {
                 {/* 3D Click-to-Flip Product with Decoy Effect */}
                 <div className="relative z-30" style={{ perspective: '1500px' }}>
                   <motion.div
-                    className={(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}
+                    className={`cursor-pointer select-none relative scale-[0.52] sm:scale-[0.72] md:scale-85 lg:scale-100 touch-manipulation ${(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}`}
                     animate={{ rotateY: (!isPhotoBooth && !isBounty && activeSide === 'back') ? 180 : 0 }}
                     style={{ transformStyle: 'preserve-3d', rotateX }}
                     transition={{ rotateY: { type: "spring", stiffness: 60, damping: 15, mass: 1 } }}
@@ -705,19 +705,19 @@ export function UniversalExportOverlay() {
               
               {/* CLICK TO FLIP Scribble Text (Only for double-sided ID/Ticket) */}
               {!isPhotoBooth && !isBounty && (
-                <div className="absolute top-12 right-12 z-40 pointer-events-none flex items-center gap-2 opacity-80">
-                  <span className="font-marker text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
+                <div className="absolute top-3 right-3 sm:top-12 sm:right-12 z-40 pointer-events-none flex items-center gap-1.5 sm:gap-2 opacity-80">
+                  <span className="font-marker text-xs sm:text-2xl text-[#F4F1EA] uppercase tracking-widest handwritten-text">
                     CLICK TO FLIP
                   </span>
-                  <img src="/assets/dottedUpArrow.svg" alt="Arrow" className="w-8 h-8 rotate-180 brightness-0 invert handwritten-text" />
+                  <img src="/assets/dottedUpArrow.svg" alt="Arrow" className="w-4 h-4 sm:w-8 sm:h-8 rotate-180 brightness-0 invert handwritten-text" />
                 </div>
               )}
             </div>
 
             {/* 3. Right: Export Options */}
-            <div className="w-[410px] p-6 bg-[#F4F1EA] flex flex-col gap-6 overflow-y-auto shrink-0">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-marker text-4xl uppercase handwritten-text tracking-tighter">Export Lab</h2>
+            <div className="w-full lg:w-[410px] p-4 sm:p-6 bg-[#F4F1EA] flex flex-col gap-4 sm:gap-6 overflow-y-auto shrink-0 select-none">
+              <div className="flex flex-col gap-1.5 sm:gap-2">
+                <h2 className="font-marker text-2xl sm:text-4xl uppercase handwritten-text tracking-tighter">Export Lab</h2>
                 <div className="h-1 w-full bg-[#1A1A1A]" />
               </div>
 

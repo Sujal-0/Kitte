@@ -23,9 +23,10 @@ function App() {
 
   const handleTransitionComplete = () => {
     setCurrentView('studio')
-    setTimeout(() => {
-      setCurrentView('studio_active')
-    }, 1500)
+  }
+
+  const handleTransitionFinish = () => {
+    setCurrentView('studio_active')
   }
 
   const handleExitStudio = () => {
@@ -34,9 +35,11 @@ function App() {
 
   const handleTransitionOutComplete = () => {
     setCurrentView('transitioning_out_desk')
-    setTimeout(() => {
-      setCurrentView('desk')
-    }, 4000)
+  }
+
+  const handleTransitionOutFinish = () => {
+    setCurrentView('desk')
+    setActiveStudioId(null)
   }
 
   return (
@@ -76,10 +79,17 @@ function App() {
 
           <AnimatePresence>
             {(currentView === 'transitioning' || currentView === 'studio') && (
-              <StudioPageTransition onComplete={handleTransitionComplete} />
+              <StudioPageTransition 
+                onComplete={handleTransitionComplete} 
+                onFinish={handleTransitionFinish} 
+              />
             )}
             {(currentView === 'transitioning_out' || currentView === 'transitioning_out_desk') && (
-              <StudioPageTransition isClosing onComplete={handleTransitionOutComplete} />
+              <StudioPageTransition 
+                isClosing 
+                onComplete={handleTransitionOutComplete} 
+                onFinish={handleTransitionOutFinish} 
+              />
             )}
           </AnimatePresence>
           <UniversalExportOverlay />

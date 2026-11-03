@@ -104,3 +104,4 @@ generateFavicons().catch(err => {
   console.error('Favicon generation failed:', err);
   process.exit(1);
 });
+

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion, useAnimate } from 'framer-motion';
+import { preloadCriticalAssets } from '../../utils/assetPreloader';
 
-export function StudioPageTransition({ onComplete, onFinish, isClosing = false }) {
+export function StudioPageTransition({ onComplete, onFinish, isClosing = false, isFirstIntro = false }) {
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
@@ -29,8 +30,12 @@ export function StudioPageTransition({ onComplete, onFinish, isClosing = false }
         await animate(".crest", { scale: 1, opacity: 1 }, { duration: 0.85, ease: [0.16, 1, 0.3, 1] });
         if (isCancelled) return;
         
-        // Pause to admire the crest
-        await new Promise(resolve => setTimeout(resolve, 700));
+        // Pause to admire the crest & preload project assets if first-time entrance
+        const pauseTime = isFirstIntro ? 900 : 700;
+        const pausePromise = new Promise(resolve => setTimeout(resolve, pauseTime));
+        const preloadPromise = isFirstIntro ? preloadCriticalAssets() : Promise.resolve();
+
+        await Promise.all([pausePromise, preloadPromise]);
         if (isCancelled) return;
 
         // Phase 2: Kinetic Exit Wipe
@@ -69,8 +74,12 @@ export function StudioPageTransition({ onComplete, onFinish, isClosing = false }
         await animate(".crest", { scale: 1, opacity: 1 }, { duration: 0.85, ease: [0.16, 1, 0.3, 1] });
         if (isCancelled) return;
         
-        // Pause to admire the crest
-        await new Promise(resolve => setTimeout(resolve, 700));
+        // Pause to admire the crest & preload project assets if first-time entrance
+        const pauseTime = isFirstIntro ? 900 : 700;
+        const pausePromise = new Promise(resolve => setTimeout(resolve, pauseTime));
+        const preloadPromise = isFirstIntro ? preloadCriticalAssets() : Promise.resolve();
+
+        await Promise.all([pausePromise, preloadPromise]);
         if (isCancelled) return;
 
         // Phase 2: Kinetic Exit Wipe
@@ -118,17 +127,13 @@ export function StudioPageTransition({ onComplete, onFinish, isClosing = false }
       <motion.div 
         className="panel-left parchment-panel pointer-events-auto absolute top-0 left-0 w-1/2 h-full bg-[#F4F1EA] origin-left border-r border-[#1A1A1A]/10 shadow-[20px_0_50px_rgba(0,0,0,0.1)] z-10 [will-change:transform]"
         initial={{ opacity: 1, x: isClosing ? "-100%" : 0 }}
-      >
-        <div className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none" style={{ backgroundImage: "url('/assets/noise.png')" }} />
-      </motion.div>
+      />
 
       {/* Right Panel */}
       <motion.div 
         className="panel-right parchment-panel pointer-events-auto absolute top-0 right-0 w-1/2 h-full bg-[#F4F1EA] origin-right border-l border-[#1A1A1A]/10 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] z-10 [will-change:transform]"
         initial={{ opacity: 1, x: isClosing ? "100%" : 0 }}
-      >
-        <div className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none" style={{ backgroundImage: "url('/assets/noise.png')" }} />
-      </motion.div>
+      />
 
       {/* Kinetic Lines */}
       {/* Line 1 (Left Margin) */}

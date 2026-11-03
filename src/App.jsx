@@ -22,6 +22,27 @@ function App() {
   const [isLegalModalOpen, setIsLegalModalOpen] = useState(currentView === 'privacy' || currentView === 'terms');
   const [legalTab, setLegalTab] = useState(currentView === 'terms' ? 'terms' : 'privacy');
 
+  // One-time entrance intro on first visit: tracks completion via localStorage
+  const [isFirstVisitIntro, setIsFirstVisitIntro] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'letter' || params.has('letter') || window.location.hash.includes('letter=')) {
+      return false;
+    }
+    try {
+      return !localStorage.getItem('kitte_first_visit_completed');
+    } catch {
+      return false;
+    }
+  });
+
+  const handleFirstVisitIntroFinish = () => {
+    try {
+      localStorage.setItem('kitte_first_visit_completed', 'true');
+    } catch (_) {}
+    setIsFirstVisitIntro(false);
+  };
+
   // Synchronize URL view parameter changes
   useEffect(() => {
     if (currentView === 'privacy') {
@@ -114,14 +135,24 @@ function App() {
           )}
 
           <AnimatePresence>
+            {isFirstVisitIntro && (
+              <StudioPageTransition 
+                key="first-visit-intro"
+                isFirstIntro
+                onComplete={() => {}} 
+                onFinish={handleFirstVisitIntroFinish} 
+              />
+            )}
             {(currentView === 'transitioning' || currentView === 'studio') && (
               <StudioPageTransition 
+                key="studio-enter-transition"
                 onComplete={handleTransitionComplete} 
                 onFinish={handleTransitionFinish} 
               />
             )}
             {(currentView === 'transitioning_out' || currentView === 'transitioning_out_desk') && (
               <StudioPageTransition 
+                key="studio-exit-transition"
                 isClosing 
                 onComplete={handleTransitionOutComplete} 
                 onFinish={handleTransitionOutFinish} 

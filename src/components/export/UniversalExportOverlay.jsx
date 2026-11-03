@@ -12,6 +12,7 @@ import { exportAsPNG, exportAsPDF } from '../../utils/exportEngine';
 import { PHOTO_BOOTH_TOKENS } from '../../features/photobooth/tokens/photoBoothTokens';
 import { generateLetterShareUrl } from '../../features/time-letter/utils/timeLetterShare';
 import { soundFX } from '../../utils/audio';
+import { CraftLoader } from '../ui/CraftLoader';
 
 export function UniversalExportOverlay() {
   const [isOpen, setIsOpen, isLoadedOpen] = useIDBState('kitte_export_isOpen', false);
@@ -1133,6 +1134,12 @@ export function UniversalExportOverlay() {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Dedicated Japanese Craft Export Loader */}
+      <CraftLoader 
+        isOpen={exportingType !== null} 
+        scenario={exportingType === 'pdf' ? 'export-pdf' : 'export-png'} 
+      />
     </AnimatePresence>
   );
 }

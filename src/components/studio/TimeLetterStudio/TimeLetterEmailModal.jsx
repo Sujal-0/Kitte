@@ -14,6 +14,7 @@ import { generateFutureMeEmailAttachments } from '../../../features/time-letter/
 import { scheduleFutureLetter } from '../../../services/futureMeService';
 import { NeoDatePicker } from '../../ui/calendar';
 import { soundFX } from '../../../utils/audio';
+import { CraftLoader } from '../../ui/CraftLoader';
 
 export function TimeLetterEmailModal({
   isOpen,
@@ -412,6 +413,7 @@ export function TimeLetterEmailModal({
           )}
         </motion.div>
       </motion.div>
+      <CraftLoader isOpen={isSubmitting} scenario="vaulting" />
     </AnimatePresence>
   );
 }

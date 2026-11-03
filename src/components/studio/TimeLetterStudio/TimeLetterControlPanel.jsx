@@ -946,16 +946,6 @@ export function TimeLetterControlPanel({
       >
         Digital Delivery & Share Link
       </button>
-      
-      {!canExport && (
-        <span className={`font-mono text-[9px] text-center uppercase tracking-wide ${hasValidationErrors ? 'text-[#B91C1C] font-bold animate-pulse' : 'text-[#1A1A1A]/60'}`}>
-          {isShowcase 
-            ? 'Click envelope to customize' 
-            : hasValidationErrors 
-              ? 'Fix validation errors before export'
-              : 'Write your letter message to unlock export'}
-        </span>
-      )}
     </div>
   );
 

@@ -10,7 +10,7 @@ const STORAGE_KEY = 'kitte_futureme_vault';
 
 function getSupabaseConfig() {
   const url = import.meta.env?.VITE_SUPABASE_URL || '';
-  const key = import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
+  const key = import.meta.env?.VITE_SUPABASE_ANON_KEY || '';
   return {
     isConfigured: Boolean(url && key),
     url: url.replace(/\/$/, ''),

@@ -18,10 +18,12 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
 
   const [sender, setSender] = useState('');
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
+  const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'sending' | 'sent'
   const [sentSnippet, setSentSnippet] = useState('');
   const messageRef = useRef(null);
   const resetTimerRef = useRef(null);
+  const formOpenTime = useRef(Date.now());
 
   const isEmailValid = isValidEmail(sender);
   const isMessageValid = message.trim().length > 0;
@@ -67,6 +69,8 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
 
   const handleOpen = () => {
     setIsPressed(false);
+    formOpenTime.current = Date.now();
+    setHoneypot('');
     setIsOpen(true);
   };
 
@@ -75,6 +79,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
     soundFX.playPop();
     setStatus('idle');
     setSender('');
+    setHoneypot('');
     setMessage(DEFAULT_MESSAGE);
     setSentSnippet('');
   };
@@ -86,6 +91,7 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
     setTimeout(() => {
       setStatus('idle');
       setSender('');
+      setHoneypot('');
       setMessage(DEFAULT_MESSAGE);
       setSentSnippet('');
     }, 350);
@@ -95,6 +101,13 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
     if (e) e.preventDefault();
     if (!canSend) return;
 
+    // Spam Protection: Honeypot check & submit speed check (< 900ms)
+    if (honeypot || Date.now() - formOpenTime.current < 900) {
+      soundFX.playSuccess();
+      setStatus('sent');
+      return;
+    }
+
     const trimmedMsg = message.trim();
     if (!trimmedMsg) return;
 
@@ -103,13 +116,13 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
     setSentSnippet(trimmedMsg);
 
     try {
-      // 1. Try backend endpoint first (reads RESEND_API_KEY from .env securely)
+      // 1. Try backend endpoint first (reads credentials from server environment securely)
       let sent = false;
       try {
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ from: sender, message: trimmedMsg })
+          body: JSON.stringify({ from: sender, message: trimmedMsg, website_hp: honeypot })
         });
         if (res.ok) {
           const data = await res.json();
@@ -280,8 +293,19 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onSubmit={handleSubmit} 
-                    className="space-y-0 text-[10px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden"
+                    className="space-y-0 text-[10px] sm:text-[12px] flex-1 flex flex-col font-sans px-1 overflow-hidden relative"
                   >
+                    {/* Spam Trap Honeypot (Invisible to humans) */}
+                    <input
+                      type="text"
+                      name="website_hp"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="opacity-0 absolute -z-50 pointer-events-none h-0 w-0"
+                    />
                     <div className="flex items-center gap-1.5 border-b border-zinc-400/30 py-1 px-2">
                       <span className="text-zinc-500 w-12 text-[10px] sm:text-xs">To:</span>
                       <span className="font-medium text-[10px] sm:text-xs truncate">sujalsingh2204@gmail.com</span>

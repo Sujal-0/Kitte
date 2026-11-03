@@ -38,7 +38,8 @@ export async function scheduleFutureLetter({
   htmlContent,
   confirmHtmlContent,
   plainTextContent,
-  attachments = []
+  attachments = [],
+  website_hp = ''
 }) {
   const sendDate = state?.sendDate || 'Today';
   const targetTimestamp = new Date(deliveryDate).getTime();
@@ -58,6 +59,7 @@ export async function scheduleFutureLetter({
     confirmHtmlContent,
     plainTextContent,
     attachments,
+    website_hp,
     state,
     createdAt: new Date().toISOString(),
     status: 'scheduled',
@@ -66,7 +68,7 @@ export async function scheduleFutureLetter({
     resendFeedback: ''
   };
 
-  // 1. Send to server scheduler (which reads RESEND_API_KEY from .env on backend)
+  // 1. Send to server scheduler (which reads credentials securely from backend environment)
   try {
     const res = await fetch('/api/futureme/schedule', {
       method: 'POST',
@@ -89,33 +91,7 @@ export async function scheduleFutureLetter({
       }
     }
   } catch (err) {
-    console.warn('[futureMeService] Server schedule endpoint unreachable:', err);
-  }
-
-  // 2. Client-side fallback if VITE_RESEND_API_KEY is defined
-  const clientKey = import.meta.env?.VITE_RESEND_API_KEY || '';
-  if (!letterRecord.cloudScheduled && !letterRecord.confirmationSent && clientKey) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${clientKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'FutureMe Kitte <onboarding@resend.dev>',
-          to: [effectiveEmail],
-          subject: letterRecord.subject,
-          html: htmlContent
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        letterRecord.confirmationSent = true;
-        letterRecord.resendId = data?.id;
-      }
-    } catch (_) {}
+    console.warn('[futureMeService] Server schedule endpoint notice:', err);
   }
 
   // 3. Persist in cloud database (Supabase) + local vault
@@ -180,48 +156,10 @@ export async function sendInstantTestEmail({
         return { success: false, error: data.error };
       }
     }
-  } catch (_) {}
-
-  // 2. Direct client fallback if VITE_RESEND_API_KEY is present
-  const clientKey = import.meta.env?.VITE_RESEND_API_KEY || '';
-  if (clientKey) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${clientKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'FutureMe Kitte <onboarding@resend.dev>',
-          to: [effectiveEmail],
-          subject,
-          html: htmlContent,
-          attachments: attachments.map(att => ({
-            filename: att.filename,
-            content: att.content
-          }))
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        return { success: true, message: 'Test email delivered via Resend to your inbox!', data };
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        return { success: false, error: errData.message || 'Resend API returned error status.' };
-      }
-    } catch (err) {
-      return { success: false, error: err.message };
-    }
+    return { success: false, error: 'Could not connect to email delivery service.' };
+  } catch (err) {
+    return { success: false, error: err.message || 'Error sending test email.' };
   }
-
-  // 3. Inform of setup option
-  return { 
-    success: false, 
-    needsKey: true,
-    error: 'To enable automated email delivery, add RESEND_API_KEY into your project .env file.' 
-  };
 }
 
 /**

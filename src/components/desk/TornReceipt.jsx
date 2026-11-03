@@ -101,6 +101,34 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
                     <span>100%</span>
                   </div>
                 </div>
+
+                <div className="pt-2 border-t border-dashed border-zinc-900/40 flex items-center justify-between gap-1 text-[7px] sm:text-[9px] font-bold">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      soundFX.playPop();
+                      setIsOpen(false);
+                      window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'privacy' } }));
+                    }}
+                    className="underline hover:text-markerRed cursor-pointer uppercase tracking-tight"
+                  >
+                    Privacy Policy
+                  </button>
+                  <span>•</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      soundFX.playPop();
+                      setIsOpen(false);
+                      window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'terms' } }));
+                    }}
+                    className="underline hover:text-markerRed cursor-pointer uppercase tracking-tight"
+                  >
+                    Terms of Use
+                  </button>
+                </div>
               </div>
             </div>
 

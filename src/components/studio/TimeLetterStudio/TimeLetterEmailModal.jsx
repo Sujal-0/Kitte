@@ -32,6 +32,8 @@ export function TimeLetterEmailModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [honeypot, setHoneypot] = useState('');
+  const modalOpenTime = React.useRef(Date.now());
 
   useEffect(() => {
     if (state) {
@@ -124,8 +126,16 @@ export function TimeLetterEmailModal({
   // Primary Action: Schedule to Future Self (FutureMe core flow)
   const handleScheduleFutureMe = async () => {
     soundFX.playSnap();
-    if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
-      setErrorMessage('Please enter a valid email address so FutureMe can deliver your letter.');
+
+    // Spam Protection: Honeypot check
+    if (honeypot || Date.now() - modalOpenTime.current < 900) {
+      setIsScheduled(true);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!recipientEmail.trim() || !emailRegex.test(recipientEmail.trim())) {
+      setErrorMessage('Please enter a valid email address (e.g. yourname@domain.com).');
       return;
     }
 
@@ -156,7 +166,8 @@ export function TimeLetterEmailModal({
         htmlContent: emailHtml,
         confirmHtmlContent: confirmHtml,
         plainTextContent: plainText,
-        attachments
+        attachments,
+        website_hp: honeypot
       });
 
       setIsScheduled(true);
@@ -294,7 +305,19 @@ export function TimeLetterEmailModal({
             /* Scheduling Form */
             <div className="flex flex-col gap-3 sm:gap-4">
               {/* Form Card */}
-              <div className="bg-white border-2 border-[#1A1A1A] p-2.5 sm:p-3.5 shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-2.5 sm:gap-3.5 font-mono text-xs">
+              <div className="bg-white border-2 border-[#1A1A1A] p-2.5 sm:p-3.5 shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-2.5 sm:gap-3.5 font-mono text-xs relative">
+                {/* Honeypot field (hidden from humans) */}
+                <input
+                  type="text"
+                  name="website_hp"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="opacity-0 absolute -z-50 pointer-events-none h-0 w-0"
+                />
+
                 {/* Recipient Email Input */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[#1A1A1A]/70 uppercase font-bold text-[9px] sm:text-[10px]">

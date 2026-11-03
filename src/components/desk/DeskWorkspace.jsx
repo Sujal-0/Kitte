@@ -183,6 +183,25 @@ export function DeskWorkspace({ onEnterStudio }) {
                   <div className="absolute top-[460px] left-6 lg:left-10 z-10">
                     <TornReceipt />
                   </div>
+
+                  {/* Discreet Archival Legal Links */}
+                  <div className="absolute bottom-6 left-8 lg:left-12 z-20 flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-[#1A1A1A]/60">
+                    <button
+                      type="button"
+                      onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'privacy' } }))}
+                      className="hover:text-[#1A1A1A] hover:underline cursor-pointer transition-colors"
+                    >
+                      Privacy
+                    </button>
+                    <span>/</span>
+                    <button
+                      type="button"
+                      onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'terms' } }))}
+                      className="hover:text-[#1A1A1A] hover:underline cursor-pointer transition-colors"
+                    >
+                      Terms
+                    </button>
+                  </div>
                 </aside>
 
                 {/* The Physical Divider */}

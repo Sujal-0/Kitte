@@ -1,0 +1,19 @@
+# Kitte Studio
+
+> An artisanal digital workshop for designing customizable printable Photo Booth strips, Vintage Memory Tickets, Creative Travel IDs, and Sealed Time Capsule Letters.
+
+## Studios & Features
+- **Photo Booth Studio**: Vintage 3-photo and 4-photo film strips with custom postal stamps, timestamps, film grain textures, and 300 DPI high-resolution print exports.
+- **Memory Ticket Studio**: Nostalgic event and concert ticket stubs featuring automated barcode generation, custom tear stubs, and retro duotone colorways.
+- **Travel ID Studio**: Playful creative licenses and custom ID credentials with front/back duplex layouts and printable wallet templates.
+- **Time Capsule Letter Studio**: Digital and physical origami letter writing with scheduled future email delivery and unsealable web share links.
+
+## Engineering & Export Standards
+- 300 DPI print-ready PDF sheets calibrated with physical folding guides and cutting marks.
+- High-resolution lossless PNG and SVG export engines.
+- Zero-dependency interactive web shareable links with 3D envelope physics.
+
+## Privacy & Security Architecture
+- Strict Zero Tracker Policy: No personal data selling or third-party ad targeting scripts.
+- Client-Side Privacy: Craft drafts and photo crops persist exclusively in the user's local browser storage.
+- Vaulted Delivery: Time capsule emails store solely destination address and delivery date, and records are purged upon fulfillment.

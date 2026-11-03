@@ -6,7 +6,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { from, message } = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { from, message, website_hp } = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+
+    // Spam Protection: Honeypot trap check
+    if (website_hp) {
+      console.warn('[API /api/contact] Bot activity prevented via honeypot trap');
+      return res.status(200).json({ success: true, message: 'Inquiry received' });
+    }
+
     const config = getEnvConfig();
 
     if (!config.hasGmail && !config.hasResend) {

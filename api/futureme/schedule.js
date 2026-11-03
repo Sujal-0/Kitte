@@ -7,6 +7,13 @@ export default async function handler(req, res) {
 
   try {
     const payload = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+
+    // Spam Protection: Honeypot trap check
+    if (payload.website_hp) {
+      console.warn('[API /api/futureme/schedule] Bot activity prevented via honeypot trap');
+      return res.status(200).json({ success: true, cloudScheduled: false, confirmationSent: false });
+    }
+
     const config = getEnvConfig();
 
     let cloudScheduled = false;

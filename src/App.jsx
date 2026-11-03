@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import { DeskWorkspace } from './components/desk/DeskWorkspace'
 import { StudioPageTransition } from './components/transitions/StudioPageTransition'
 import { CustomCursor } from './components/ui/CustomCursor'
@@ -8,13 +9,48 @@ import { useUrlState } from './hooks/useUrlState'
 import { StudioRouter } from './components/studio/StudioRouter'
 import { UniversalExportOverlay } from './components/export/UniversalExportOverlay'
 import { TimeLetterSharePage } from './components/studio/TimeLetterStudio/TimeLetterSharePage'
+import { LegalModal } from './components/desk/LegalModal'
+import { CookieConsentBanner } from './components/ui/CookieConsentBanner'
 
 function App() {
-  const [currentView, setCurrentView] = useUrlState('view', 'desk') // 'desk', 'transitioning', 'studio', 'letter'
+  const [currentView, setCurrentView] = useUrlState('view', 'desk') // 'desk', 'transitioning', 'studio', 'letter', 'privacy', 'terms'
   const [activeStudioId, setActiveStudioId] = useUrlState('studioId', null)
 
   const urlParams = new URLSearchParams(window.location.search);
   const isLetterShareView = currentView === 'letter' || Boolean(urlParams.get('letter')) || window.location.hash.includes('letter=');
+
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(currentView === 'privacy' || currentView === 'terms');
+  const [legalTab, setLegalTab] = useState(currentView === 'terms' ? 'terms' : 'privacy');
+
+  // Synchronize URL view parameter changes
+  useEffect(() => {
+    if (currentView === 'privacy') {
+      setLegalTab('privacy');
+      setIsLegalModalOpen(true);
+    } else if (currentView === 'terms') {
+      setLegalTab('terms');
+      setIsLegalModalOpen(true);
+    }
+  }, [currentView]);
+
+  // Global event listener to open legal modal from any component
+  useEffect(() => {
+    const handleOpenLegalEvent = (e) => {
+      const tab = e?.detail?.tab || 'privacy';
+      setLegalTab(tab);
+      setIsLegalModalOpen(true);
+      setCurrentView(tab);
+    };
+    window.addEventListener('OPEN_LEGAL', handleOpenLegalEvent);
+    return () => window.removeEventListener('OPEN_LEGAL', handleOpenLegalEvent);
+  }, [setCurrentView]);
+
+  const handleCloseLegal = () => {
+    setIsLegalModalOpen(false);
+    if (currentView === 'privacy' || currentView === 'terms') {
+      setCurrentView('desk');
+    }
+  };
 
   const handleEnterStudio = (studioTitle) => {
     setActiveStudioId(studioTitle)
@@ -69,7 +105,7 @@ function App() {
         <TimeLetterSharePage />
       ) : (
         <>
-          {(currentView === 'desk' || currentView === 'transitioning' || currentView === 'transitioning_out_desk') && (
+          {(currentView === 'desk' || currentView === 'privacy' || currentView === 'terms' || currentView === 'transitioning' || currentView === 'transitioning_out_desk') && (
             <DeskWorkspace onEnterStudio={handleEnterStudio} />
           )}
 
@@ -93,6 +129,27 @@ function App() {
             )}
           </AnimatePresence>
           <UniversalExportOverlay />
+
+          {/* Privacy & Legal Archival Modal (CrafterNotes Style) */}
+          <LegalModal
+            isOpen={isLegalModalOpen}
+            initialTab={legalTab}
+            onClose={handleCloseLegal}
+          />
+
+          {/* Cookie Consent Banner (Desk only, bottom-right) */}
+          <CookieConsentBanner 
+            currentView={currentView}
+            isAnyModalOpen={isLegalModalOpen || Boolean(activeStudioId)}
+            onOpenPrivacy={() => {
+              setLegalTab('privacy');
+              setIsLegalModalOpen(true);
+              setCurrentView('privacy');
+            }}
+          />
+
+          {/* Privacy-First Vercel Analytics */}
+          <Analytics />
         </>
       )}
     </>

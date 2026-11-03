@@ -7,7 +7,7 @@ import { WashiTape } from './WashiTape';
 
 export function MobileCraftDock() {
   return (
-    <div className="relative w-full px-2 pt-1 pb-3 flex items-end justify-center select-none overflow-visible">
+    <div className="relative w-full px-2 pt-1 pb-3 flex flex-col items-center justify-center select-none overflow-visible">
       {/* Container holding the overlapping craft items */}
       <div className="relative w-full max-w-sm h-32 flex items-end justify-between px-3">
         
@@ -19,17 +19,34 @@ export function MobileCraftDock() {
         {/* 2. MIDDLE ITEM: Torn Receipt with Japanese 切手 stamps */}
         <div className="relative z-20 rotate-3 hover:rotate-0 transition-transform origin-bottom -ml-4 sm:-ml-2">
           <TornReceipt className="w-14 sm:w-16" />
-          
           <WashiTape className="absolute -top-2 left-1/2 -translate-x-1/2 rotate-1 w-10 h-3" />
         </div>
 
         {/* 3. RIGHT ITEM: Retro Contact Phone with cracked glass */}
         <div className="relative z-10 -rotate-2 hover:rotate-0 transition-transform origin-bottom-right">
           <ContactPhone className="w-16 sm:w-20" />
-          
           <WashiTape className="absolute -top-2 left-1/2 -translate-x-1/2 rotate-3 w-10 h-3" />
         </div>
 
+      </div>
+
+      {/* Subtle Mobile Legal Links */}
+      <div className="w-full flex items-center justify-center gap-3 pt-2 text-[9px] font-mono uppercase tracking-widest text-[#2D2D2D]/60 pointer-events-auto">
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'privacy' } }))}
+          className="hover:text-[#2D2D2D] hover:underline cursor-pointer"
+        >
+          Privacy
+        </button>
+        <span>•</span>
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'terms' } }))}
+          className="hover:text-[#2D2D2D] hover:underline cursor-pointer"
+        >
+          Terms
+        </button>
       </div>
     </div>
   );

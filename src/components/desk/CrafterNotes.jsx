@@ -161,7 +161,7 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
               </div>
 
               {/* Micro-interaction indicator */}
-              <div className="text-right text-pencil/50 text-[9px] sm:text-xs md:text-sm font-bold tracking-widest pointer-events-none pb-1">
+              <div className="text-right text-pencil/75 text-[9px] sm:text-xs md:text-sm font-bold tracking-widest pointer-events-none pb-1">
                 ( swipe or tap )
               </div>
             </div>

@@ -58,6 +58,10 @@ function futureMeSchedulerPlugin() {
         // 2. POST /api/futureme/schedule
         if (req.method === 'POST' && req.url === '/api/futureme/schedule') {
           const payload = await getBody();
+          if (payload.website_hp) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(JSON.stringify({ success: true, cloudScheduled: false, confirmationSent: false }));
+          }
           const db = readDb();
           db.unshift(payload);
           writeDb(db);
@@ -222,7 +226,11 @@ function futureMeSchedulerPlugin() {
 
         // 5. POST /api/contact (Direct email dispatch from Contact Phone)
         if (req.method === 'POST' && req.url === '/api/contact') {
-          const { from, message } = await getBody();
+          const { from, message, website_hp } = await getBody();
+          if (website_hp) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(JSON.stringify({ success: true, message: 'Message sent' }));
+          }
           const config = getEnvConfig();
 
           if (config.hasGmail || config.hasResend) {
@@ -270,6 +278,24 @@ export default defineConfig({
     react(),
     futureMeSchedulerPlugin(),
   ],
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2canvas')) {
+            return 'vendor-pdf-exporter';
+          }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'vendor-motion';
+          }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'vendor-icons';
+          }
+        }
+      }
+    }
+  },
   server: {
     watch: {
       ignored: ['**/.data/**', '**/futureme_scheduled_letters.json', '**/data/**', '**/src/data/**']

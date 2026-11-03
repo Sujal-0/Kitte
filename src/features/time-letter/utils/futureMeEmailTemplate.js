@@ -52,11 +52,11 @@ function buildEnvelopeStampHtml() {
 }
 
 /**
- * Authentic Favicon Stamp for Letterhead (Matches Image 3 reference)
+ * Authentic Favicon Stamp for Letterhead (Matches Image 3 reference, sized to match Envelope stamp)
  */
 function buildLetterheadStampHtml() {
   return `
-    <img src="${KITTE_FAVICON_STAMP_URL}" width="46" height="46" alt="Kitte Stamp" style="display: inline-block; vertical-align: middle; border: 0; outline: none;" />
+    <img src="${KITTE_FAVICON_STAMP_URL}" width="84" height="84" alt="Kitte Stamp" style="display: inline-block; vertical-align: middle; width: 84px; height: 84px; border: 0; outline: none;" />
   `;
 }
 
@@ -245,15 +245,15 @@ function buildLetterheadHtml({ state, sendDate, location, salutation, letterBody
         <td style="padding: 22px 26px 26px 26px;">
           
           <!-- Top Header: Subhead + Date & Favicon Stamp (NO BORDER LINE BELOW!) -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 14px;">
             <tr>
-              <td align="left" valign="middle">
+              <td align="left" valign="top" style="padding-top: 12px;">
                 <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #8C7B6B; letter-spacing: 1.5px; text-transform: uppercase;">
                   ${state?.letterMode === 'someone-special' ? 'A SPECIAL LETTER' : 'A LETTER TO MY FUTURE SELF'}
                 </span>
               </td>
-              <td align="right" valign="middle">
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #8C7B6B; margin-right: 8px; vertical-align: middle;">
+              <td align="right" valign="top">
+                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #8C7B6B; margin-right: 10px; display: inline-block; vertical-align: middle;">
                   ${sendDate}${location ? ` &bull; ${location}` : ''}
                 </span>
                 ${buildLetterheadStampHtml()}

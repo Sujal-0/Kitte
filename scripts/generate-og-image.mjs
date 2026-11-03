@@ -173,3 +173,4 @@ generateOgImage().catch(err => {
   console.error('Failed to generate OG image:', err);
   process.exit(1);
 });
+

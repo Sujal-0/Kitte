@@ -45,13 +45,27 @@ Kitte features 5 standalone creative studios accessible from the physical cuttin
 ## 🛠️ Architecture & Tech Stack
 
 * **Framework:** React 19 + Vite (Fast HMR)
-* **Styling & Neobrutalism:** Tailwind CSS v4, rough-edged SVG displacement filters, tactile shadows (`#1A1A1A`).
-* **Motion & Physics:** Framer Motion (Lissajous zero-gravity drift, 3D tilt, spring animations, shoji screen transitions).
+* **Styling & Neobrutalism:** Tailwind CSS v4, rough-edged SVG displacement filters, tactile shadows (`#1A1A1A`), custom wobbly borders.
+* **Motion & Physics:** Framer Motion (Lissajous zero-gravity drift, 3D tilt, spring animations, Shoji bi-parting screen transitions).
 * **Print Engine:** Headless Canvas pipeline scaling web views up to **300 DPI** via `jsPDF` for physical printing.
 * **Audio:** Web Audio API sound effects (pops, snaps, clicks, and paper crinkles).
-* **Delivery & Scheduling:** Resend API for transactional email scheduling.
-* **Database:** Supabase Cloud PostgreSQL with Row Level Security (RLS).
-* **Automation:** GitHub Actions daily cron runner (`.github/workflows/daily-futureme-dispatcher.yml`).
+* **Email Engine:** Hybrid email dispatching — Gmail SMTP (`nodemailer`) via `kitte.archive@gmail.com` for unrestricted worldwide delivery, with Resend API fallback.
+* **Database:** Supabase Cloud PostgreSQL with Row Level Security (RLS) for persistent multi-year letters.
+* **Serverless Backend:** Vercel Serverless Functions (`/api/futureme/schedule`, `/api/futureme/dispatch-due`, `/api/contact`, `/api/cron/dispatch-due-letters`).
+* **Automation:** Daily GitHub Actions workflow (`daily-futureme-dispatcher.yml`) and Vercel Cron (`vercel.json`) running daily sweeps.
+* **Analytics:** Privacy-first `@vercel/analytics` (zero cookie tracking).
+
+---
+
+## 🔒 Production Security & Performance
+
+* **Zero Frontend Secrets:** All API keys, SMTP credentials, and Supabase service role keys reside strictly in serverless environment variables. Client bundles are 100% clean.
+* **Asset Preloading & Zero Layout Shift:** First-visit entrance transition (`StudioPageTransition`) preloads all fonts via `document.fonts.ready` and critical graphics before opening doors, caching the state in `localStorage`.
+* **Contextual Craft Loaders (`CraftLoader.jsx`):** Animated Japanese kanji loaders (`印刷中`, `現像中`, `封印中`) with dynamic status updates during 300 DPI PDF generation, image development, and vaulting.
+* **Spam & Bot Defense:** Invisible honeypot traps (`website_hp`) and timestamp velocity checks across all forms.
+* **Compliance & Legal:** In-universe Privacy Policy and Terms of Service (`LegalModal.jsx`), Cookie Consent banner (`CookieConsentBanner.jsx`), and zero-telemetry policy.
+* **Hardened Security Headers:** HSTS, X-Content-Type-Options: nosniff, X-Frame-Options: SAMEORIGIN, Referrer-Policy, and Permissions-Policy in `vercel.json`.
+* **Complete Favicon & PWA Suite:** 16x16, 32x32, 180x180, 192x192, 512x512, ICO, and `site.webmanifest`.
 
 ---
 
@@ -75,9 +89,13 @@ npm run dev
 ```
 
 ### Environment Configuration
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (see `.env.example`):
 ```env
-# Resend API Key for automated email delivery
+# Gmail SMTP for production email delivery (sends to any recipient, 0 restrictions)
+GMAIL_USER=kitte.archive@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
+
+# Resend API Key (optional fallback)
 RESEND_API_KEY=re_your_resend_api_key
 
 # Supabase Cloud Database (for multi-year time letters)
@@ -94,6 +112,42 @@ To activate multi-year persistence:
 2. Open the **SQL Editor** in your Supabase dashboard.
 3. Paste and run the contents of [`supabase_schema.sql`](./supabase_schema.sql).
 4. Add your project URL and keys to `.env`.
+
+---
+
+## 🌐 Deploying to Vercel
+
+1. **Push to GitHub:** Ensure your latest commits are pushed to your GitHub repository.
+2. **Import into Vercel:**
+   * Go to [vercel.com](https://vercel.com) and click **"Add New Project"**.
+   * Import your `Kitte` repository.
+   * Framework Preset: **Vite** (auto-detected).
+   * Root Directory: `./`
+3. **Configure Environment Variables in Vercel:**
+   Under **Project Settings > Environment Variables**, add:
+   * `GMAIL_USER` = `kitte.archive@gmail.com`
+   * `GMAIL_APP_PASSWORD` = `uphc xxij ojom xtqw` *(or your 16-character App Password)*
+   * `RESEND_API_KEY` = *(your Resend key, optional)*
+   * `SUPABASE_URL` = `https://your-project.supabase.co`
+   * `SUPABASE_ANON_KEY` = `your_supabase_anon_key`
+   * `SUPABASE_SERVICE_ROLE_KEY` = `your_supabase_service_role_key`
+   * `VITE_SUPABASE_URL` = `https://your-project.supabase.co`
+   * `VITE_SUPABASE_ANON_KEY` = `your_supabase_anon_key`
+4. **Deploy:** Click **"Deploy"**. Vercel will build the frontend and configure the serverless API routes (`/api/*`) and cron job automatically.
+
+---
+
+## ⚙️ GitHub Actions Daily Dispatcher Setup
+
+For automated daily dispatch of due time-capsule letters:
+1. Navigate to your GitHub repository: **Settings > Secrets and variables > Actions**.
+2. Under **Repository secrets**, click **New repository secret** and add:
+   * `GMAIL_USER`
+   * `GMAIL_APP_PASSWORD`
+   * `RESEND_API_KEY` *(optional)*
+   * `SUPABASE_URL`
+   * `SUPABASE_SERVICE_ROLE_KEY`
+3. The workflow in `.github/workflows/daily-futureme-dispatcher.yml` will automatically run every day at 00:00 UTC.
 
 ---
 

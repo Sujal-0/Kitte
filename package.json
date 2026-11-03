@@ -1,7 +1,8 @@
 {
-  "name": "temp_vite",
+  "name": "kitte",
+  "description": "Tactile Neo-Brutalist Analog Memory Laboratory & Print Workshop",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,7 +22,6 @@
     "lucide-react": "^1.49.0",
     "nodemailer": "^10.3.1",
     "prop-types": "^15.8.1",
-    "puppeteer": "^24.43.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-signature-canvas": "^1.1.0-alpha.2",
@@ -34,6 +34,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
+    "puppeteer": "^24.43.1",
     "vite": "^8.3.0"
   }
 }

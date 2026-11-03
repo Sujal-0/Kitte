@@ -122,4 +122,54 @@
   - Replaced technical developer debug boxes with an authentic wax-seal checkmark card.
   - Clean summary of recipient email, delivery date, one-click "Copy Secret Link" button, and "Back to Studio" primary action.
 
+## v0.7.0 - Production Security, Legal Architecture & Industry Readiness
+
+### Added
+- **Zero Frontend Secrets (Production Architecture):**
+  - Completely migrated all sensitive operations (email dispatching, vault queries) to serverless API functions (`/api/futureme/schedule`, `/api/futureme/dispatch-due`, `/api/contact`).
+  - Purged all API keys, credentials, and Supabase service role keys from frontend client bundles.
+- **Gmail SMTP (`nodemailer`) Production Email System:**
+  - Integrated official `kitte.archive@gmail.com` with App Password authentication.
+  - Allows instant dispatching of confirmation certificates and scheduled letters to any recipient email worldwide without domain-lock or sandbox restrictions.
+  - Implemented automatic fallback to Resend API.
+- **Archival Legal Modal (`LegalModal.jsx`):**
+  - Designed with authentic Manila cardstock texture, Courier Prime monospaced typography, and neobrutalist stamp badges.
+  - Dual tabs for **Privacy Policy** (Zero-tracker policy, local storage usage, Time Capsule vault lifecycle) and **Terms & Conditions** (user IP ownership, archival disclaimer).
+  - Mobile-responsive swipe and tap interactions matching CrafterNotes design.
+  - Direct deep-linking via `?view=privacy` and `?view=terms`.
+- **Neobrutalist Cookie Consent Banner (`CookieConsentBanner.jsx`):**
+  - Neobrutalist paper card featuring the custom `cookieSvg.svg` vector illustration and hand-drawn `X` close button.
+  - Automatically restricted to the Desk Workspace, hiding upon entering any Studio or artifact modal.
+  - Remembers user choice in `localStorage`.
+- **Anti-Spam & Bot Defense:**
+  - Integrated invisible honeypot trap inputs (`website_hp`) across all contact and scheduling forms.
+  - Client-side and server-side submission velocity checks (< 900ms human delta) blocking automated scrapers.
+- **Production Headers & Caching (`vercel.json`):**
+  - Strict-Transport-Security (HSTS), X-Content-Type-Options: nosniff, X-Frame-Options: SAMEORIGIN, Referrer-Policy, and Permissions-Policy.
+  - 1-year immutable caching (`max-age=31536000`) for all static assets.
+- **SEO, Social Previews & Machine Discovery:**
+  - Rich Open Graph & Twitter Cards with 1200x630px social preview (`/assets/kitte-og.png`).
+  - Configured `robots.txt`, `sitemap.xml`, and `/llms.txt` for search engines and AI assistants.
+
+## v0.8.0 - Japanese Craft Preloader, Entrance Transition & Favicon System
+
+### Added
+- **First-Visit Entrance Intro with Asset Preloading:**
+  - Full-screen Japanese Shoji doors and rotating ink crest (`切手`) play exclusively on the user's first visit.
+  - State persisted via `localStorage.getItem('kitte_first_visit_completed')` ensuring 0ms delay on subsequent reloads or return visits.
+  - Integrated `assetPreloader.js` awaiting `document.fonts.ready` and all 11 critical desk graphics before opening doors, eliminating font flicker and layout shift.
+  - Direct letter share links (`?view=letter`) bypass intro for instant viewing.
+- **Dedicated Japanese Craft Loader (`CraftLoader.jsx`):**
+  - Neobrutalist loader featuring rotating dashed stamp perforations, bold Japanese kanji (`印刷中`, `現像中`, `封印中`), and animated progress indicator.
+  - Dynamic cycling status messages tailored to each scenario:
+    - PDF Export: Archival craft sheet formatting, cutting guides, bleed calibration.
+    - PNG Export: High-res graphics rendering, paper texture inking, halftone sharpening.
+    - Time Vaulting: Time capsule sealing, 300 DPI PDF origami net attachments generation, cryptographic lock.
+- **Complete Favicon & PWA System:**
+  - Built automated Puppeteer icon generation script (`scripts/generate-favicons.mjs`) generating the full spec from `kitte_favicon.png`.
+  - Multi-size outputs: `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png` (180x180), `android-chrome-192x192.png`, and `android-chrome-512x512.png`.
+  - Integrated `site.webmanifest` with `#FAF8F3` theme.
+- **Web Letter Share Decoupling:**
+  - Decoupled public shared letters from time capsule lock countdowns so recipients can read shared letters immediately as open digital keepsakes.
+
 

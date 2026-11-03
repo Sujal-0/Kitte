@@ -16,6 +16,30 @@ import { NeoDatePicker } from '../../ui/calendar';
 import { soundFX } from '../../../utils/audio';
 import { CraftLoader } from '../../ui/CraftLoader';
 
+/**
+ * Check if a date string or Date object is today or in the past (local day boundary).
+ * Ensures custom delivery date is strictly tomorrow or later.
+ */
+function isDateTodayOrPast(val) {
+  if (!val) return true;
+  try {
+    let target;
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+      const [y, m, d] = val.split('-').map(Number);
+      target = new Date(y, m - 1, d);
+    } else {
+      target = new Date(val);
+    }
+    if (isNaN(target.getTime())) return true;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const targetDay = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+    return targetDay.getTime() <= today.getTime();
+  } catch (_) {
+    return true;
+  }
+}
+
 export function TimeLetterEmailModal({
   isOpen,
   onClose,
@@ -56,6 +80,7 @@ export function TimeLetterEmailModal({
   if (!isOpen) return null;
 
   const effectiveEmail = recipientEmail.trim() || state?.recipientEmail || '';
+  const isStaleDate = selectedPreset === 'custom' && isDateTodayOrPast(customDate);
 
   // Compose complete effective state
   const effectiveState = {
@@ -137,6 +162,11 @@ export function TimeLetterEmailModal({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (!recipientEmail.trim() || !emailRegex.test(recipientEmail.trim())) {
       setErrorMessage('Please enter a valid email address (e.g. yourname@domain.com).');
+      return;
+    }
+
+    if (isStaleDate) {
+      setErrorMessage('Please select a future unlock date (at least tomorrow).');
       return;
     }
 
@@ -363,7 +393,7 @@ export function TimeLetterEmailModal({
 
                   {/* Neobrutalism Custom Date Picker with Year Navigation */}
                   {selectedPreset === 'custom' && (
-                    <div className="mt-1">
+                    <div className="mt-1 flex flex-col gap-1.5">
                       <NeoDatePicker 
                         label=""
                         value={customDate}
@@ -371,6 +401,18 @@ export function TimeLetterEmailModal({
                         minDate={new Date(Date.now() + 86400000)}
                         placeholder="Click anywhere to pick custom unlock date..."
                       />
+                      {isStaleDate && (
+                        <div className="bg-amber-100 border-2 border-amber-600 text-amber-950 px-2.5 py-1.5 flex items-center gap-1.5 shadow-[2px_2px_0px_#d97706] mt-0.5">
+                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                          </svg>
+                          <span className="font-marker text-xs sm:text-sm uppercase tracking-wide leading-tight">
+                            Unlock date has arrived! Pick a future date.
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -398,15 +440,25 @@ export function TimeLetterEmailModal({
               <button
                 type="button"
                 onClick={handleScheduleFutureMe}
-                disabled={isSubmitting}
-                className="w-full bg-[#1A1A1A] text-[#FFEB3B] font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#2A2A2A] active:translate-y-[1px] sm:active:translate-y-[2px] transition-all uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+                disabled={isSubmitting || isStaleDate}
+                className={`w-full font-marker text-sm sm:text-base lg:text-lg py-2.5 sm:py-3.5 border-2 transition-all uppercase tracking-wider flex items-center justify-center gap-2 ${
+                  isStaleDate
+                    ? 'bg-neutral-300 text-neutral-600 border-neutral-500 shadow-none cursor-not-allowed opacity-80'
+                    : isSubmitting
+                      ? 'bg-[#1A1A1A] text-[#FFEB3B] border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] opacity-60 cursor-not-allowed'
+                      : 'bg-[#1A1A1A] text-[#FFEB3B] border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] sm:shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#2A2A2A] active:translate-y-[1px] sm:active:translate-y-[2px] cursor-pointer'
+                }`}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
                 <span className="truncate">
-                  {isSubmitting ? 'Scheduling Letter...' : `Send to Future Self (${deliveryDate})`}
+                  {isSubmitting 
+                    ? 'Scheduling Letter...' 
+                    : isStaleDate 
+                      ? 'Pick a Future Date to Send' 
+                      : `Send to Future Self (${deliveryDate})`}
                 </span>
               </button>
             </div>

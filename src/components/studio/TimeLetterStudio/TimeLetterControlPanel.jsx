@@ -58,12 +58,23 @@ const validateLocation = (val) => {
 
 const validateCustomDate = (val) => {
   if (!val) return 'Date required';
-  const d = new Date(val);
-  if (isNaN(d.getTime())) return 'Invalid date';
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (d <= today) return 'Must be future date';
-  return '';
+  try {
+    let d;
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+      const [y, m, day] = val.split('-').map(Number);
+      d = new Date(y, m - 1, day);
+    } else {
+      d = new Date(val);
+    }
+    if (isNaN(d.getTime())) return 'Invalid date';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const targetDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    if (targetDay.getTime() <= today.getTime()) return 'Must be future date';
+    return '';
+  } catch (_) {
+    return 'Invalid date';
+  }
 };
 
 const validateRecipientEmail = (val) => {
@@ -232,7 +243,7 @@ export function TimeLetterControlPanel({
               </div>
 
               {state.deliveryPreset === 'custom' && (
-                <div className="mt-0.5">
+                <div className="mt-0.5 flex flex-col gap-1.5">
                   <NeoDatePicker 
                     label=""
                     value={state.customDate || ''}
@@ -241,6 +252,18 @@ export function TimeLetterControlPanel({
                     validate={validateCustomDate}
                     placeholder="Pick custom date..."
                   />
+                  {Boolean(validateCustomDate(state.customDate)) && (
+                    <div className="bg-amber-100 border-2 border-amber-600 text-amber-950 px-2.5 py-1.5 flex items-center gap-1.5 shadow-[2px_2px_0px_#d97706] mt-0.5">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <span className="font-marker text-xs sm:text-sm uppercase tracking-wide leading-tight">
+                        Unlock date has arrived! Pick a future date.
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

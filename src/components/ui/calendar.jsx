@@ -66,8 +66,16 @@ export function Calendar({
 }) {
   const selectedDate = useMemo(() => parseDate(selected), [selected]);
   const minDateTime = useMemo(() => {
+    // Strict production rule: Earliest selectable date is always tomorrow at 00:00:00
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate()).getTime();
     const d = parseDate(minDate);
-    return d ? new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() : null;
+    if (d) {
+      const explicitMin = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      return Math.max(explicitMin, tomorrowStart);
+    }
+    return tomorrowStart;
   }, [minDate]);
 
   // Current viewing month and year
@@ -122,12 +130,15 @@ export function Calendar({
 
     // Days in current month
     const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate()).getTime();
+    const minThreshold = minDateTime || tomorrowStart;
 
     for (let dayNum = 1; dayNum <= daysInCurrentMonth; dayNum++) {
       const d = new Date(year, month, dayNum);
       const dTime = d.getTime();
-      const isPast = minDateTime ? dTime < minDateTime : dTime < todayStart;
+      const isPast = dTime < minThreshold;
       const isSelected = selectedDate ? (
         d.getFullYear() === selectedDate.getFullYear() &&
         d.getMonth() === selectedDate.getMonth() &&

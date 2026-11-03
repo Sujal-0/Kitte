@@ -109,8 +109,11 @@ export async function runDispatchSweep() {
 
   const config = getEnvConfig();
   if (!config.hasGmail && !config.hasResend) {
-    console.error('[FutureMe Dispatcher] ERROR: No email credentials found (GMAIL_USER & GMAIL_APP_PASSWORD or RESEND_API_KEY).');
-    return { success: false, error: 'Missing email credentials' };
+    console.log('[FutureMe Dispatcher] NOTICE: No email credentials found (GMAIL_USER & GMAIL_APP_PASSWORD or RESEND_API_KEY).');
+    console.log('[FutureMe Dispatcher] To enable daily automated dispatches, add these secrets to your GitHub repo:');
+    console.log('[FutureMe Dispatcher] Settings > Secrets and variables > Actions (GMAIL_USER, GMAIL_APP_PASSWORD, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)');
+    console.log('[FutureMe Dispatcher] Skipping daily sweep gracefully.');
+    return { success: true, skipped: true, reason: 'Missing email credentials' };
   }
 
   const { source, letters } = await getDueLetters();

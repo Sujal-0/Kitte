@@ -33,7 +33,8 @@ export function generateLetterShareUrl(state) {
       lbs: state.letterBorderStyle || 'handdrawn-single',
       lrad: state.letterBorderRadius !== undefined ? state.letterBorderRadius : 8,
       lstamp: state.letterStamp || 'none',
-      lseal: state.letterCenterSeal || 'none'
+      lseal: state.letterCenterSeal || 'none',
+      ws: 1 // Shared Web Letter indicator
     };
 
     const jsonStr = JSON.stringify(payload);
@@ -103,21 +104,29 @@ function normalizePayload(p) {
     letterBorderStyle: p.lbs || 'handdrawn-single',
     letterBorderRadius: p.lrad !== undefined ? Number(p.lrad) : 8,
     letterStamp: p.lstamp || 'none',
-    letterCenterSeal: p.lseal || 'none'
+    letterCenterSeal: p.lseal || 'none',
+    isWebShare: true
   };
 }
 
 /**
  * Checks if a time capsule letter is locked based on its delivery date string.
- * Unlocks automatically at the start of the delivery day (00:00:00), or if accessed via email dispatch.
+ * Unlocks automatically at the start of the delivery day (00:00:00), or if accessed via share link / email dispatch.
  */
 export function isCapsuleLocked(deliveryDateStr) {
   if (!deliveryDateStr) return false;
   try {
-    // If opened via email delivery or explicit unlock token
+    // If opened via web share link, email delivery, or explicit unlock token - NEVER locked!
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('src') === 'email' || params.get('unseal') === '1' || params.get('unlocked') === '1') {
+      if (
+        params.get('view') === 'letter' || 
+        params.has('letter') || 
+        window.location.hash.includes('letter=') ||
+        params.get('src') === 'email' || 
+        params.get('unseal') === '1' || 
+        params.get('unlocked') === '1'
+      ) {
         return false;
       }
     }
@@ -136,10 +145,11 @@ export function isCapsuleLocked(deliveryDateStr) {
 }
 
 /**
- * Checks if a letter is locked, considering letterMode (someone-special letters are immediately openable).
+ * Checks if a letter is locked, considering letterMode and web share links.
  */
 export function isLetterLocked(state) {
   if (!state) return false;
+  if (state.isWebShare) return false;
   if (state.letterMode === 'someone-special') return false;
   return isCapsuleLocked(state.deliveryDate);
 }

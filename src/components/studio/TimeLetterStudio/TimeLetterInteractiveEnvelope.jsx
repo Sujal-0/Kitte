@@ -23,10 +23,12 @@ export function TimeLetterInteractiveEnvelope({
   state, 
   isShowcase, 
   onStartCustomizing, 
-  onToggleOpen 
+  onToggleOpen,
+  isWebShare = false
 }) {
+  const isWebShareMode = isWebShare || Boolean(state?.isWebShare);
   const isOpen = !!state.isOpen;
-  const isLocked = isShowcase ? false : isLetterLocked(state);
+  const isLocked = isShowcase || isWebShareMode ? false : isLetterLocked(state);
   const currentTheme = ENVELOPE_THEMES.find(t => t.id === state.envelopeTheme || t.bg === state.envelopeTheme) || ENVELOPE_THEMES[0];
   const activeStamp = POSTAL_STAMPS.find(s => s.id === state.envelopeStamp) || POSTAL_STAMPS[0];
   const fontMeta = LETTER_FONTS.find(f => f.id === state.fontStyle) || LETTER_FONTS[0];
@@ -218,22 +220,24 @@ export function TimeLetterInteractiveEnvelope({
             ) : null}
           </div>
 
-          {/* Bottom Area: Notice Text */}
+          {/* Bottom Area: Notice Text (Hidden on Web Share Link / Open Web Letter) */}
           <div className="absolute bottom-5 left-0 right-0 flex flex-col items-center justify-center">
-            {state.letterMode === 'someone-special' ? (
-              (state.envelopeNoticeText || isShowcase) ? (
-                <span className={`${fontMeta.fontClass} text-lg font-bold tracking-wider text-[#1A1A1A] select-text drop-shadow-xs transition-opacity duration-300`}>
-                  {state.envelopeNoticeText ? state.envelopeNoticeText : 'A special letter for you'}
-                </span>
-              ) : null
-            ) : (
-              (state.envelopeNoticeText || (isLocked && state.deliveryDate)) ? (
-                <span className={`${fontMeta.fontClass} text-lg font-bold tracking-wider text-[#1A1A1A] select-text drop-shadow-xs transition-opacity duration-300`}>
-                  {state.envelopeNoticeText 
-                    ? `${state.envelopeNoticeText} ${state.deliveryDate || ''}`
-                    : `Don't open before ${state.deliveryDate}`}
-                </span>
-              ) : null
+            {!isWebShareMode && (
+              state.letterMode === 'someone-special' ? (
+                (state.envelopeNoticeText || isShowcase) ? (
+                  <span className={`${fontMeta.fontClass} text-lg font-bold tracking-wider text-[#1A1A1A] select-text drop-shadow-xs transition-opacity duration-300`}>
+                    {state.envelopeNoticeText ? state.envelopeNoticeText : 'A special letter for you'}
+                  </span>
+                ) : null
+              ) : (
+                (state.envelopeNoticeText || (isLocked && state.deliveryDate)) ? (
+                  <span className={`${fontMeta.fontClass} text-lg font-bold tracking-wider text-[#1A1A1A] select-text drop-shadow-xs transition-opacity duration-300`}>
+                    {state.envelopeNoticeText 
+                      ? `${state.envelopeNoticeText} ${state.deliveryDate || ''}`
+                      : `Don't open before ${state.deliveryDate}`}
+                  </span>
+                ) : null
+              )
             )}
             {state.location ? (
               <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 mt-0.5 transition-opacity duration-300">

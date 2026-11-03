@@ -175,7 +175,7 @@ export function TimeEnvelopeCard({ state, isShowcase }) {
             </span>
           ) : null
         ) : (
-          (state.envelopeNoticeText || state.deliveryDate || isShowcase) ? (
+          (!state.isWebShare && (state.envelopeNoticeText || state.deliveryDate || isShowcase)) ? (
             <span className={`${fontMeta.fontClass} text-lg font-bold tracking-wider text-[#1A1A1A] select-text drop-shadow-xs transition-opacity duration-300 truncate max-w-[480px] px-6 text-center`}>
               {state.envelopeNoticeText 
                 ? `${state.envelopeNoticeText} ${state.deliveryDate || ''}`

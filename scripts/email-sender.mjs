@@ -158,3 +158,4 @@ export async function sendEmail({
 
   throw new Error('No email credentials configured. Please set GMAIL_USER and GMAIL_APP_PASSWORD in .env');
 }
+

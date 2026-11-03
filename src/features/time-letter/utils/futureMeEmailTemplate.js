@@ -14,7 +14,7 @@
  * 4. Social Media Footer: Direct links to Sujal's Instagram, LinkedIn, and GitHub.
  */
 
-import { POSTAL_STAMPS, DECORATIVE_ACCENTS, PAPER_THEMES } from '../tokens/timeLetterTokens';
+
 
 /**
  * Returns the appropriate handwritten font family based on user selection
@@ -37,111 +37,26 @@ function getLetterFontFamily(fontStyle) {
 }
 
 /**
- * Authentic Kitte Postal Cat Stamp SVG with wavy postmark cancellation lines
+ * Postmark Stamp Assets (Hosted permanently on raw GitHub repository)
  */
-function buildKitteStampSvgHtml({ borderColor = '#B91C1C', sendDate = 'OCT 2026', compact = false }) {
-  if (compact) {
-    return `
-      <table cellpadding="0" cellspacing="0" border="0" style="display: inline-table; vertical-align: middle;">
-        <tr>
-          <!-- Mini Wavy Cancellation Lines -->
-          <td valign="middle" style="padding-right: 5px;">
-            <svg width="28" height="14" viewBox="0 0 28 14" fill="none" style="display: block;">
-              <path d="M0 3 Q 3.5 0 7 3 T 14 3 T 21 3 T 28 3" stroke="#1A1A1A" stroke-width="0.9" fill="none" opacity="0.6" />
-              <path d="M0 7 Q 3.5 4 7 7 T 14 7 T 21 7 T 28 7" stroke="#1A1A1A" stroke-width="0.9" fill="none" opacity="0.6" />
-              <path d="M0 11 Q 3.5 8 7 11 T 14 11 T 21 11 T 28 11" stroke="#1A1A1A" stroke-width="0.9" fill="none" opacity="0.6" />
-            </svg>
-          </td>
-          <!-- Mini Stamp Box -->
-          <td valign="middle">
-            <div style="width: 32px; height: 38px; border: 1.2px dashed #1A1A1A; background-color: #FFFFFF; padding: 1.5px; text-align: center; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.06);">
-              <div style="width: 100%; height: 24px; background-color: #FAF5EA; text-align: center; line-height: 24px;">
-                <svg width="20" height="20" viewBox="0 0 34 34" fill="none" style="vertical-align: middle; display: inline-block;">
-                  <!-- Cat Ears -->
-                  <polygon points="9,14 12,5 16,11" fill="#1A1A1A" />
-                  <polygon points="18,11 22,5 25,14" fill="#1A1A1A" />
-                  <polygon points="11,12 13,8 15,11" fill="#F472B6" />
-                  <polygon points="19,11 21,8 23,12" fill="#F472B6" />
-                  <!-- Body & Head -->
-                  <ellipse cx="17" cy="16" rx="7.5" ry="6.5" fill="#1A1A1A" />
-                  <ellipse cx="17" cy="23" rx="6.5" ry="5.5" fill="#1A1A1A" />
-                  <!-- Eyes -->
-                  <ellipse cx="14.5" cy="15" rx="1.2" ry="1.6" fill="#FFFFFF" />
-                  <ellipse cx="19.5" cy="15" rx="1.2" ry="1.6" fill="#FFFFFF" />
-                  <circle cx="14.5" cy="15.5" r="0.7" fill="#1A1A1A" />
-                  <circle cx="19.5" cy="15.5" r="0.7" fill="#1A1A1A" />
-                  <!-- Cheeks -->
-                  <circle cx="12" cy="17.5" r="1" fill="#F472B6" />
-                  <circle cx="22" cy="17.5" r="1" fill="#F472B6" />
-                </svg>
-              </div>
-              <div style="border-top: 1px solid #E5E7EB; line-height: 10px; text-align: center;">
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 6px; font-weight: 700; color: ${borderColor};">KITTE</span>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </table>
-    `;
-  }
+const KITTE_POSTMARKED_STAMP_URL = 'https://raw.githubusercontent.com/Sujal-0/Kitte/main/public/assets/kitte_postmarked_stamp.png';
+const KITTE_FAVICON_STAMP_URL = 'https://raw.githubusercontent.com/Sujal-0/Kitte/main/public/kitte_favicon.png';
 
-  // Full-size Stamp for Envelope
+/**
+ * Authentic Postmarked Kitte Stamp for Envelope (Matches Image 2 reference)
+ */
+function buildEnvelopeStampHtml() {
   return `
-    <table cellpadding="0" cellspacing="0" border="0" style="display: inline-table; vertical-align: middle;">
-      <tr>
-        <!-- Postmark Cancellation Wavy Lines with Date -->
-        <td valign="middle" style="padding-right: 8px; text-align: center;">
-          <svg width="52" height="22" viewBox="0 0 52 22" fill="none" style="display: block; margin: 0 auto;">
-            <path d="M0 4 Q 6.5 0 13 4 T 26 4 T 39 4 T 52 4" stroke="#1A1A1A" stroke-width="1.1" fill="none" opacity="0.55" />
-            <path d="M0 11 Q 6.5 7 13 11 T 26 11 T 39 11 T 52 11" stroke="#1A1A1A" stroke-width="1.1" fill="none" opacity="0.55" />
-            <path d="M0 18 Q 6.5 14 13 18 T 26 18 T 39 18 T 52 18" stroke="#1A1A1A" stroke-width="1.1" fill="none" opacity="0.55" />
-          </svg>
-          <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 7.5px; font-weight: 700; color: #786C5E; letter-spacing: 1px; display: block; margin-top: 2px;">
-            ${sendDate}
-          </span>
-        </td>
-        
-        <!-- Authentic Kitte Stamp Card -->
-        <td valign="middle">
-          <div style="width: 48px; height: 64px; border: 1.5px dashed #1A1A1A; background-color: #FFFFFF; padding: 2px; text-align: center; border-radius: 2px; box-shadow: 2px 2px 4px rgba(0,0,0,0.08); transform: rotate(1.5deg);">
-            <div style="width: 100%; height: 44px; background-color: #FAF5EA; text-align: center; line-height: 44px; overflow: hidden;">
-              <svg width="34" height="34" viewBox="0 0 34 34" fill="none" style="vertical-align: middle; display: inline-block;">
-                <!-- Cute Black Cat Silhouette -->
-                <polygon points="9,14 12,5 16,11" fill="#1A1A1A" />
-                <polygon points="18,11 22,5 25,14" fill="#1A1A1A" />
-                <polygon points="11,12 13,8 15,11" fill="#F472B6" />
-                <polygon points="19,11 21,8 23,12" fill="#F472B6" />
-                <ellipse cx="17" cy="16" rx="8" ry="7" fill="#1A1A1A" />
-                <ellipse cx="17" cy="24" rx="7" ry="6" fill="#1A1A1A" />
-                <!-- Eyes -->
-                <ellipse cx="14" cy="15" rx="1.5" ry="2" fill="#FFFFFF" />
-                <ellipse cx="20" cy="15" rx="1.5" ry="2" fill="#FFFFFF" />
-                <circle cx="14" cy="15.5" r="0.8" fill="#1A1A1A" />
-                <circle cx="20" cy="15.5" r="0.8" fill="#1A1A1A" />
-                <!-- Cheeks -->
-                <ellipse cx="11.5" cy="18" rx="1.4" ry="1" fill="#F472B6" />
-                <ellipse cx="22.5" cy="18" rx="1.4" ry="1" fill="#F472B6" />
-                <!-- Whiskers -->
-                <line x1="7" y1="16" x2="11" y2="17" stroke="#FFFFFF" stroke-width="0.8" />
-                <line x1="7" y1="18.5" x2="11" y2="18.5" stroke="#FFFFFF" stroke-width="0.8" />
-                <line x1="23" y1="17" x2="27" y2="16" stroke="#FFFFFF" stroke-width="0.8" />
-                <line x1="23" y1="18.5" x2="27" y2="18.5" stroke="#FFFFFF" stroke-width="0.8" />
-                <!-- Curled Tail -->
-                <path d="M 23 26 C 27 26, 28 22, 27 20" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" fill="none" />
-                <!-- Musical Note -->
-                <path d="M 26 7 L 26 12 M 24 12 A 1.5 1.5 0 1 0 26 12" stroke="#EC4899" stroke-width="1.2" stroke-linecap="round" fill="#EC4899" />
-              </svg>
-            </div>
-            <!-- Bottom Stamp Bar: KITTE AIR -->
-            <div style="border-top: 1px solid #1A1A1A; padding: 2px 2px 0 2px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 7px; font-weight: 800; color: #1A1A1A; float: left;">KITTE</span>
-              <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 7px; font-weight: 800; color: ${borderColor}; float: right;">AIR</span>
-              <div style="clear: both;"></div>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </table>
+    <img src="${KITTE_POSTMARKED_STAMP_URL}" width="155" height="95" alt="Kitte Postal Stamp" style="display: block; width: 155px; height: 95px; border: 0; outline: none;" />
+  `;
+}
+
+/**
+ * Authentic Favicon Stamp for Letterhead (Matches Image 3 reference)
+ */
+function buildLetterheadStampHtml() {
+  return `
+    <img src="${KITTE_FAVICON_STAMP_URL}" width="46" height="46" alt="Kitte Stamp" style="display: inline-block; vertical-align: middle; border: 0; outline: none;" />
   `;
 }
 
@@ -240,104 +155,71 @@ function buildSocialFooterHtml() {
 }
 
 /**
- * 1. Redesigned Envelope UI (Matches in-app TimeEnvelopeCard perfectly)
+ * 1. Redesigned Envelope UI (Matches Image 2 reference with micro-dots & minimal clean layout)
  * - Cream paper with micro-dots
- * - Red outer border (#B91C1C, border-radius 16px)
- * - Real triangular flap lines meeting at center
- * - Red silk ribbon bow knot (NO RED MIDDLE CIRCLE!)
- * - Authentic Kitte postal cat stamp + wavy cancellation lines
- * - Recipient in handwritten Patrick Hand font + email + location
+ * - Red outer border (#8B1D1D / #B91C1C, border-radius 18px)
+ * - Top-left: ORIGIN and SEALED dates in monospace
+ * - Top-right: Authentic Kitte postmarked stamp with cancellation waves (PNG image)
+ * - Recipient in handwritten script + email + location
  * - Neobrutalism CTA button to open interactive letter
+ * - Clean minimal footer (no unnecessary text, no corner squares)
  */
 function buildEnvelopeHtml({ state, targetDate, sendDate, location, effectiveEmail, shareUrl }) {
   const recipientName = state?.recipient || (state?.letterMode === 'someone-special' ? 'Someone Special' : 'Future Me');
-  const borderColor = state?.envelopeBorderColor || '#B91C1C';
+  const borderColor = state?.envelopeBorderColor || '#8B1D1D';
   const emailOpenUrl = shareUrl ? (shareUrl.includes('src=email') ? shareUrl : `${shareUrl}&src=email`) : '#';
   const handwrittenFont = "'Patrick Hand', 'Caveat', 'Comic Sans MS', cursive, sans-serif";
 
   return `
-    <!-- Envelope Card (Matches Kitte Studio TimeEnvelopeCard with paper grain & creases) -->
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 540px; background-color: #FDFBF7; border: 2.5px solid ${borderColor}; border-radius: 16px; box-shadow: 0 10px 28px rgba(45, 35, 20, 0.08); overflow: hidden; background-image: radial-gradient(rgba(26,26,26,0.12) 1px, transparent 0); background-size: 8px 8px; position: relative;">
+    <!-- Envelope Card (Matches Image 2 reference) -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 550px; background-color: #FDFBF7; border: 2.5px solid ${borderColor}; border-radius: 18px; box-shadow: 0 10px 28px rgba(45, 35, 20, 0.08); overflow: hidden; background-image: radial-gradient(rgba(26,26,26,0.13) 1.2px, transparent 0); background-size: 8px 8px;">
       
-      <!-- Top Bar: Origin, Sealed Date, and Authentic Kitte Airmail Stamp -->
+      <!-- Top Bar: Origin, Sealed Date on Left, Postmark Stamp on Right -->
       <tr>
-        <td style="padding: 18px 22px 0 22px;">
+        <td style="padding: 18px 20px 0 24px;">
           <table width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              <td align="left" valign="top">
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; font-weight: 700; color: #8C7B6B; text-transform: uppercase; letter-spacing: 1.5px; display: block;">
+              <td align="left" valign="top" style="padding-top: 8px;">
+                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; font-weight: 700; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1.5px; display: block;">
                   ORIGIN: ${location}
                 </span>
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; color: #A89B8C; display: block; margin-top: 2px;">
+                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; font-weight: 700; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 4px;">
                   SEALED: ${sendDate}
                 </span>
               </td>
               <td align="right" valign="top">
-                <!-- Authentic Kitte Postal Cat Stamp with Cancellation Waves -->
-                ${buildKitteStampSvgHtml({ borderColor, sendDate, compact: false })}
+                ${buildEnvelopeStampHtml()}
               </td>
             </tr>
           </table>
         </td>
       </tr>
 
-      <!-- Flap & Fold Crease Lines (Triangular fold meeting at apex) -->
+      <!-- Center Recipient & Primary Action (No flap lines, no ribbon bow, no bottom boxes) -->
       <tr>
-        <td align="center" style="padding: 0; line-height: 0;">
-          <svg width="100%" height="90" viewBox="0 0 540 90" fill="none" style="display: block; max-width: 540px;">
-            <!-- Triangular Top Flap Line (Solid Red) -->
-            <path d="M 8 6 L 270 86 L 532 6" stroke="${borderColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Lower Pocket Diagonal Crease Lines (Dashed Faint Red) -->
-            <path d="M 8 88 L 270 86 L 532 88" stroke="${borderColor}" stroke-width="1.2" stroke-dasharray="4 4" stroke-opacity="0.32" />
-          </svg>
-        </td>
-      </tr>
-
-      <!-- Silk Ribbon Bow Knot at apex (NO RED CIRCLE!) & Recipient Area -->
-      <tr>
-        <td align="center" style="padding: 0 24px 26px 24px;">
+        <td align="center" style="padding: 10px 24px 34px 24px;">
           
-          <!-- Tied Silk Ribbon Bow Knot (Directly at the flap intersection point) -->
-          <div style="margin-top: -12px; margin-bottom: 10px;">
-            ${buildSilkRibbonBowSvg({ color: borderColor, width: 62, height: 46 })}
-          </div>
-
-          <!-- Recipient Name in Authentic Handwritten Script (Patrick Hand / Caveat) -->
-          <div style="font-family: ${handwrittenFont}; font-size: 32px; font-weight: 700; color: #1A1A1A; letter-spacing: 1px; margin-top: 6px; text-transform: uppercase; line-height: 1.15;">
+          <!-- Recipient Name in Authentic Handwritten Script -->
+          <div style="font-family: ${handwrittenFont}; font-size: 38px; font-weight: 700; color: #1A1A1A; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase; line-height: 1.1;">
             ${recipientName}
           </div>
 
           <!-- Recipient Email -->
-          <div style="font-family: 'Courier Prime', Courier, monospace; font-size: 11.5px; font-weight: 600; color: rgba(26,26,26,0.65); margin-top: 4px;">
+          <div style="font-family: 'Courier Prime', Courier, monospace; font-size: 11.5px; font-weight: 600; color: #2B579A; text-decoration: underline; margin-top: 6px;">
             ${effectiveEmail}
           </div>
 
           <!-- Origin Location Subtitle -->
-          <div style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: rgba(26,26,26,0.40); letter-spacing: 2px; text-transform: uppercase; margin-top: 12px;">
+          <div style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #1A1A1A; opacity: 0.55; letter-spacing: 2px; text-transform: uppercase; margin-top: 14px;">
             &bull; ${location} &bull;
           </div>
 
           <!-- Direct CTA Button: Open & Unseal in Kitte Studio -->
-          <div style="margin-top: 22px;">
-            <a href="${emailOpenUrl}" target="_blank" style="background-color: #1A1A1A; color: #FFEB3B; font-family: 'Courier Prime', Courier, monospace; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; padding: 14px 34px; border: 2px solid #1A1A1A; border-radius: 4px; display: inline-block; box-shadow: 3px 3px 0px #1A1A1A;">
+          <div style="margin-top: 24px;">
+            <a href="${emailOpenUrl}" target="_blank" style="background-color: #1A1A1A; color: #FFEB3B; font-family: 'Courier Prime', Courier, monospace; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; padding: 13px 32px; border: 2px solid #1A1A1A; border-radius: 4px; display: inline-block; box-shadow: 3px 3px 0px #1A1A1A;">
               OPEN LETTER &amp; ENVELOPE ↗
             </a>
-            <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 8.5px; color: #8A7B6D; display: block; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px;">
-              UNSEALS LIVE 300 DPI INTERACTIVE LETTER IN KITTE STUDIO
-            </span>
           </div>
-
-          <!-- Corner Tabs / Stickers at bottom -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 14px;">
-            <tr>
-              <td align="left">
-                <div style="width: 14px; height: 14px; border: 1px solid rgba(26,26,26,0.18); background-color: rgba(255,255,255,0.7); transform: rotate(-8deg);"></div>
-              </td>
-              <td align="right">
-                <div style="width: 14px; height: 14px; border: 1px solid rgba(26,26,26,0.18); background-color: rgba(255,255,255,0.7); transform: rotate(8deg);"></div>
-              </td>
-            </tr>
-          </table>
 
         </td>
       </tr>
@@ -347,54 +229,54 @@ function buildEnvelopeHtml({ state, targetDate, sendDate, location, effectiveEma
 }
 
 /**
- * 2. Redesigned Letterhead Card (Matches in-app TimeLetterCard perfectly)
+ * 2. Redesigned Letterhead Card (Matches Image 3 reference)
  * - Dual-layer background: Dot grid AND 24px horizontal notebook ruled lines
- * - Red dashed / stitched perimeter border (#B91C1C, border-radius 14px)
- * - Top-left tied silk ribbon bow + 'A LETTER TO MY FUTURE SELF'
- * - Top-right mini Kitte cat stamp + date & location
+ * - Red dashed / stitched perimeter border
+ * - Top-left: 'A LETTER TO MY FUTURE SELF'
+ * - Top-right: Date & location + authentic Favicon stamp
+ * - NO horizontal divider lines cutting through the stationery!
  * - Salutation & body in authentic handwritten Patrick Hand font, aligned to notebook lines
  * - Author signature with crimson red heart doodle
  */
 function buildLetterheadHtml({ state, sendDate, location, salutation, letterBody, signOff, author, borderColor, letterFont }) {
   return `
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 540px; background-color: #FAF5EA; border: 2.5px dashed ${borderColor}; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); background-image: radial-gradient(rgba(26, 26, 26, 0.08) 1px, transparent 0), repeating-linear-gradient(transparent, transparent 23px, rgba(140, 90, 43, 0.12) 24px); background-size: 8px 8px, 100% 24px; background-position: 0 0, 0 44px; overflow: hidden;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 550px; background-color: #FAF5EA; border: 2.5px dashed ${borderColor}; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); background-image: radial-gradient(rgba(26, 26, 26, 0.08) 1px, transparent 0), repeating-linear-gradient(transparent, transparent 23px, rgba(140, 90, 43, 0.12) 24px); background-size: 8px 8px, 100% 24px; background-position: 0 0, 0 44px; overflow: hidden;">
       <tr>
-        <td style="padding: 22px 26px 24px 26px;">
+        <td style="padding: 22px 26px 26px 26px;">
           
-          <!-- Top Header Line: Ribbon Bow + Subhead + Date & Mini Cat Stamp -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26,26,26,0.14); padding-bottom: 10px; margin-bottom: 16px;">
+          <!-- Top Header: Subhead + Date & Favicon Stamp (NO BORDER LINE BELOW!) -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
             <tr>
               <td align="left" valign="middle">
-                ${buildMiniRibbonBowSvg({ color: borderColor })}
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; font-weight: 800; color: #8C7B6B; letter-spacing: 1.5px; text-transform: uppercase; vertical-align: middle;">
+                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #8C7B6B; letter-spacing: 1.5px; text-transform: uppercase;">
                   ${state?.letterMode === 'someone-special' ? 'A SPECIAL LETTER' : 'A LETTER TO MY FUTURE SELF'}
                 </span>
               </td>
               <td align="right" valign="middle">
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9.5px; font-weight: 700; color: #8C7B6B; margin-right: 6px; vertical-align: middle;">
+                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 9px; font-weight: 700; color: #8C7B6B; margin-right: 8px; vertical-align: middle;">
                   ${sendDate}${location ? ` &bull; ${location}` : ''}
                 </span>
-                ${buildKitteStampSvgHtml({ borderColor, sendDate, compact: true })}
+                ${buildLetterheadStampHtml()}
               </td>
             </tr>
           </table>
 
-          <!-- Salutation (Handwritten Script, e.g. "HII" or "Dear Future Me,") -->
-          <div style="font-family: ${letterFont}; font-size: 24px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; line-height: 24px; letter-spacing: 0.5px;">
+          <!-- Salutation (Handwritten Script, e.g. "dear future me") -->
+          <div style="font-family: ${letterFont}; font-size: 26px; font-weight: 700; color: #1A1A1A; margin-bottom: 12px; line-height: 24px; letter-spacing: 0.5px;">
             ${salutation}
           </div>
 
           <!-- Letter Body (Handwritten, sitting right on the 24px ruled notebook lines) -->
-          <div style="font-family: ${letterFont}; font-size: 16px; line-height: 24px; color: #1A1A1A; white-space: pre-line; margin-bottom: 24px; min-height: 120px; letter-spacing: 0.3px;">
+          <div style="font-family: ${letterFont}; font-size: 17px; line-height: 24px; color: #1A1A1A; white-space: pre-line; margin-bottom: 24px; min-height: 100px; letter-spacing: 0.3px;">
             ${letterBody}
           </div>
 
-          <!-- Sign-off & Author with Red Heart Doodle -->
-          <div style="border-top: 1px dashed rgba(26,26,26,0.18); padding-top: 14px; margin-top: 12px;">
-            <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 13px; font-style: italic; color: #73675C; margin-bottom: 2px;">
+          <!-- Sign-off & Author (NO BORDER LINE ABOVE!) -->
+          <div style="margin-top: 16px;">
+            <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 13px; font-style: italic; color: #73675C; margin-bottom: 4px;">
               ${signOff}
             </div>
-            <div style="font-family: ${letterFont}; font-size: 20px; font-weight: 700; color: #1A1A1A; line-height: 24px;">
+            <div style="font-family: ${letterFont}; font-size: 22px; font-weight: 700; color: #1A1A1A; line-height: 24px;">
               <span>${author}</span>
               ${buildHeartSvg({ color: borderColor, size: 18 })}
             </div>
@@ -567,20 +449,6 @@ export function buildFutureMeVaultConfirmationHtml({
               <p style="font-family: 'Courier Prime', Courier, monospace; font-size: 11px; font-weight: 700; color: #8A7B6D; letter-spacing: 2px; text-transform: uppercase; margin: 14px 0 0 0;">
                 TIME CAPSULE VAULTED &bull; SCHEDULED FOR ${targetDate}
               </p>
-            </td>
-          </tr>
-
-          <!-- Certificate Notice Card -->
-          <tr>
-            <td align="center" style="padding-bottom: 28px;">
-              <div style="max-width: 540px; background-color: #DCFCE7; border: 2px solid #15803D; border-radius: 6px; padding: 16px 20px; box-shadow: 3px 3px 0px #15803D; text-align: left;">
-                <span style="font-family: 'Courier Prime', Courier, monospace; font-size: 11.5px; font-weight: 800; color: #15803D; text-transform: uppercase; letter-spacing: 1px; display: block;">
-                  &bull; OFFICIAL ARCHIVAL TIME CAPSULE CERTIFICATE &bull;
-                </span>
-                <p style="font-family: 'Courier Prime', Courier, monospace; font-size: 11px; color: #166534; margin: 6px 0 0 0; line-height: 1.6;">
-                  Your letter has been recorded in the archival registry. On <strong>${targetDate}</strong>, our automated dispatch will deliver your unsealed letter directly to <strong>${effectiveEmail}</strong>.
-                </p>
-              </div>
             </td>
           </tr>
 

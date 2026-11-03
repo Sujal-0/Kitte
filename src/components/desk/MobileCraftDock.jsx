@@ -29,25 +29,6 @@ export function MobileCraftDock() {
         </div>
 
       </div>
-
-      {/* Subtle Mobile Legal Links */}
-      <div className="w-full flex items-center justify-center gap-3 pt-2 text-[9px] font-mono uppercase tracking-widest text-[#2D2D2D]/60 pointer-events-auto">
-        <button
-          type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'privacy' } }))}
-          className="hover:text-[#2D2D2D] hover:underline cursor-pointer"
-        >
-          Privacy
-        </button>
-        <span>•</span>
-        <button
-          type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'terms' } }))}
-          className="hover:text-[#2D2D2D] hover:underline cursor-pointer"
-        >
-          Terms
-        </button>
-      </div>
     </div>
   );
 }

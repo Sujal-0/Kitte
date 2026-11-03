@@ -64,7 +64,17 @@ export function CookieConsentBanner({ currentView, isAnyModalOpen, onOpenPrivacy
     setHasConsented(true);
   };
 
+  const handleClose = (e) => {
+    if (e) e.stopPropagation();
+    soundFX.playPop();
+    try {
+      localStorage.setItem(COOKIE_STORAGE_KEY, 'accepted');
+    } catch (_) {}
+    setHasConsented(true);
+  };
+
   const handleOpenPrivacy = (e) => {
+    if (e) e.stopPropagation();
     soundFX.playPop();
     if (onOpenPrivacy) {
       onOpenPrivacy();
@@ -94,15 +104,26 @@ export function CookieConsentBanner({ currentView, isAnyModalOpen, onOpenPrivacy
           <div className="relative z-10 flex flex-col gap-2">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#1A1A1A]/20 pb-1.5">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block" />
-                <h3 className="font-marker text-sm sm:text-base uppercase tracking-wider text-[#1A1A1A] leading-tight">
-                  Crafter's Consent
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/assets/cookieSvg.svg" 
+                  alt="Cookie Icon" 
+                  className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" 
+                />
+                <h3 className="font-marker text-base sm:text-lg uppercase tracking-wider text-[#1A1A1A] leading-tight handwritten-text">
+                  Crafter's Cookies
                 </h3>
               </div>
-              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-[#1A1A1A]/60 font-bold">
-                100% PRIVATE
-              </span>
+
+              {/* X Close Button matching TornReceipt UI */}
+              <button
+                type="button"
+                onClick={handleClose}
+                className="cursor-pointer font-marker text-xl sm:text-2xl text-zinc-900 hover:text-markerRed transition-transform hover:scale-110 active:scale-95 px-1 leading-none opacity-80"
+                aria-label="Close Cookie Notice"
+              >
+                X
+              </button>
             </div>
 
             {/* Content Note */}
@@ -110,12 +131,12 @@ export function CookieConsentBanner({ currentView, isAnyModalOpen, onOpenPrivacy
               We use essential cookies &amp; local storage strictly to preserve your craft designs, photo crops, and sound preferences. Zero ad tracking scripts.
             </p>
 
-            {/* Action Buttons in Neo Style with font-marker */}
+            {/* Action Buttons in font-marker style */}
             <div className="flex items-center gap-2 pt-1">
               <button
                 type="button"
                 onClick={handleAccept}
-                className="flex-1 bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] font-marker text-xs sm:text-sm py-1.5 sm:py-2 px-3 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] transition-all uppercase tracking-wider cursor-pointer text-center"
+                className="flex-1 bg-[#1A1A1A] text-[#FFEB3B] hover:bg-[#2A2A2A] font-marker text-sm sm:text-base py-1.5 sm:py-2 px-3.5 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] transition-all uppercase tracking-wider cursor-pointer text-center handwritten-text"
               >
                 Got It
               </button>
@@ -123,7 +144,7 @@ export function CookieConsentBanner({ currentView, isAnyModalOpen, onOpenPrivacy
               <button
                 type="button"
                 onClick={handleOpenPrivacy}
-                className="bg-white hover:bg-[#FAF7EE] text-[#1A1A1A] font-marker text-xs sm:text-sm py-1.5 sm:py-2 px-3 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] transition-all uppercase tracking-wider cursor-pointer text-center"
+                className="bg-white hover:bg-[#FAF7EE] text-[#1A1A1A] font-marker text-sm sm:text-base py-1.5 sm:py-2 px-3.5 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] transition-all uppercase tracking-wider cursor-pointer text-center handwritten-text"
               >
                 Privacy
               </button>

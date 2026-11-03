@@ -151,9 +151,36 @@ export function CrafterNotes({ className = "w-40 md:w-56" }) {
                       <p>
                         Features five core studios generating tactile items like <span className="text-ballpointBlue">Bounty Posters</span> and <span className="text-ballpointBlue">Travel IDs</span>.
                       </p>
-                      <div className="mt-1.5 pt-1.5 border-t border-pencil/20 opacity-80 text-[10px] sm:text-xs md:text-sm">
-                        <p>Local storage: ACTIVE // Desk UI: SECURE</p>
-                        <p>Est. 2026 // By Sujal Singh</p>
+                      <div className="mt-1 pt-1 sm:mt-1.5 sm:pt-1.5 border-t border-pencil/20 text-[9px] sm:text-xs md:text-sm flex flex-col gap-0.5">
+                        <p className="opacity-80">Local storage: ACTIVE // Desk UI: SECURE</p>
+                        <p className="opacity-80">Est. 2026 // By Sujal Singh</p>
+                        <div className="flex items-center gap-2 pt-1 font-marker text-[10px] sm:text-xs md:text-sm uppercase tracking-wide">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              soundFX.playPop();
+                              setIsOpen(false);
+                              window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'privacy' } }));
+                            }}
+                            className="underline hover:text-markerRed cursor-pointer transition-colors"
+                          >
+                            Privacy Policy
+                          </button>
+                          <span>•</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              soundFX.playPop();
+                              setIsOpen(false);
+                              window.dispatchEvent(new CustomEvent('OPEN_LEGAL', { detail: { tab: 'terms' } }));
+                            }}
+                            className="underline hover:text-markerRed cursor-pointer transition-colors"
+                          >
+                            Terms &amp; Conditions
+                          </button>
+                        </div>
                       </div>
                     </motion.div>
                   )}

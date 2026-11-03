@@ -133,9 +133,9 @@ export function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) {
             transition={{ type: 'spring', stiffness: 320, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Blank Paper Background (Matching CrafterNotes) */}
+            {/* Tapeless Blank Paper Background (Clean paper without washi tape) */}
             <img
-              src="/assets/notesAbout_blank.webp"
+              src="/assets/notesLegal_blank.png"
               alt="Legal Notes Paper"
               className="w-full h-full object-contain drop-shadow-2xl pointer-events-none select-none z-10 block"
             />
@@ -154,17 +154,17 @@ export function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) {
               X
             </button>
 
-            {/* Tab Selector Header (Rotated with the paper) */}
+            {/* Tab Selector Header with font-marker style (Rotated with the paper) */}
             <div
-              className="absolute top-[18%] left-[17%] right-[22%] z-30 flex items-center gap-2 font-mono text-[9px] sm:text-[11px] md:text-xs font-bold uppercase"
+              className="absolute top-[16.5%] left-[16%] right-[22%] z-30 flex items-center gap-2 sm:gap-2.5 font-marker text-xs sm:text-base md:text-lg uppercase"
               style={{ transform: 'rotate(-2.8deg)' }}
             >
               <button
                 type="button"
                 onClick={(e) => handleTabChange('privacy', e)}
-                className={`px-2 py-0.5 border border-[#1A1A1A] transition-all cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1 border-2 border-[#1A1A1A] transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] handwritten-text ${
                   activeTab === 'privacy'
-                    ? 'bg-[#1A1A1A] text-[#FFEB3B] shadow-[1px_1px_0px_#1A1A1A]'
+                    ? 'bg-[#1A1A1A] text-[#FFEB3B]'
                     : 'bg-[#FAF7EE] text-[#1A1A1A]/70 hover:bg-white'
                 }`}
               >
@@ -173,9 +173,9 @@ export function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) {
               <button
                 type="button"
                 onClick={(e) => handleTabChange('terms', e)}
-                className={`px-2 py-0.5 border border-[#1A1A1A] transition-all cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1 border-2 border-[#1A1A1A] transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A] active:translate-y-[1px] handwritten-text ${
                   activeTab === 'terms'
-                    ? 'bg-[#1A1A1A] text-[#FFEB3B] shadow-[1px_1px_0px_#1A1A1A]'
+                    ? 'bg-[#1A1A1A] text-[#FFEB3B]'
                     : 'bg-[#FAF7EE] text-[#1A1A1A]/70 hover:bg-white'
                 }`}
               >
@@ -230,22 +230,9 @@ export function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) {
                 </AnimatePresence>
               </div>
 
-              {/* Navigation hint and dots */}
-              <div className="flex items-center justify-between text-pencil/60 text-[8px] sm:text-[10px] md:text-xs font-mono font-bold tracking-wider pointer-events-none pb-1 pt-1 border-t border-pencil/15">
-                <div className="flex items-center gap-1">
-                  {currentPages.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`inline-block w-1.5 h-1.5 rounded-full ${
-                        i === page ? 'bg-markerRed' : 'bg-pencil/30'
-                      }`}
-                    />
-                  ))}
-                  <span className="ml-1 uppercase">Page {page + 1}/{maxPages}</span>
-                </div>
-                <div className="uppercase">
-                  ( tap or swipe )
-                </div>
+              {/* Micro-interaction indicator (Exact same as CrafterNotes) */}
+              <div className="text-right text-pencil/75 text-[9px] sm:text-xs md:text-sm font-bold tracking-widest pointer-events-none pb-1">
+                ( swipe or tap )
               </div>
             </div>
           </motion.div>

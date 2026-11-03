@@ -17,3 +17,4 @@
 - Strict Zero Tracker Policy: No personal data selling or third-party ad targeting scripts.
 - Client-Side Privacy: Craft drafts and photo crops persist exclusively in the user's local browser storage.
 - Vaulted Delivery: Time capsule emails store solely destination address and delivery date, and records are purged upon fulfillment.
+

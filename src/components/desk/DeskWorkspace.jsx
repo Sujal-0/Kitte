@@ -86,8 +86,8 @@ export function DeskWorkspace({ onEnterStudio }) {
             />
           </section>
 
-          {/* Bottom Dock: Taped Craft Artifacts (Notes, Receipt, Phone) */}
-          <footer className="relative z-30 w-full pb-1 pointer-events-auto">
+          {/* Bottom Dock: Taped Craft Artifacts (Notes, Receipt, Phone), comfortably lifted above home bar */}
+          <footer className="relative z-30 w-full pb-4 sm:pb-6 pointer-events-auto shrink-0 mb-1">
             <MobileCraftDock />
           </footer>
         </main>

@@ -55,7 +55,7 @@ const STUDIOS = [
     },
     allInOne: {
       baseX: '7%',
-      baseY: '8%',
+      baseY: '9%',
       baseRotate: -4,
       config: { a: 1.1, b: 1.5, A: 4, B: 4, delta: 0 },
       className: 'w-[96px] sm:w-[115px]'
@@ -82,7 +82,7 @@ const STUDIOS = [
     },
     allInOne: {
       baseX: '59%',
-      baseY: '6%',
+      baseY: '8%',
       baseRotate: 3,
       config: { a: 1.2, b: 1.4, A: 4, B: 4, delta: Math.PI / 3 },
       className: 'w-[96px] sm:w-[115px]'
@@ -109,7 +109,7 @@ const STUDIOS = [
     },
     allInOne: {
       baseX: '8%',
-      baseY: '52%',
+      baseY: '50%',
       baseRotate: 4,
       config: { a: 1.4, b: 1.1, A: 4, B: 4, delta: Math.PI / 4 },
       className: 'w-[96px] sm:w-[115px]'
@@ -300,27 +300,48 @@ export function CuttingMat({ onOpenStudio, mobileMode = 'swipe' }) {
   return (
     <div className="relative w-full h-full flex items-center justify-center pointer-events-none p-1 overflow-hidden">
       
-      {/* The Cutting Mat SVG Base - Scaled up to fill space without overflow */}
-      <div className="relative w-full h-full max-w-[94vw] max-h-[58vh] aspect-[1.38/1] flex items-center justify-center">
+      {/* The Cutting Mat SVG Base - Strictly locked to 1100:800 ratio to prevent vertical letterbox stretch */}
+      <div 
+        className="relative max-w-[94vw] aspect-[1100/800] flex items-center justify-center mx-auto"
+        style={{
+          width: 'min(94vw, calc((100dvh - 250px) * 1.375), 520px)',
+          aspectRatio: '1100 / 800'
+        }}
+      >
         
         {/* Cutting Mat Vector Base with Neo-Brutalist Shadow */}
         <img 
           src="/assets/cutting-mat.svg" 
           alt="Cutting Mat Base" 
-          className="w-full h-full object-contain drop-shadow-[5px_5px_0px_#2D2D2D] pointer-events-none select-none"
+          className="w-full h-full object-fill drop-shadow-[5px_5px_0px_#2D2D2D] pointer-events-none select-none block"
           style={{ transform: "rotate(-0.8deg)" }} 
         />
 
         {/* Bounded Inner Layer (Everything stays strictly inside the green mat) */}
-        <div className="absolute inset-[4%] z-20 pointer-events-auto flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-[3.5%] z-20 pointer-events-auto flex items-center justify-center overflow-hidden"
+          style={{ transform: "rotate(-0.8deg)" }}
+        >
           
           {/* Static Pinned Stickers (Kept safely inside green mat bounds) */}
-          <div className="absolute top-[12%] right-[16%] w-10 sm:w-12 rotate-3 z-0 pointer-events-none drop-shadow-sm select-none opacity-85">
+          <div 
+            className={`absolute z-0 pointer-events-none drop-shadow-sm select-none opacity-85 transition-all duration-300 ${
+              mobileMode === 'all-in-one' 
+                ? 'top-[6%] left-[44%] w-9 sm:w-11 -rotate-2' 
+                : 'top-[7%] right-[16%] w-9 sm:w-11 rotate-3'
+            }`}
+          >
             <img src="/assets/joyBoy.webp" alt="Joy Boy" className="w-full h-auto" />
-            <WashiTape className="absolute -top-1.5 left-1/2 -translate-x-1/2 -rotate-2 w-6 h-2.5" />
+            <WashiTape className="absolute -top-1.5 left-1/2 -translate-x-1/2 -rotate-2 w-5 sm:w-6 h-2 sm:h-2.5" />
           </div>
 
-          <div className="absolute bottom-[16%] left-[16%] w-9 sm:w-11 -rotate-3 z-0 pointer-events-none drop-shadow-sm select-none opacity-75">
+          <div 
+            className={`absolute z-0 pointer-events-none drop-shadow-sm select-none opacity-75 transition-all duration-300 ${
+              mobileMode === 'all-in-one' 
+                ? 'bottom-[6%] left-[44%] w-9 sm:w-10 rotate-3' 
+                : 'bottom-[14%] left-[16%] w-9 sm:w-10 -rotate-3'
+            }`}
+          >
             <img src="/assets/time.webp" alt="Time Archive" className="w-full h-auto" />
             <WashiTape className="absolute -top-1 left-1/2 -translate-x-1/2 rotate-3 w-5 h-2" />
           </div>

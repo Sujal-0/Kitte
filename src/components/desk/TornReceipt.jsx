@@ -141,13 +141,16 @@ export function TornReceipt({ className = "w-14 md:w-20" }) {
   return (
     <>
       <motion.div
-        className={`relative ${className} cursor-pointer select-none`}
+        className={`relative ${className} cursor-pointer select-none touch-manipulation`}
         onPointerDown={(e) => {
           setIsPressed(true);
           soundFX.playPop();
           if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         }}
-        onPointerUp={handleOpen}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleOpen();
+        }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => {
           setIsHovered(false);

@@ -352,13 +352,16 @@ export function ContactPhone({ className = "w-24 md:w-28" }) {
   return (
     <>
       <motion.div
-        className={`relative ${className} cursor-pointer select-none`}
+        className={`relative ${className} cursor-pointer select-none touch-manipulation`}
         onPointerDown={(e) => {
           setIsPressed(true);
           soundFX.playPop();
           if (e?.clientX && e?.clientY) triggerBurst(e.clientX, e.clientY);
         }}
-        onPointerUp={handleOpen}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleOpen();
+        }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => {
           setIsHovered(false);

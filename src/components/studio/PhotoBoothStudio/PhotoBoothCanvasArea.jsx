@@ -46,6 +46,7 @@ export function PhotoBoothCanvasArea({
 
     const handleTouchStart = (e) => {
       if (e.touches.length === 2) {
+        e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         initialDistance = Math.hypot(dx, dy);
@@ -54,27 +55,48 @@ export function PhotoBoothCanvasArea({
     };
 
     const handleTouchMove = (e) => {
-      if (e.touches.length === 2 && initialDistance > 0) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const currentDistance = Math.hypot(dx, dy);
-        const factor = currentDistance / initialDistance;
-        const nextZoom = Math.min(Math.max(0.32, initialZoom * factor), 2.5);
-        zoomTarget.set(nextZoom);
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        if (initialDistance > 0) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const currentDistance = Math.hypot(dx, dy);
+          const factor = currentDistance / initialDistance;
+          const nextZoom = Math.min(Math.max(0.32, initialZoom * factor), 2.5);
+          zoomTarget.set(nextZoom);
+        }
       }
+    };
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        initialDistance = 0;
+      }
+    };
+
+    const handleGesture = (e) => {
+      e.preventDefault();
     };
 
     const section = sectionRef.current;
     if (section) {
       section.addEventListener('wheel', handleNativeWheel, { passive: false });
-      section.addEventListener('touchstart', handleTouchStart, { passive: true });
-      section.addEventListener('touchmove', handleTouchMove, { passive: true });
+      section.addEventListener('touchstart', handleTouchStart, { passive: false });
+      section.addEventListener('touchmove', handleTouchMove, { passive: false });
+      section.addEventListener('touchend', handleTouchEnd, { passive: true });
+      section.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      section.addEventListener('gesturestart', handleGesture, { passive: false });
+      section.addEventListener('gesturechange', handleGesture, { passive: false });
     }
     return () => {
       if (section) {
         section.removeEventListener('wheel', handleNativeWheel);
         section.removeEventListener('touchstart', handleTouchStart);
         section.removeEventListener('touchmove', handleTouchMove);
+        section.removeEventListener('touchend', handleTouchEnd);
+        section.removeEventListener('touchcancel', handleTouchEnd);
+        section.removeEventListener('gesturestart', handleGesture);
+        section.removeEventListener('gesturechange', handleGesture);
       }
     };
   }, [zoomTarget]);
@@ -122,7 +144,7 @@ export function PhotoBoothCanvasArea({
   return (
     <section
       ref={sectionRef}
-      className="relative flex-1 w-full h-full bg-[#F4F1EA] overflow-hidden flex items-center justify-center select-none pb-14 lg:pb-0"
+      className="relative flex-1 w-full h-full bg-[#F4F1EA] overflow-hidden flex items-center justify-center select-none pb-14 lg:pb-0 touch-none"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >

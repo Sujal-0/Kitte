@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { TicketStub } from '../studio/MemoryTicketStudio/TicketStub';
 import { TravelIDCard } from '../studio/TravelIDStudio/TravelIDCard';
 import { PhotoBoothStrip } from '../studio/PhotoBoothStudio/PhotoBoothStrip';
@@ -45,6 +45,84 @@ export function UniversalExportOverlay() {
   const rotateX = useTransform(mouseY, [-300, 300], [15, -15]);
   const rotateYBase = useTransform(mouseX, [-300, 300], [-15, 15]);
 
+  // Preview Zoom State with Spring
+  const zoomTarget = useMotionValue(1.0);
+  const zoom = useSpring(zoomTarget, { stiffness: 300, damping: 30 });
+
+  useEffect(() => {
+    const handleNativeWheel = (e) => {
+      e.preventDefault();
+      const delta = e.deltaY;
+      const currentZoom = zoomTarget.get();
+      let newZoom = currentZoom - (delta > 0 ? 0.05 : -0.05);
+      if (e.ctrlKey) {
+        newZoom = currentZoom - (delta * 0.01);
+      }
+      zoomTarget.set(Math.min(Math.max(0.40, newZoom), 2.5));
+    };
+
+    // Mobile 2-finger pinch zoom
+    let initialDistance = 0;
+    let initialZoom = 1;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.hypot(dx, dy);
+        initialZoom = zoomTarget.get();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        if (initialDistance > 0) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const currentDistance = Math.hypot(dx, dy);
+          const factor = currentDistance / initialDistance;
+          const nextZoom = Math.min(Math.max(0.40, initialZoom * factor), 2.5);
+          zoomTarget.set(nextZoom);
+        }
+      }
+    };
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        initialDistance = 0;
+      }
+    };
+
+    const handleGesture = (e) => {
+      e.preventDefault();
+    };
+
+    const container = previewContainerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleNativeWheel, { passive: false });
+      container.addEventListener('touchstart', handleTouchStart, { passive: false });
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd, { passive: true });
+      container.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      container.addEventListener('gesturestart', handleGesture, { passive: false });
+      container.addEventListener('gesturechange', handleGesture, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('wheel', handleNativeWheel);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
+        container.removeEventListener('touchcancel', handleTouchEnd);
+        container.removeEventListener('gesturestart', handleGesture);
+        container.removeEventListener('gesturechange', handleGesture);
+      }
+    };
+  }, [zoomTarget]);
+
   const handleMouseMove = (e) => {
     if (!previewContainerRef.current) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
@@ -61,6 +139,7 @@ export function UniversalExportOverlay() {
 
   useEffect(() => {
     const handleOpen = (e) => {
+      zoomTarget.set(1.0);
       setExportType(e.detail.type);
       setExportData(e.detail.data);
       const isTime = e.detail?.type?.toUpperCase().includes('TIME') || e.detail?.type?.toUpperCase().includes('CAPSULE');
@@ -565,7 +644,7 @@ export function UniversalExportOverlay() {
             {/* 2. Center: Workbench Preview (Non-scrollable, pinned at top on mobile) */}
             <div 
               ref={previewContainerRef}
-              className="h-[30vh] sm:h-[36vh] lg:h-full lg:flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-[#1A1A1A] shrink-0 select-none"
+              className="h-[30vh] sm:h-[36vh] lg:h-full lg:flex-1 bg-deskSurface relative flex items-center justify-center overflow-hidden border-b-4 lg:border-b-0 lg:border-r-4 border-[#1A1A1A] shrink-0 select-none touch-none"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
@@ -613,9 +692,9 @@ export function UniversalExportOverlay() {
                 {/* 3D Click-to-Flip Product with Decoy Effect */}
                 <div className="relative z-30" style={{ perspective: '1500px' }}>
                   <motion.div
-                    className={`cursor-pointer select-none relative scale-[0.46] xs:scale-[0.52] sm:scale-[0.72] md:scale-85 lg:scale-100 touch-manipulation ${(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}`}
+                    className={`cursor-pointer select-none relative scale-[0.46] xs:scale-[0.52] sm:scale-[0.72] md:scale-85 lg:scale-100 touch-manipulation origin-center ${(!isPhotoBooth && !isBounty) ? "cursor-pointer" : ""}`}
                     animate={{ rotateY: (!isPhotoBooth && !isBounty && activeSide === 'back') ? 180 : 0 }}
-                    style={{ transformStyle: 'preserve-3d', rotateX }}
+                    style={{ transformStyle: 'preserve-3d', rotateX, scale: zoom }}
                     transition={{ rotateY: { type: "spring", stiffness: 60, damping: 15, mass: 1 } }}
                     onClick={() => {
                       if (!isPhotoBooth && !isBounty) {

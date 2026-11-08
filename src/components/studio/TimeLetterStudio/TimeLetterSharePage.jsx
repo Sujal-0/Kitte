@@ -41,15 +41,67 @@ export function TimeLetterSharePage() {
       if (e.ctrlKey) {
         newZoom = currentZoom - (delta * 0.01);
       }
-      zoomTarget.set(Math.min(Math.max(0.65, newZoom), 2.0));
+      zoomTarget.set(Math.min(Math.max(0.50, newZoom), 2.2));
+    };
+
+    // Mobile 2-finger pinch zoom
+    let initialDistance = 0;
+    let initialZoom = 1;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.hypot(dx, dy);
+        initialZoom = zoomTarget.get();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        if (initialDistance > 0) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const currentDistance = Math.hypot(dx, dy);
+          const factor = currentDistance / initialDistance;
+          const nextZoom = Math.min(Math.max(0.50, initialZoom * factor), 2.2);
+          zoomTarget.set(nextZoom);
+        }
+      }
+    };
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        initialDistance = 0;
+      }
+    };
+
+    const handleGesture = (e) => {
+      e.preventDefault();
     };
 
     const section = sectionRef.current;
     if (section) {
       section.addEventListener('wheel', handleNativeWheel, { passive: false });
+      section.addEventListener('touchstart', handleTouchStart, { passive: false });
+      section.addEventListener('touchmove', handleTouchMove, { passive: false });
+      section.addEventListener('touchend', handleTouchEnd, { passive: true });
+      section.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      section.addEventListener('gesturestart', handleGesture, { passive: false });
+      section.addEventListener('gesturechange', handleGesture, { passive: false });
     }
     return () => {
-      if (section) section.removeEventListener('wheel', handleNativeWheel);
+      if (section) {
+        section.removeEventListener('wheel', handleNativeWheel);
+        section.removeEventListener('touchstart', handleTouchStart);
+        section.removeEventListener('touchmove', handleTouchMove);
+        section.removeEventListener('touchend', handleTouchEnd);
+        section.removeEventListener('touchcancel', handleTouchEnd);
+        section.removeEventListener('gesturestart', handleGesture);
+        section.removeEventListener('gesturechange', handleGesture);
+      }
     };
   }, [zoomTarget]);
 
@@ -107,7 +159,7 @@ export function TimeLetterSharePage() {
         ref={sectionRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center p-2 sm:p-4"
+        className="relative flex-1 bg-[#F4F1EA] overflow-hidden flex items-center justify-center p-2 sm:p-4 touch-none"
       >
         {/* Desk Background & Interactive Lines */}
         <div className="absolute inset-0 z-0 bg-deskSurface">

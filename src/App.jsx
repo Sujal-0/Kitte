@@ -66,6 +66,20 @@ function App() {
     return () => window.removeEventListener('OPEN_LEGAL', handleOpenLegalEvent);
   }, [setCurrentView]);
 
+  // Prevent mobile browser page-level pinch zoom (especially iOS Safari gesture events)
+  useEffect(() => {
+    const handleGesture = (e) => {
+      e.preventDefault();
+    };
+    document.addEventListener('gesturestart', handleGesture, { passive: false });
+    document.addEventListener('gesturechange', handleGesture, { passive: false });
+
+    return () => {
+      document.removeEventListener('gesturestart', handleGesture);
+      document.removeEventListener('gesturechange', handleGesture);
+    };
+  }, []);
+
   const handleCloseLegal = () => {
     setIsLegalModalOpen(false);
     if (currentView === 'privacy' || currentView === 'terms') {

@@ -1,5 +1,12 @@
 import { sendEmail, getEnvConfig } from '../../scripts/email-sender.mjs';
 
+const CANONICAL_ORIGIN = process.env.PUBLIC_APP_URL || 'https://kitte-studio.vercel.app';
+
+function sanitizeLocalhostUrls(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/gi, CANONICAL_ORIGIN);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -7,6 +14,12 @@ export default async function handler(req, res) {
 
   try {
     const payload = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+
+    // Ensure all outgoing email templates and share URLs point to the production domain, never localhost
+    if (payload.htmlContent) payload.htmlContent = sanitizeLocalhostUrls(payload.htmlContent);
+    if (payload.confirmHtmlContent) payload.confirmHtmlContent = sanitizeLocalhostUrls(payload.confirmHtmlContent);
+    if (payload.plainTextContent) payload.plainTextContent = sanitizeLocalhostUrls(payload.plainTextContent);
+    if (payload.shareUrl) payload.shareUrl = sanitizeLocalhostUrls(payload.shareUrl);
 
     // Spam Protection: Honeypot trap check
     if (payload.website_hp) {

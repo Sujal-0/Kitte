@@ -1,5 +1,12 @@
 import { sendEmail, getEnvConfig } from '../../scripts/email-sender.mjs';
 
+const CANONICAL_ORIGIN = process.env.PUBLIC_APP_URL || 'https://kitte-studio.vercel.app';
+
+function sanitizeLocalhostUrls(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/gi, CANONICAL_ORIGIN);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -7,6 +14,7 @@ export default async function handler(req, res) {
 
   try {
     const { to, subject, html, attachments } = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const cleanHtml = sanitizeLocalhostUrls(html);
     const config = getEnvConfig();
 
     if (!config.hasGmail && !config.hasResend) {
@@ -24,7 +32,7 @@ export default async function handler(req, res) {
     const result = await sendEmail({
       to,
       subject: subject || 'A letter from your past self [TEST]',
-      html,
+      html: cleanHtml,
       attachments: attachments || []
     });
 

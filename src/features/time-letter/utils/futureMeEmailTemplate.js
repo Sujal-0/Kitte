@@ -167,7 +167,16 @@ function buildSocialFooterHtml() {
 function buildEnvelopeHtml({ state, targetDate, sendDate, location, effectiveEmail, shareUrl }) {
   const recipientName = state?.recipient || (state?.letterMode === 'someone-special' ? 'Someone Special' : 'Future Me');
   const borderColor = state?.envelopeBorderColor || '#8B1D1D';
-  const emailOpenUrl = shareUrl ? (shareUrl.includes('src=email') ? shareUrl : `${shareUrl}&src=email`) : '#';
+
+  // Ensure the link always targets the live production URL, never localhost
+  let emailOpenUrl = shareUrl || 'https://kitte-studio.vercel.app';
+  if (emailOpenUrl.includes('localhost') || emailOpenUrl.includes('127.0.0.1')) {
+    emailOpenUrl = emailOpenUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/gi, 'https://kitte-studio.vercel.app');
+  }
+  if (!emailOpenUrl.includes('src=email')) {
+    emailOpenUrl = emailOpenUrl.includes('?') ? `${emailOpenUrl}&src=email` : `${emailOpenUrl}?src=email`;
+  }
+
   const handwrittenFont = "'Patrick Hand', 'Caveat', 'Comic Sans MS', cursive, sans-serif";
 
   return `
@@ -524,6 +533,11 @@ export function buildFutureMePlainText({
   const letterBody = state?.letterBody || '';
   const signOff = state?.signOff || 'With love,';
 
+  let cleanShareUrl = shareUrl || 'https://kitte-studio.vercel.app';
+  if (cleanShareUrl.includes('localhost') || cleanShareUrl.includes('127.0.0.1')) {
+    cleanShareUrl = cleanShareUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/gi, 'https://kitte-studio.vercel.app');
+  }
+
   return `
 ============================================================
 KITTE ARCHIVAL STUDIO - TIME CAPSULE DISPATCH
@@ -546,7 +560,7 @@ ${author}
 ------------------------------------------------------------
 INTERACTIVE WEB LETTER & ENVELOPE:
 Open your live 300 DPI interactive letter in Kitte Studio:
-${shareUrl}
+${cleanShareUrl}
 
 ATTACHED ARCHIVAL CRAFT KEEPSAKES PACK:
 1. Archival_Letterhead_300DPI.pdf

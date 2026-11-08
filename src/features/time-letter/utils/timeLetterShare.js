@@ -3,6 +3,31 @@
  * Encodes/decodes live animated letter links and manages time-capsule lock states.
  */
 
+export const PRODUCTION_CANONICAL_ORIGIN = 'https://kitte-studio.vercel.app';
+
+/**
+ * Returns the canonical base origin for shared links.
+ * Always resolves to the production URL ('https://kitte-studio.vercel.app')
+ * if running in local development (localhost, 127.0.0.1) or in a headless environment,
+ * ensuring all generated email links open the live website on all devices.
+ */
+export function getCanonicalShareOrigin() {
+  if (typeof window !== 'undefined' && window.location && window.location.origin) {
+    const origin = window.location.origin;
+    const isLocalhost = 
+      origin.includes('localhost') || 
+      origin.includes('127.0.0.1') || 
+      origin.includes('0.0.0.0') || 
+      origin.startsWith('file:') ||
+      /:(\d{4,5})/.test(origin);
+    
+    if (!isLocalhost) {
+      return origin;
+    }
+  }
+  return PRODUCTION_CANONICAL_ORIGIN;
+}
+
 export function generateLetterShareUrl(state) {
   try {
     const payload = {
@@ -39,12 +64,13 @@ export function generateLetterShareUrl(state) {
 
     const jsonStr = JSON.stringify(payload);
     const b64 = btoa(encodeURIComponent(jsonStr));
-    const url = new URL(window.location.origin + window.location.pathname);
+    const baseOrigin = getCanonicalShareOrigin();
+    const url = new URL(baseOrigin + '/');
     url.search = `?view=letter&letter=${b64}`;
     return url.toString();
   } catch (err) {
     console.error('Failed to generate share URL:', err);
-    return window.location.href;
+    return `${PRODUCTION_CANONICAL_ORIGIN}/`;
   }
 }
 

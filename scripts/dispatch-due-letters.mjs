@@ -23,6 +23,12 @@ loadEnv();
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 const LOCAL_DB_FILE = path.resolve(process.cwd(), '.data/futureme_scheduled_letters.json');
+const CANONICAL_ORIGIN = process.env.PUBLIC_APP_URL || 'https://kitte-studio.vercel.app';
+
+function sanitizeLocalhostUrls(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/gi, CANONICAL_ORIGIN);
+}
 
 async function getDueLetters() {
   const now = Date.now();
@@ -130,7 +136,8 @@ export async function runDispatchSweep() {
   for (const letter of letters) {
     const toEmail = letter.recipient_email || letter.to;
     const subject = letter.subject || `Your Time Capsule Has Unlocked: A letter from your past self`;
-    const html = letter.html_content || letter.htmlContent;
+    const rawHtml = letter.html_content || letter.htmlContent;
+    const html = sanitizeLocalhostUrls(rawHtml);
 
     console.log(`[FutureMe Dispatcher] Dispatching capsule ${letter.id} to ${toEmail}...`);
 
